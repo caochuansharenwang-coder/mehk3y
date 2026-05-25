@@ -153,9 +153,9 @@ function applyBmnrWeekly(currentHoldings) {
       el.style.color = delta >= 0 ? 'var(--green)' : 'var(--red)';
       sub.textContent = `${days} 天样本 · ${(delta >= 0 ? '+' : '') + pct.toFixed(2)}%`;
     } else {
-      el.textContent = '0 ETH';
+      el.textContent = fmtEth(currentHoldings);
       el.style.color = 'var(--dim)';
-      sub.textContent = '等待 7 日样本 · 当前持仓已记录';
+      sub.textContent = '当前持仓 · 等待 7 日样本';
     }
     return;
   }
