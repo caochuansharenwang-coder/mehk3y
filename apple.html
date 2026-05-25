@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Mehk3y — Apple 礼品卡购买渠道</title>
+  <meta name="description" content="支持支付宝/微信付款的 Apple 礼品卡购买渠道汇总，涵盖土耳其、美国、尼日利亚区，含 MTCGAME、Pockyt、SEAGM 等平台。">
+  <meta property="og:title" content="Mehk3y — Apple 礼品卡">
+  <meta property="og:description" content="支持支付宝/微信 · 土耳其 / 美国 / 尼日利亚区 · 渠道对比">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mehk3y.com/apple">
+  <meta property="og:image" content="https://mehk3y.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Mehk3y">
+  <meta name="twitter:image" content="https://mehk3y.com/og-image.png">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://mehk3y.com/apple">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="stylesheet" href="/common.css">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/theme.js"></script>
+  <link rel="preload" as="script" href="/apple.js">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "支持支付宝 / 微信付款的 Apple 礼品卡购买渠道",
+    "description": "支持支付宝/微信付款的 Apple 礼品卡平台,覆盖土耳其、美国、尼日利亚区。",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "MTCGAME",     "url": "https://www.mtcgame.com" },
+      { "@type": "ListItem", "position": 2, "name": "Pockyt Shop", "url": "https://shop.pockyt.io" },
+      { "@type": "ListItem", "position": 3, "name": "SEAGM",       "url": "https://www.seagm.com" },
+      { "@type": "ListItem", "position": 4, "name": "G2A",         "url": "https://www.g2a.com" },
+      { "@type": "ListItem", "position": 5, "name": "Oyunfor",     "url": "https://www.oyunfor.com" }
+    ]
+  }
+  </script>
+  <style>
+    body { line-height: 1.55; }
+    .wrap { max-width: 700px; padding-bottom: 64px; }
+    .hdr  { align-items: baseline; margin-bottom: 20px; }
+
+    .lead { font-size: 13.5px; color: var(--dim); line-height: 1.75; margin-bottom: 16px; }
+    .lead strong { color: var(--text); font-weight: 600; }
+
+    /* Section header */
+    .sec { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim);
+           margin: 4px 0 10px; display: flex; align-items: center; gap: 8px; }
+    .sec::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Platform card */
+    .pcard {
+      background: var(--surface); border-radius: 14px; padding: 16px 18px;
+      margin-bottom: 10px; display: flex; align-items: flex-start;
+      gap: 14px; text-decoration: none; color: var(--text);
+      transition: box-shadow 0.15s;
+    }
+    .pcard:hover { box-shadow: 0 2px 14px rgba(0,0,0,0.06); }
+
+    .pcard-icon {
+      width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 21px;
+    }
+
+    .pcard-body { flex: 1; min-width: 0; }
+    .pcard-top  { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .pcard-name { font-size: 14px; font-weight: 700; }
+    .pcard-url  { font-size: 11px; color: var(--dim); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 0; }
+    .tag  { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+    .tag-region { background: var(--tint-blue-bg); color: #2563eb; }
+    .tag-pay    { background: var(--tint-green-bg); color: #16a34a; }
+    .tag-warn   { background: var(--tint-orange-bg); color: var(--tint-orange-fg); }
+    .tag-best   { background: #0d0d0d; color: var(--accent-fg); }
+
+    .pcard-desc { font-size: 12.5px; color: var(--dim); line-height: 1.6; margin-top: 6px; }
+    .pcard-desc strong { color: var(--text); font-weight: 600; }
+
+    .pcard-arrow { color: #d0d0d0; font-size: 16px; margin-left: 4px; flex-shrink: 0;
+                   align-self: center; transition: transform 0.15s; }
+    .pcard:hover .pcard-arrow { transform: translateX(3px); color: var(--dim); }
+
+    .notice {
+      background: var(--tint-orange-bg); border: 1px solid var(--tint-orange-border); border-radius: 10px;
+      padding: 10px 14px; font-size: 12.5px; color: var(--tint-orange-fg);
+      line-height: 1.65; margin-bottom: 16px;
+    }
+
+    /* —— Combined rates + calculator card —— */
+    .calc {
+      background: var(--surface); border-radius: 12px;
+      padding: 10px 12px; margin-bottom: 14px;
+      position: relative; z-index: 10;
+    }
+    .calc-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .calc-label {
+      font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--dim);
+    }
+    .calc-rates {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      font-size: 11px; color: var(--dim);
+    }
+    .calc-rates b {
+      color: var(--text); font-weight: 700;
+      font-family: "SF Mono", "Menlo", monospace;
+      margin: 0 2px;
+    }
+    .calc-row {
+      display: flex; align-items: stretch; gap: 6px;
+      flex-wrap: wrap;
+    }
+    .calc-select, .calc-amount, .calc-btn {
+      height: 34px; font-size: 13px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      background: var(--bg); color: var(--text);
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+    }
+    .calc-select {
+      flex: 0 0 auto; padding: 0 28px 0 10px;
+      font-weight: 600; cursor: pointer;
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%23909090' stroke-width='1.5' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+    .calc-amount {
+      flex: 1; min-width: 0; padding: 0 10px;
+      font-weight: 700;
+      font-family: "SF Mono", "Menlo", monospace;
+      -moz-appearance: textfield;
+    }
+    .calc-amount::-webkit-outer-spin-button,
+    .calc-amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .calc-select:hover, .calc-amount:hover { border-color: #c8c8c8; }
+    .calc-select:focus, .calc-amount:focus { outline: none; border-color: var(--text); }
+
+    .calc-btn {
+      flex: 0 0 auto; padding: 0 16px;
+      background: var(--accent); color: var(--accent-fg);
+      border-color: var(--text);
+      font-weight: 700; cursor: pointer;
+    }
+    .calc-btn:hover { background: var(--text-2); border-color: #333; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    .calc-result {
+      flex: 1; min-width: 120px;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 10px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 13px; color: var(--dim);
+      white-space: nowrap;
+    }
+    .calc-result strong {
+      color: var(--text); font-weight: 700;
+      font-size: 15px; letter-spacing: -0.01em;
+      margin-left: 4px;
+    }
+
+    @media (max-width: 500px) {
+      .pcard { padding: 14px 14px; gap: 10px; }
+      .pcard-icon { width: 36px; height: 36px; font-size: 18px; border-radius: 9px; }
+      .fx-item { padding: 10px 12px; }
+      .fx-val  { font-size: 13px; }
+      .calc-select { padding: 0 26px 0 8px; font-size: 12px; }
+      .calc-btn    { padding: 0 12px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">跳到内容</a>
+<div class="site-top"><button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题"><svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button></div>
+<main class="wrap" id="main">
+
+  <header class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="hdr-back">←</a>
+      <a href="/" class="hdr-name">Mehk3y</a>
+      <span class="hdr-sub">Apple 礼品卡</span>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <p class="lead">
+    整理了支持<strong>支付宝 / 微信支付</strong>购买 Apple 礼品卡的平台，覆盖
+    <strong>🇹🇷 土耳其</strong>、<strong>🇺🇸 美国</strong>、<strong>🇳🇬 尼日利亚</strong>三个区，
+    适合低价订阅 Claude / ChatGPT 等服务。价格随汇率波动，购买前请自行核对实时报价。
+  </p>
+
+  <!-- Combined rates + calculator -->
+  <div class="calc">
+    <div class="calc-top">
+      <span class="calc-label">价格换算</span>
+      <div class="calc-rates">
+        <span>🇺🇸 1 USD ≈<b id="fx-usd">—</b></span>
+        <span>🇹🇷 1 TRY ≈<b id="fx-try">—</b></span>
+        <span>🇳🇬 100 NGN ≈<b id="fx-ngn">—</b></span>
+      </div>
+    </div>
+    <div class="calc-row">
+      <select class="calc-select" id="calc-cur">
+        <option value="usd">🇺🇸 USD</option>
+        <option value="try">🇹🇷 TRY</option>
+        <option value="ngn">🇳🇬 NGN</option>
+      </select>
+      <input class="calc-amount" id="calc-amount" type="number" inputmode="decimal"
+             min="0" step="1" placeholder="面额" value="100">
+      <button class="calc-btn" id="calc-btn" type="button">计算</button>
+      <span class="calc-result" id="calc-result">≈ <strong>¥ —</strong></span>
+    </div>
+  </div>
+
+  <div class="sec">推荐渠道</div>
+
+  <!-- MTCGAME -->
+  <a class="pcard" href="https://www.mtcgame.com" target="_blank" rel="noopener noreferrer">
+    <div class="pcard-icon" style="background:var(--tint-pink-bg)">🎮</div>
+    <div class="pcard-body">
+      <div class="pcard-top">
+        <span class="pcard-name">MTCGAME</span>
+        <span class="pcard-url">mtcgame.com</span>
+      </div>
+      <div class="tags">
+        <span class="tag tag-region">🇹🇷 土耳其</span>
+        <span class="tag tag-region">🇺🇸 美国</span>
+        <span class="tag tag-pay">支付宝</span>
+        <span class="tag tag-pay">微信支付</span>
+        <span class="tag tag-pay">PayPal</span>
+        <span class="tag tag-pay">加密货币</span>
+        <span class="tag tag-pay">信用卡</span>
+      </div>
+      <p class="pcard-desc">
+        <strong>土耳其区首选</strong>，中文界面，TRY 面额（100 / 250 / 500 TRY），
+        支付方式最丰富，交付快，国内用户反馈稳定可靠。
+      </p>
+    </div>
+    <span class="pcard-arrow">→</span>
+  </a>
+
+  <!-- Pockyt Shop -->
+  <a class="pcard" href="https://shop.pockyt.io" target="_blank" rel="noopener noreferrer">
+    <div class="pcard-icon" style="background:var(--tint-blue-bg)">🛍️</div>
+    <div class="pcard-body">
+      <div class="pcard-top">
+        <span class="pcard-name">Pockyt Shop</span>
+        <span class="pcard-url">shop.pockyt.io</span>
+      </div>
+      <div class="tags">
+        <span class="tag tag-region">🇺🇸 美国</span>
+        <span class="tag tag-pay">支付宝</span>
+        <span class="tag tag-pay">微信支付</span>
+      </div>
+      <p class="pcard-desc">
+        <strong>美区首选</strong>，原支付宝内嵌渠道，扫码即付，按实时汇率换算，操作极简，用户反馈稳定。
+      </p>
+    </div>
+    <span class="pcard-arrow">→</span>
+  </a>
+
+  <!-- SEAGM -->
+  <a class="pcard" href="https://www.seagm.com" target="_blank" rel="noopener noreferrer">
+    <div class="pcard-icon" style="background:var(--tint-green-bg)">🌊</div>
+    <div class="pcard-body">
+      <div class="pcard-top">
+        <span class="pcard-name">SEAGM</span>
+        <span class="pcard-url">seagm.com</span>
+      </div>
+      <div class="tags">
+        <span class="tag tag-region">🇹🇷 土耳其</span>
+        <span class="tag tag-region">🇺🇸 美国</span>
+        <span class="tag tag-region">🇳🇬 尼日利亚</span>
+        <span class="tag tag-pay">支付宝</span>
+        <span class="tag tag-pay">PayPal</span>
+        <span class="tag tag-pay">信用卡</span>
+        <span class="tag tag-pay">加密货币</span>
+        <span class="tag tag-pay">Apple Pay</span>
+        <span class="tag tag-pay">Google Pay</span>
+        <span class="tag tag-warn">不支持微信</span>
+      </div>
+      <p class="pcard-desc">
+        三区覆盖最全，常有促销，土耳其区性价比高。支付方式以 USD 结算，
+        <strong>仅支付宝可用，无微信支付</strong>，需要微信的可选 MTCGAME 或 G2A。
+      </p>
+    </div>
+    <span class="pcard-arrow">→</span>
+  </a>
+
+  <!-- G2A -->
+  <a class="pcard" href="https://www.g2a.com" target="_blank" rel="noopener noreferrer">
+    <div class="pcard-icon" style="background:var(--tint-yellow-bg)">🅖</div>
+    <div class="pcard-body">
+      <div class="pcard-top">
+        <span class="pcard-name">G2A</span>
+        <span class="pcard-url">g2a.com</span>
+      </div>
+      <div class="tags">
+        <span class="tag tag-region">🇹🇷 土耳其</span>
+        <span class="tag tag-region">🇺🇸 美国</span>
+        <span class="tag tag-pay">微信支付</span>
+        <span class="tag tag-pay">信用卡</span>
+      </div>
+      <p class="pcard-desc">
+        全球最大礼品卡市场平台，土耳其 iTunes 卡有售，微信支付用户实测可用。
+        <strong>为市场平台</strong>，请选信誉高、评价多的卖家，注意识别低价陷阱。
+      </p>
+    </div>
+    <span class="pcard-arrow">→</span>
+  </a>
+
+  <!-- Oyunfor -->
+  <a class="pcard" href="https://www.oyunfor.com" target="_blank" rel="noopener noreferrer">
+    <div class="pcard-icon" style="background:var(--tint-fuchsia-bg)">🇹🇷</div>
+    <div class="pcard-body">
+      <div class="pcard-top">
+        <span class="pcard-name">Oyunfor</span>
+        <span class="pcard-url">oyunfor.com</span>
+      </div>
+      <div class="tags">
+        <span class="tag tag-region">🇹🇷 土耳其</span>
+        <span class="tag tag-warn">支付宝 / 微信需配合其他方式</span>
+      </div>
+      <p class="pcard-desc">
+        土耳其本地热门平台，Apple 礼品卡价格接近正价或小溢价，供货稳定。
+        直接支付宝 / 微信支持有限，可结合 MTCGAME 等渠道使用。
+      </p>
+    </div>
+    <span class="pcard-arrow">→</span>
+  </a>
+
+  <div class="sec">使用须知</div>
+  <div class="card" style="font-size:13px;line-height:1.75;color:var(--dim);margin-bottom:0">
+    <p style="margin-bottom:6px">· <strong style="color:var(--text)">区域必须匹配</strong>：土耳其卡只能在土耳其区 Apple ID 使用，购买前先切换好账号。</p>
+    <p style="margin-bottom:6px">· <strong style="color:var(--text)">即用即买</strong>：礼品卡一经激活无法退款，按需购买所需面额。</p>
+    <p style="margin-bottom:6px">· <strong style="color:var(--text)">汇率波动</strong>：土耳其里拉（TRY）波动较大，价格以下单时为准。</p>
+    <p style="margin-bottom:0">· <strong style="color:var(--text)">风险提示</strong>：优先选择有担保的大平台，保留购买记录。</p>
+  </div>
+
+  <div class="footer"><a href="/">← 返回首页</a></div>
+</main>
+<script src="/apple.js" defer></script>
+</body>
+</html>

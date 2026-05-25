@@ -1,0 +1,19 @@
+{
+  "name": "podcast-cli",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "X/Twitter 推文 → 中文双人播客 (本地 CLI, Phase 1)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "gen":   "node --env-file=.env index.js",
+    "serve": "node --env-file=.env server.js"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "msedge-tts": "^2.0.5",
+    "ws": "^8.20.1"
+  }
+}

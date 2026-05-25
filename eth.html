@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Mehk3y — ETH</title>
+  <meta name="description" content="以太坊实时指标：价格、ETH/BTC 比、Gas、200WMA、质押率，以及 BitMine Immersion (BMNR) 公司储备数据。">
+  <meta property="og:title" content="Mehk3y — ETH">
+  <meta property="og:description" content="以太坊实时指标：价格、ETH/BTC 比、Gas、200WMA、质押率，以及 BitMine Immersion (BMNR) 公司储备数据。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mehk3y.com/eth">
+  <meta property="og:image" content="https://mehk3y.com/api/og-eth">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="Mehk3y ETH Dashboard — 实时价格 + Gas + ETH/BTC">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Mehk3y">
+  <meta name="twitter:image" content="https://mehk3y.com/api/og-eth">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://mehk3y.com/eth">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⟠</text></svg>">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="stylesheet" href="/common.css">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/theme.js"></script>
+  <link rel="preload" as="script" href="/common.js">
+  <link rel="preload" as="script" href="/eth.js">
+  <!-- 所有数据走 /api/* (Vercel Edge Runtime, 全球边缘部署) -->
+
+  <style>
+    .bmnr-hdr { background: var(--surface); border-radius: 14px; padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .bmnr-hdr-l .bmnr-name   { font-size: 14px; font-weight: 700; }
+    .bmnr-hdr-l .bmnr-ticker { font-size: 11px; color: var(--dim); margin-left: 6px; }
+    .bmnr-hdr-l .bmnr-sub    { font-size: 11px; color: var(--dim); margin-top: 3px; }
+    .bmnr-hdr-r              { text-align: right; }
+    .bmnr-hdr-r .bmnr-eth    { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: var(--purple); line-height: 1; }
+    .bmnr-hdr-r .bmnr-usd    { font-size: 11px; color: var(--dim); margin-top: 4px; }
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    @media (max-width: 700px) {
+      .bmnr-hdr   { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .bmnr-hdr-r { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">跳到内容</a>
+<div class="site-top"><button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题"><svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button></div>
+<main class="wrap" id="main">
+
+  <header class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="hdr-back">←</a>
+      <a href="/" class="hdr-name">Mehk3y</a>
+      <span class="hdr-sub">ETH Dashboard</span>
+      <button class="refresh-btn" id="refresh-btn" title="刷新数据" aria-label="刷新数据">↻</button>
+    </div>
+    <div class="hdr-price-wrap">
+      <div class="hdr-price" id="eth-price" style="color:var(--purple)">$—</div>
+      <div class="hdr-chg" id="eth-chg"></div>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-label">ETH / BTC</div>
+      <div class="strip-val" id="eth-btc" style="color:var(--blue)"><span class="skeleton">0.0000</span></div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">市值</div>
+      <div class="strip-val" id="market-cap"><span class="skeleton">$0B</span></div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">24H 成交量</div>
+      <div class="strip-val" id="volume-24h"><span class="skeleton">$0B</span></div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">Gas (Gwei)</div>
+      <div class="strip-val" id="gas-price"><span class="skeleton">0</span></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-label">200 周均线 (200WMA)</div>
+      <div class="card-main" id="eth-wma200-price"><span class="skeleton">$0</span></div>
+      <div class="card-sub">
+        当前价 / 200WMA = <b id="eth-wma200-ratio">—</b><br>
+        <span id="eth-wma200-note">加载中…</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">ETH 供应量</div>
+      <div class="card-main" id="supply-total"><span class="skeleton">0 M</span></div>
+      <div class="card-sub">
+        质押量: <b id="supply-staked">—</b><br>
+        质押占比: <b id="supply-staked-pct">—</b><br>
+        <span id="supply-note" style="color:var(--dim)">加载中…</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">BitMine Immersion (BMNR) · 公司 ETH 储备</div>
+
+  <div class="bmnr-hdr">
+    <div class="bmnr-hdr-l">
+      <span class="bmnr-name">BitMine Immersion</span><span class="bmnr-ticker" id="bmnr-ticker">BMNR.US</span>
+      <div class="bmnr-sub">最大 ETH 公司储备 · <span id="bmnr-rank">#—</span> · 占 ETH 总供应 <b id="bmnr-pct">—</b></div>
+    </div>
+    <div class="bmnr-hdr-r">
+      <div class="bmnr-eth" id="bmnr-eth"><span class="skeleton">0 ETH</span></div>
+      <div class="bmnr-usd" id="bmnr-usd"><span class="skeleton">$0</span></div>
+    </div>
+  </div>
+
+  <div class="grid4">
+    <div class="card">
+      <div class="card-label">mNAV</div>
+      <div class="card-main" id="bmnr-mnav">—</div>
+      <div class="card-sub" id="bmnr-detail">市值 / ETH 持仓价值</div>
+    </div>
+    <div class="card">
+      <div class="card-label">本周变动</div>
+      <div class="card-main" id="bmnr-wkdelta">0 ETH</div>
+      <div class="card-sub" id="bmnr-wkdelta-sub">等待 7 日样本 · 当前持仓已记录</div>
+    </div>
+    <div class="card">
+      <div class="card-label">年化质押收益</div>
+      <div class="card-main" id="bmnr-yield"><span class="skeleton">$0</span></div>
+      <div class="card-sub">按 85% 质押 · 3.5% APR</div>
+    </div>
+    <div class="card">
+      <div class="card-label">公司储备占比</div>
+      <div class="card-main" id="bmnr-share"><span class="skeleton">—</span></div>
+      <div class="card-sub">BMNR / 全部 ETH 公司储备</div>
+    </div>
+  </div>
+
+  <div class="footer" style="margin-top:16px;text-align:left">
+    数据源: CoinGecko Public Treasury · 截至 <span id="bmnr-asof">—</span>
+  </div>
+
+  <div class="footer"><a href="/">← 返回首页</a></div>
+</main>
+<script src="/common.js" defer></script>
+<script src="/eth.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "serve@latest", "-l", "3000", "--no-clipboard"],
+      "port": 3000
+    },
+    {
+      "name": "local-4173",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4174", "--directory", "/Users/mehk3y/Documents/New project"],
+      "port": 4174
+    }
+  ]
+}

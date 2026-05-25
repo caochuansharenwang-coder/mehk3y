@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Mehk3y — Hermes Agent 接入 XAI XAPI 教程</title>
+  <meta name="description" content="零基础手把手教程：安装 Hermes Agent 并接入 XAI XAPI。涵盖 WSL2、一键安装脚本、Custom endpoint 配置、Discord / 微信网关接入与常见报错排查。">
+  <meta property="og:title" content="Mehk3y — Hermes 接入 XAPI 教程">
+  <meta property="og:description" content="一键安装 Hermes Agent · Custom endpoint 配置 · Discord / 微信网关 · 常见问题排查">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://mehk3y.com/hermes">
+  <meta property="og:image" content="https://mehk3y.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Mehk3y">
+  <meta name="twitter:image" content="https://mehk3y.com/og-image.png">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://mehk3y.com/hermes">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪽</text></svg>">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="stylesheet" href="/common.css">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/theme.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Hermes Agent 接入 XAI XAPI",
+    "description": "安装 Hermes Agent 并通过 Custom / OpenAI-compatible endpoint 接入 XAI XAPI 中转网关。",
+    "totalTime": "PT10M",
+    "step": [
+      { "@type": "HowToStep", "position": 1, "name": "(Windows) 安装 WSL2", "text": "以管理员身份运行 PowerShell，执行 wsl --install 并重启。" },
+      { "@type": "HowToStep", "position": 2, "name": "一键安装 Hermes", "text": "Linux / macOS / WSL2 执行 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash；原生 Windows early beta 在 PowerShell 中执行 iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)。" },
+      { "@type": "HowToStep", "position": 3, "name": "配置 XAI XAPI", "text": "运行 hermes model，选择 Custom / OpenAI-compatible endpoint，填入 base URL 与 API Key。" },
+      { "@type": "HowToStep", "position": 4, "name": "启动并验证", "text": "运行 hermes，发送测试消息验证模型回复正常。" },
+      { "@type": "HowToStep", "position": 5, "name": "(可选) 配置消息网关", "text": "运行 hermes gateway setup 接入 Discord 或微信。" }
+    ]
+  }
+  </script>
+  <style>
+    :root { --hermes: #7c3aed; }
+    [data-theme="dark"]            { --hermes: #a78bfa; }
+    @media (prefers-color-scheme: dark) {
+      [data-theme="auto"]          { --hermes: #a78bfa; }
+    }
+
+    body { line-height: 1.55; }
+    .wrap { max-width: 720px; padding-bottom: 64px; }
+    .hdr  { align-items: baseline; margin-bottom: 24px; }
+    .hdr a.hdr-back { font-size: 13px; }
+
+    .lead { font-size: 14px; color: var(--dim); line-height: 1.75; margin-bottom: 24px; }
+    .lead strong { color: var(--text); font-weight: 600; }
+
+    /* —— Cards —— */
+    .card { padding: 18px 22px; margin-bottom: 12px; }
+    .card-num   { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--hermes); color: #fff; font-size: 11px; font-weight: 700; margin-right: 8px; vertical-align: middle; }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; }
+    .card-body  { font-size: 13.5px; color: var(--text); line-height: 1.7; }
+    .card-body p { margin-bottom: 6px; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-body code { font-family: "SF Mono", "Fira Code", "Menlo", monospace; font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; color: var(--hermes); word-break: break-all; }
+    .card-body strong { font-weight: 600; }
+    .card-body .label { color: var(--dim); font-size: 12px; margin-right: 4px; }
+    .warn { color: var(--red);   font-weight: 600; }
+    .ok   { color: var(--green); font-weight: 600; }
+
+    /* —— Code block —— */
+    .pre {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; margin: 8px 0;
+      font-family: "SF Mono", "Fira Code", "Menlo", monospace;
+      font-size: 12.5px; line-height: 1.65; color: var(--text);
+      overflow-x: auto; white-space: pre;
+    }
+    .pre .c { color: var(--dim); }      /* comment */
+    .pre .k { color: var(--hermes); }   /* keyword / accent */
+
+    /* —— Step list —— */
+    .step-list { counter-reset: step; background: var(--surface); border-radius: 14px; padding: 8px 22px; margin-bottom: 12px; border: 1px solid var(--border); }
+    .step-list li { list-style: none; font-size: 13.5px; padding: 12px 0 12px 34px; border-bottom: 1px solid var(--border); line-height: 1.7; position: relative; color: var(--text); }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 13px; width: 22px; height: 22px; border-radius: 50%; background: var(--hermes); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .step-list code { font-family: "SF Mono", "Fira Code", "Menlo", monospace; font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; color: var(--hermes); word-break: break-all; }
+    .step-list strong { font-weight: 600; }
+
+    /* —— Tips list —— */
+    .tips-list { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px 22px; margin-bottom: 12px; }
+    .tips-list li { list-style: none; font-size: 13.5px; padding: 10px 0; border-bottom: 1px solid var(--border); line-height: 1.7; }
+    .tips-list li:last-child { border-bottom: none; }
+    .tips-list li::before { content: '·'; color: var(--hermes); font-weight: 700; margin-right: 8px; }
+    .tips-list code { font-family: "SF Mono", "Fira Code", "Menlo", monospace; font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; color: var(--hermes); word-break: break-all; }
+
+    /* —— Callouts —— */
+    .note {
+      background: var(--tint-blue-bg); border: 1px solid transparent;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12.5px; color: var(--tint-blue-fg);
+      margin: 8px 0; line-height: 1.65;
+    }
+    .important {
+      background: var(--tint-orange-bg); border: 1px solid var(--tint-orange-border);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12.5px; color: var(--tint-orange-fg);
+      margin: 8px 0; line-height: 1.65;
+    }
+    .danger {
+      background: var(--tint-red-bg); border: 1px solid transparent;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12.5px; color: var(--tint-red-fg);
+      margin: 8px 0; line-height: 1.65;
+    }
+    .tip {
+      background: var(--tint-purple-bg); border: 1px solid transparent;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12.5px; color: var(--tint-purple-fg);
+      margin: 8px 0; line-height: 1.65;
+    }
+    .note code, .important code, .danger code, .tip code {
+      font-family: "SF Mono", "Fira Code", "Menlo", monospace;
+      font-size: 12px; background: rgba(0,0,0,.05);
+      padding: 1px 5px; border-radius: 4px;
+    }
+    [data-theme="dark"] .note code,
+    [data-theme="dark"] .important code,
+    [data-theme="dark"] .danger code,
+    [data-theme="dark"] .tip code { background: rgba(255,255,255,.06); }
+
+    /* —— Sub section header —— */
+    .sub-title {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin: 18px 0 10px;
+    }
+    .sub-title .badge {
+      display: inline-block; vertical-align: middle;
+      font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: 99px; margin-right: 8px;
+      background: var(--tint-purple-bg); color: var(--tint-purple-fg);
+    }
+
+    /* —— FAQ —— */
+    .faq { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px 22px; margin-bottom: 12px; }
+    .faq details { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .faq details:last-child { border-bottom: none; }
+    .faq summary {
+      list-style: none; cursor: pointer; font-size: 13.5px; font-weight: 600;
+      color: var(--text); display: flex; align-items: center; gap: 8px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+      content: '+'; margin-left: auto; color: var(--dim);
+      font-weight: 400; font-size: 18px; line-height: 1;
+      transition: transform .2s;
+    }
+    .faq details[open] summary::after { content: '–'; }
+    .faq-body { font-size: 13px; color: var(--text); line-height: 1.7; margin-top: 10px; }
+    .faq-body code { font-family: "SF Mono", "Fira Code", "Menlo", monospace; font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; color: var(--hermes); word-break: break-all; }
+    .faq-body p { margin-bottom: 6px; }
+    .faq-body p:last-child { margin-bottom: 0; }
+
+    /* —— Checklist —— */
+    .check { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 22px; margin-bottom: 12px; }
+    .check h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 6px 0 8px; font-weight: 600; }
+    .check ul { list-style: none; padding: 0; margin: 0 0 6px; }
+    .check li {
+      font-size: 13px; line-height: 1.6; padding: 5px 0 5px 26px;
+      position: relative; color: var(--text);
+    }
+    .check li::before {
+      content: ''; position: absolute; left: 0; top: 8px;
+      width: 14px; height: 14px; border: 1.5px solid var(--border-2);
+      border-radius: 4px; background: var(--bg);
+    }
+    .check li code { font-family: "SF Mono", "Fira Code", "Menlo", monospace; font-size: 12px; background: var(--surface-2); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; color: var(--hermes); word-break: break-all; }
+
+    .credit { font-size: 12px; color: var(--dim); margin-top: 18px; text-align: center; }
+    .credit a { color: var(--dim); text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 2px; }
+    .credit a:hover { color: var(--hermes); }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 20px 16px 48px; }
+      .card { padding: 16px 18px; }
+      .tips-list, .step-list, .faq, .check { padding-left: 18px; padding-right: 18px; }
+      .step-list li { padding-left: 30px; }
+      .pre { font-size: 12px; padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">跳到内容</a>
+
+<div class="site-top">
+  <button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题">
+    <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+  </button>
+</div>
+
+<main class="wrap" id="main">
+
+  <header class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="hdr-back">←</a>
+      <span class="hdr-name">Mehk3y</span>
+      <span class="hdr-sub">Hermes 接入 XAPI 教程</span>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <p class="lead">本教程面向<strong>零技术基础</strong>用户，手把手教你安装 Hermes Agent 并接入 XAI XAPI 中转网关。Hermes 是 Nous Research 出品的开源自进化 AI Agent，拥有<strong>跨会话记忆、自动技能学习、多平台消息网关</strong>（Telegram / Discord / Slack / WhatsApp / Signal）等能力。</p>
+
+  <div class="important">⚠️ <strong>重要前提：</strong>Hermes Agent 要求模型至少支持 <strong>64,000 tokens</strong> 的上下文窗口。上下文过小的模型会在启动时被拒绝。XAI XAPI 上的大部分旗舰模型（<code>gpt-5.4</code>、<code>claude-opus-4-6</code>、<code>gemini-2.5-pro</code> 等）都满足此要求。</div>
+
+  <div class="section-title">什么是 Hermes Agent</div>
+
+  <div class="card">
+    <div class="card-body">
+      <p>Hermes Agent 和 Claude Code / Codex 不同——它不只是一个编程助手，而是一个 <strong>持久运行的个人 AI Agent</strong>。</p>
+      <p>它能跨会话保留记忆、自动学习并沉淀技能，并通过 Telegram / Discord / Slack / WhatsApp / Signal / 微信 等渠道与你对话。<strong>如果部署在 VPS、云服务器或后台服务中</strong>，就不依赖你本地电脑一直开着。</p>
+    </div>
+  </div>
+
+  <!-- ===================== 第零步 ===================== -->
+  <div class="section-title">第零步 · Windows 用户必读 — 推荐安装 WSL2</div>
+
+  <div class="note">🍎 <strong>macOS / 🐧 Linux 用户请直接跳到第一步。</strong></div>
+
+  <p class="lead">Hermes Agent 现在已有<strong>原生 Windows early beta</strong> 支持，但官方仍建议 Windows 用户优先使用 WSL2，这是目前更稳的路径。WSL2 是微软官方提供的 Linux 子系统，可以在 Windows 上跑 Linux 环境。</p>
+
+  <div class="sub-title"><span class="badge">方式一</span>一条命令搞定（推荐）</div>
+  <div class="card">
+    <div class="card-body">
+      <p>适用于 <strong>Windows 10 2004+ 或 Windows 11</strong>。以 <strong>管理员身份</strong> 打开 PowerShell（右键开始菜单 → Windows PowerShell（管理员）），执行：</p>
+      <pre class="pre">wsl --install</pre>
+      <p>系统会自动安装 WSL2 和默认的 Ubuntu 发行版。安装完成后 <span class="warn">需要重启电脑</span>。</p>
+    </div>
+  </div>
+
+  <div class="sub-title"><span class="badge">方式二</span>手动安装（旧版 Windows 10）</div>
+  <div class="card">
+    <div class="card-body">
+<pre class="pre"><span class="c"># 1. 启用 WSL 功能</span>
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+<span class="c"># 2. 启用虚拟机平台</span>
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+<span class="c"># 3. 重启后，设置 WSL 默认版本为 2</span>
+wsl --set-default-version 2</pre>
+    </div>
+  </div>
+
+  <div class="sub-title">首次启动 WSL</div>
+  <div class="card">
+    <div class="card-body">
+      <p>重启电脑后，在开始菜单找到 <strong>Ubuntu</strong> 并打开，首次启动会要求你设置用户名和密码：</p>
+<pre class="pre">Enter new UNIX username: yourname
+New password: ********
+Retype new password: ********</pre>
+      <div class="tip">💡 密码输入时 <strong>不会显示任何字符</strong>（没有星号也没有圆点），这是 Linux 的正常行为，正常输入并回车即可。</div>
+    </div>
+  </div>
+
+  <div class="sub-title">验证 WSL2 是否安装成功</div>
+  <div class="card">
+    <div class="card-body">
+      <p>在 PowerShell 中执行：</p>
+      <pre class="pre">wsl -l -v</pre>
+      <p>应该看到类似输出：</p>
+<pre class="pre">NAME      STATE    VERSION
+* Ubuntu  Running  2</pre>
+      <p>确认 VERSION 列显示 <code>2</code> 即可。</p>
+      <div class="important">⚠️ <strong>后续所有命令都在 WSL 的 Ubuntu 终端中执行</strong>，不是在 Windows 的 CMD 或 PowerShell 中！</div>
+    </div>
+  </div>
+
+  <!-- ===================== 第一步 ===================== -->
+  <div class="section-title">第一步 · 一键安装 Hermes Agent</div>
+
+  <p class="lead">Hermes Agent 提供了一键安装脚本，自动处理所有依赖（Python 3.11、Node.js、uv、ripgrep、ffmpeg 等），<strong>无需手动安装任何东西</strong>。</p>
+
+  <div class="sub-title">执行安装</div>
+  <div class="card">
+    <div class="card-body">
+      <p>打开终端（macOS / Linux）或 WSL Ubuntu 终端（Windows），执行：</p>
+      <pre class="pre">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</pre>
+      <p>如果你坚持使用<strong>原生 Windows early beta</strong>，请在 PowerShell 中执行：</p>
+      <pre class="pre">iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)</pre>
+      <div class="tip">💡 这条命令会自动完成：安装 Python 3.11 和 uv 包管理器、克隆 Hermes Agent 代码仓库、创建虚拟环境并安装所有依赖、设置全局 <code>hermes</code> 命令、启动交互式配置向导。</div>
+      <p>安装过程大约需要 <strong>3-5 分钟</strong>，取决于网络速度。<span class="warn">最好使用魔法。</span></p>
+    </div>
+  </div>
+
+  <div class="sub-title">验证安装</div>
+  <div class="card">
+    <div class="card-body">
+      <p>安装完成后，执行以下命令确认一切正常：</p>
+<pre class="pre"><span class="c"># 检查 hermes 命令是否可用</span>
+hermes version
+<span class="c"># 运行诊断检查</span>
+hermes doctor</pre>
+      <p><strong>Python Environment</strong> · <strong>Required Packages</strong> · <strong>Directory Structure</strong> 这些条目都显示绿色 <span class="ok">✓</span>，说明安装成功。</p>
+    </div>
+  </div>
+
+  <!-- ===================== 第二步 ===================== -->
+  <div class="section-title">第二步 · 配置 XAI XAPI 作为模型供应商</div>
+
+  <p class="lead">安装脚本结束时会自动启动配置向导。如果你错过了，或者想重新配置，可以随时执行：</p>
+  <pre class="pre">hermes model</pre>
+
+  <div class="sub-title"><span class="badge">方式一</span>交互式向导（推荐）</div>
+  <ol class="step-list">
+    <li>执行 <code>hermes model</code>，进入模型选择界面。</li>
+    <li>在 Provider 列表中选择 <strong>"Custom / OpenAI-compatible endpoint"</strong>（自定义 OpenAI 兼容端点）。</li>
+    <li>按提示填写 Base URL 和 API Key（见下方说明）。</li>
+    <li>确认后，Hermes 会自动验证连接。</li>
+  </ol>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>填入 Base URL：</strong></p>
+      <p>• <code>https://api-xai.ainaibahub.com/v1</code> &nbsp;<span class="label">用 GPT 系列</span></p>
+      <p>• <code>https://api-xai.ainaibahub.com</code> &nbsp;<span class="label">用其他模型</span></p>
+      <div class="tip">💡 Key 输入时 <strong>不会显示任何字符</strong>，这是 Linux 的正常行为，正常复制并回车即可。<br>📋 <strong>复制：</strong>在 Linux 中点击鼠标右键即可粘贴，之后回车，<span class="warn">不能按 Ctrl+V</span>。</div>
+    </div>
+  </div>
+
+  <div class="sub-title"><span class="badge">方式二</span>手动编辑配置文件</div>
+  <div class="card">
+    <div class="card-body">
+      <pre class="pre">nano ~/.hermes/config.yaml</pre>
+      <p>找到或添加以下内容：</p>
+<pre class="pre"><span class="c"># ═══ XAI XAPI 模型配置 ═══</span>
+<span class="k">model</span>:
+  <span class="k">default</span>: gpt-5.4
+  <span class="k">provider</span>: custom
+  <span class="k">base_url</span>: https://api-xai.ainaibahub.com/v1
+  <span class="k">api_key</span>: sk-Xvs...  <span class="c"># 替换为你的真实密钥</span></pre>
+      <p>保存后退出（<code>Ctrl+O</code> → 回车 → <code>Ctrl+X</code>）。</p>
+    </div>
+  </div>
+
+  <div class="sub-title"><span class="badge">方式三</span>通过环境变量</div>
+  <div class="card">
+    <div class="card-body">
+<pre class="pre">echo 'OPENAI_API_KEY=sk-Xvs...' &gt;&gt; ~/.hermes/.env
+echo 'OPENAI_BASE_URL=https://api-xai.ainaibahub.com/v1' &gt;&gt; ~/.hermes/.env</pre>
+      <p>然后运行 <code>hermes model</code>，选择 <strong>Custom endpoint</strong> 并指定模型名。官方当前更推荐通过 <code>hermes model</code> 或 <code>config.yaml</code> 保存模型配置，避免旧环境变量残留造成混淆。</p>
+    </div>
+  </div>
+
+  <!-- ===================== 第三步 ===================== -->
+  <div class="section-title">第三步 · 启动并验证</div>
+
+  <div class="card">
+    <div class="card-title">启动 Hermes</div>
+    <div class="card-body">
+      <pre class="pre">hermes</pre>
+      <p>你会看到一个欢迎界面，显示当前使用的模型、可用工具和已安装的技能。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">发送第一条消息</div>
+    <div class="card-body">
+      <p>在 Hermes 终端中直接输入：</p>
+      <pre class="pre">你好！请介绍一下你自己，并告诉我你现在用的是什么模型。</pre>
+      <p>如果能正常收到回复，说明 <span class="ok">XAI XAPI 已成功接入</span>。</p>
+    </div>
+  </div>
+
+  <!-- ===================== 第四步 ===================== -->
+  <div class="section-title">第四步 · 切换模型</div>
+
+  <div class="card">
+    <div class="card-body">
+      <pre class="pre">hermes model</pre>
+      <p>然后重新选择 Provider 和模型名即可。</p>
+      <div class="important">⚠️ <code>gpt-4.1-nano</code>、<code>nova-micro</code> 等超轻量模型的上下文窗口可能不足 64K，<strong>不建议在 Hermes 中使用</strong>。推荐 <code>gpt-5.4</code>（1M）或 <code>gemini-2.5-pro</code>（2M）。</div>
+    </div>
+  </div>
+
+  <!-- ===================== 第五步 ===================== -->
+  <div class="section-title">第五步（可选） · 配置消息网关</div>
+
+  <p class="lead">Hermes 的一大亮点是可以通过 Telegram / Discord / Slack / WhatsApp / 微信 等平台与你的 Agent 对话。若你把 gateway 跑在 VPS、云服务器或系统服务里，它就能作为长期在线的后台 Agent 使用。</p>
+
+  <div class="note">💡 配置消息网关不是必须的。如果你只想在终端里用 Hermes，跳过这一步即可。<br>安装过程中如有任何报错，可直接交给 Hermes、Claude Code 等 AI 工具帮你修复。</div>
+
+  <div class="card">
+    <div class="card-title">配置网关</div>
+    <div class="card-body">
+      <pre class="pre">hermes gateway setup</pre>
+    </div>
+  </div>
+
+  <!-- Discord -->
+  <div class="sub-title"><span class="badge">网关</span>Discord 配置</div>
+
+  <div class="card">
+    <div class="card-title">你需要准备</div>
+    <div class="card-body">
+      <p>• 一个 Discord 账号</p>
+      <p>• 一个你有管理权限的 Discord 服务器</p>
+      <p>• 创建一个频道，或将 bot 添加到已有频道</p>
+    </div>
+  </div>
+
+  <ol class="step-list">
+    <li><strong>创建 Discord Application：</strong>访问 <code>https://discord.com/developers/applications</code>，点击 <strong>New Application</strong>，起名（如 <em>Hermes Agent</em>）→ 左侧 <strong>Bot</strong> → <strong>Add Bot</strong> → 确认 → <strong>Reset Token</strong>，复制生成的 <strong>Bot Token</strong>。</li>
+    <li><strong>开启必要的 Intents：</strong>在 Bot 页面下方 <strong>Privileged Gateway Intents</strong> 部分，打开三个开关：<br>✅ Presence Intent &nbsp; ✅ Server Members Intent &nbsp; ✅ <strong>Message Content Intent</strong>（必须打开，否则 Bot 读不到消息内容）。</li>
+    <li><strong>配置环境变量</strong>（也可让 hermes 自动配置）。编辑 <code>~/.hermes/.env</code>：
+<pre class="pre">DISCORD_BOT_TOKEN=MTxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+DISCORD_ALLOWED_USERS=123456789012345678,987654321098765432</pre>
+    </li>
+    <li><strong>邀请 Bot 到服务器：</strong>复制生成的链接，在浏览器中打开，选择要邀请 Bot 的服务器，点击授权即可。</li>
+    <li><strong>运行配置向导：</strong>
+<pre class="pre">hermes gateway setup   <span class="c"># 选择 Discord</span>
+hermes gateway run</pre>
+    </li>
+  </ol>
+
+  <div class="tip">💡 <strong>Discord 用户 ID 获取方式：</strong>在 Discord 设置中打开「开发者模式」（设置 → 高级 → 开发者模式），然后右键点击自己头像 → 复制用户 ID。</div>
+  <div class="tip">💡 <strong>Discord 行为说明：</strong>在服务器频道中，默认需要 @提及 Bot 才会回复。若想某频道无需 @提及就响应，在 <code>.env</code> 中设置 <code>DISCORD_FREE_RESPONSE_CHANNELS=频道ID</code>。<br>📌 <strong>频道 ID 获取：</strong>主页面找到你要添加 bot 的频道，右键 → 复制服务器/频道 ID。</div>
+
+  <!-- 微信 -->
+  <div class="sub-title"><span class="badge">网关</span>微信配置</div>
+
+  <div class="card">
+    <div class="card-title">你需要准备</div>
+    <div class="card-body">
+      <p>• 一个个人微信账号</p>
+      <p>• Python 依赖：<code>aiohttp</code>、<code>cryptography</code></p>
+      <p>• 可选：<code>qrcode</code>（终端显示二维码用）</p>
+    </div>
+  </div>
+
+  <ol class="step-list">
+    <li><strong>安装依赖：</strong>
+<pre class="pre">pip install aiohttp cryptography
+<span class="c"># 可选：安装完整消息网关依赖，便于终端显示二维码</span>
+pip install 'hermes-agent[messaging]'</pre>
+    </li>
+    <li><strong>运行配置向导：</strong>
+<pre class="pre">hermes gateway setup</pre>
+      选择 <strong>Weixin</strong>，向导会：
+      <p style="margin-top:6px">① 请求 iLink Bot API 生成 QR 码</p>
+      <p>② 在终端显示二维码（或提供 URL）</p>
+      <p>③ 等待你用微信扫码</p>
+      <p>④ 手机上确认登录</p>
+      <p>⑤ 自动保存账号凭证到 <code>~/.hermes/weixin/accounts/</code></p>
+      <p style="margin-top:6px">成功后会看到：<span class="ok">微信连接成功</span>，<code>account_id=your-account-id</code>。</p>
+    </li>
+    <li><strong>写入环境变量：</strong>编辑 <code>~/.hermes/.env</code>
+<pre class="pre">WEIXIN_ACCOUNT_ID=your-account-id
+<span class="c"># 通常由二维码登录自动保存；手动配置时才需要填写</span>
+WEIXIN_TOKEN=your-bot-token</pre>
+    </li>
+    <li><strong>启动网关：</strong>
+<pre class="pre">hermes gateway run</pre>
+      在微信中对话需要 <span class="warn">一直打开这个窗口</span>，关闭就会退出。
+    </li>
+  </ol>
+
+  <div class="important">⚠️ <strong>注意事项：</strong><br>
+    • 微信接入使用的是腾讯 <strong>iLink Bot API</strong>（个人微信），不是企业微信<br>
+    • 二维码登录连接的是 <strong>iLink bot identity</strong>，不是完整可控的普通个人微信号<br>
+    • 私聊通常更可靠；普通微信群消息可能不会被 iLink 传给 Hermes，群聊不通时不是配置一定错了<br>
+    • 通过长轮询接收消息，<strong>不需要公网服务器或 Webhook</strong><br>
+    • 建议用 <strong>备用微信号</strong>，避免影响个人号使用
+  </div>
+
+  <!-- ===================== FAQ ===================== -->
+  <div class="section-title">常见问题 FAQ</div>
+
+  <div class="faq">
+    <details>
+      <summary>Q1 · 安装脚本报错 <code>curl: command not found</code></summary>
+      <div class="faq-body">
+<pre class="pre"><span class="c"># Ubuntu / Debian / WSL</span>
+sudo apt update &amp;&amp; sudo apt install -y curl
+<span class="c"># macOS（通常已预装）</span>
+brew install curl</pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>Q2 · <code>hermes model</code> 中没有 "Custom endpoint" 选项</summary>
+      <div class="faq-body">
+        <pre class="pre">hermes update</pre>
+        <p>更新后重新运行 <code>hermes model</code>。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Q3 · 连接 XAI XAPI 时报错 401</summary>
+      <div class="faq-body">
+        <p>1. API Key 是否完整（以 <code>sk-</code> 开头，前后无空格）</p>
+        <p>2. Base URL 是否正确：<code>https://api-xai.ainaibahub.com/v1</code></p>
+        <p>3. 子账户是否已启用且有余额</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Q4 · 启动时提示 "context window too small"</summary>
+      <div class="faq-body">
+        <p>换一个上下文更大的模型，推荐 <code>gpt-5.4</code>（1M）或 <code>gemini-2.5-pro</code>（2M）。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Q5 · WSL 中网络很慢 / 无法连接</summary>
+      <div class="faq-body">
+<pre class="pre">export http_proxy=$https_proxy
+export https_proxy=http://$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):你的代理端口</pre>
+        <p>或者关掉 Windows 上的代理后重试。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Q6 · 想从 OpenClaw 迁移到 Hermes</summary>
+      <div class="faq-body">
+<pre class="pre"><span class="c"># 预览会迁移什么</span>
+hermes claw migrate --dry-run
+<span class="c"># 执行迁移</span>
+hermes claw migrate</pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>Q7 · 如何让 Hermes 在后台持久运行？</summary>
+      <div class="faq-body">
+<pre class="pre"><span class="c"># 启动网关（后台运行）</span>
+hermes gateway start
+<span class="c"># 或使用 systemd（Linux）</span>
+hermes gateway install-service</pre>
+      </div>
+    </details>
+  </div>
+
+  <!-- ===================== 检查清单 ===================== -->
+  <div class="section-title">附录 · 注意事项清单</div>
+
+  <div class="check">
+    <h4>⚙️ 安装相关</h4>
+    <ul>
+      <li>Windows 用户已安装 WSL2 并确认版本为 2</li>
+      <li>一键安装脚本已成功执行</li>
+      <li><code>hermes doctor</code> 全部通过</li>
+    </ul>
+
+    <h4>🔌 配置相关</h4>
+    <ul>
+      <li>Base URL 填写为 <code>https://api-xai.ainaibahub.com/v1</code>（注意有 <code>/v1</code>）</li>
+      <li>API Key 已正确填写（<code>sk-</code> 开头）</li>
+      <li>选择的模型上下文不低于 64K</li>
+    </ul>
+
+    <h4>🧪 验证相关</h4>
+    <ul>
+      <li><code>hermes</code> 能正常启动并显示欢迎界面</li>
+      <li>发送测试消息能收到正常回复</li>
+      <li><code>hermes status</code> 显示正确的模型和供应商信息</li>
+    </ul>
+  </div>
+
+  <p class="credit">📬 还有问题？欢迎联系 <strong>XAI XAPI 客服团队</strong>，或前往 <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">Hermes 官方文档</a> 查阅更多信息。</p>
+
+  <footer class="footer">
+    <a href="/">← 返回首页</a>
+  </footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+README.md
+DEPLOY.md
+.env.example
+
+# 本地开发工具 / Phase 1 CLI，不部署到 Vercel
+tools/
+
+# 内部 PRD / memo / 测试占位，绝不发布
+memory/
+
+# 工具脚本（本地数据更新用）
+scripts/

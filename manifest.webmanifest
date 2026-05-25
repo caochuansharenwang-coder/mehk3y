@@ -1,0 +1,33 @@
+{
+  "name": "Mehk3y — 个人工具集",
+  "short_name": "Mehk3y",
+  "description": "加密链上工具 · IP 检测 · eSIM / OpenEUICC · giffgaff · Apple 礼品卡 · Hermes Agent",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#0d0d0d",
+  "lang": "zh-CN",
+  "categories": ["utilities", "finance", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png?v=2",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png?v=2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

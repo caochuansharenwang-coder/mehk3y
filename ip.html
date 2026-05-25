@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Mehk3y — IP 检测</title>
+  <meta name="description" content="检测当前 IP 是否适合使用 Claude，识别代理、VPN、数据中心及浏览器指纹。">
+  <meta property="og:title" content="Mehk3y — IP 检测">
+  <meta property="og:description" content="信任评分 · VPN/代理识别 · 数据中心识别 · 浏览器指纹">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mehk3y.com/ip">
+  <meta property="og:image" content="https://mehk3y.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Mehk3y">
+  <meta name="twitter:image" content="https://mehk3y.com/og-image.png">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://mehk3y.com/ip">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="stylesheet" href="/common.css">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/theme.js"></script>
+  <link rel="preload" as="script" href="/common.js">
+  <link rel="preload" as="script" href="/ip.js">
+  <link rel="dns-prefetch" href="https://cloudflare-dns.com">
+  <link rel="dns-prefetch" href="https://one.one.one.one">
+  <link rel="dns-prefetch" href="https://ipwho.is">
+  <link rel="dns-prefetch" href="https://free.freeipapi.com">
+  <link rel="dns-prefetch" href="https://claude.ai">
+  <link rel="dns-prefetch" href="https://www.anthropic.com">
+  <link rel="dns-prefetch" href="https://status.claude.com">
+  <link rel="preconnect" href="https://cloudflare-dns.com" crossorigin>
+  <link rel="preconnect" href="https://one.one.one.one" crossorigin>
+  <link rel="preconnect" href="https://ipwho.is" crossorigin>
+  <link rel="preconnect" href="https://free.freeipapi.com" crossorigin>
+  <link rel="preconnect" href="https://claude.ai" crossorigin>
+  <link rel="preconnect" href="https://www.anthropic.com" crossorigin>
+  <link rel="preconnect" href="https://status.claude.com" crossorigin>
+  <style>
+    .wrap { max-width: 680px; }
+    .hdr  { align-items: baseline; margin-bottom: 16px; }
+    .card { padding: 14px 16px; }
+    .btn  { display: block; margin: 14px auto 0; padding: 8px 24px; border: 1.5px solid var(--border); border-radius: 99px; background: var(--bg); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn:hover    { background: var(--surface); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    code { font-family: "SF Mono", "Fira Code", monospace; }
+    @media (max-width: 500px) { .wrap { padding: 18px 14px 40px; } }
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">跳到内容</a>
+<div class="site-top"><button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题"><svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button></div>
+<main class="wrap" id="main">
+  <header class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="hdr-back">←</a>
+      <a href="/" class="hdr-name">Mehk3y</a>
+      <span class="hdr-sub">IP 检测</span>
+    </div>
+  </header>
+  <div class="divider"></div>
+  <div id="result"></div>
+  <button class="btn" id="retry-btn" disabled>重新检测</button>
+  <div class="footer"><a href="/">← 返回首页</a></div>
+</main>
+<script src="/common.js" defer></script>
+<script src="/ip.js" defer></script>
+</body>
+</html>
