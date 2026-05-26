@@ -17,7 +17,7 @@
     String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // —— Load data —— //
-  const SESSION_KEY = 'english_data_v1';
+  const SESSION_KEY = 'english_data_v2';
   async function loadData() {
     try {
       const cached = sessionStorage.getItem(SESSION_KEY);
@@ -47,7 +47,7 @@
         <div class="word-row">
           <div class="word">${esc(w.w)}</div>
           ${ipaHtml}
-          <button class="speak" data-text="${esc(w.w)}" data-rate="0.85" aria-label="读单词">${SPEAKER_SVG}</button>
+          <button class="speak" data-text="${esc(w.w)}" data-rate="0.85" aria-label="读单词" style="margin-left:auto">${SPEAKER_SVG}</button>
         </div>
         <span class="tag">${TAGS[w.c]}</span>
       </div>
