@@ -39,10 +39,14 @@
         return `<button class="syn" data-syn="${esc(s)}" data-main="${esc(w.w)}"><span class="syn-word">${esc(s)}</span>${zh}</button>`;
       })
       .join('');
+    const ipaUk = w.ipa_uk ? esc(w.ipa_uk) : '';
+    const ipaUs = w.ipa_us ? esc(w.ipa_us) : '';
+    const ipaHtml = ipaUk ? `<span class="ipa" data-uk="${ipaUk}" data-us="${ipaUs}">${ipaUk}</span>` : '';
     return `<article class="card" data-cat="${w.c}" data-w="${esc(w.w)}">
       <div class="card-head">
         <div class="word-row">
           <div class="word">${esc(w.w)}</div>
+          ${ipaHtml}
           <button class="speak" data-text="${esc(w.w)}" data-rate="0.85" aria-label="读单词">${SPEAKER_SVG}</button>
         </div>
         <span class="tag">${TAGS[w.c]}</span>
@@ -239,6 +243,10 @@
         b.classList.add('active');
         audioSource = b.dataset.src;
         stopSpeaking();
+        const isUs = audioSource === 'youdao-us';
+        document.querySelectorAll('.ipa').forEach((el) => {
+          el.textContent = isUs ? el.dataset.us : el.dataset.uk;
+        });
       });
     });
   }

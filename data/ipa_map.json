@@ -1,0 +1,3402 @@
+{
+  "come": {
+    "uk": "/kʌm/",
+    "us": "/kʌm/"
+  },
+  "get": {
+    "uk": "/ɡɛt/",
+    "us": "/ɡɛt/"
+  },
+  "give": {
+    "uk": "/ɡɪv/",
+    "us": "/ɡɪv/"
+  },
+  "go": {
+    "uk": "/ɡəʊ/",
+    "us": "/ɡoʊ/"
+  },
+  "keep": {
+    "uk": "/kiːp/",
+    "us": "/kip/"
+  },
+  "let": {
+    "uk": "/lɛt/",
+    "us": "/lɛt/"
+  },
+  "make": {
+    "uk": "/meɪk/",
+    "us": "/meɪk/"
+  },
+  "put": {
+    "uk": "/pʊt/",
+    "us": "/pʊt/"
+  },
+  "seem": {
+    "uk": "/siːm/",
+    "us": "/sim/"
+  },
+  "take": {
+    "uk": "/teɪk/",
+    "us": "/teɪk/"
+  },
+  "be": {
+    "uk": "/bɪ/",
+    "us": "/bi/"
+  },
+  "do": {
+    "uk": "/duː/",
+    "us": "/du/"
+  },
+  "have": {
+    "uk": "/hæv/, /həv/",
+    "us": "/hæv/, /həv/"
+  },
+  "say": {
+    "uk": "/seɪ/",
+    "us": "/seɪ/"
+  },
+  "see": {
+    "uk": "/siː/",
+    "us": "/si/"
+  },
+  "send": {
+    "uk": "/sɛnd/",
+    "us": "/sɛnd/"
+  },
+  "may": {
+    "uk": "/meɪ/",
+    "us": "/meɪ/"
+  },
+  "will": {
+    "uk": "/wɪl/, /wəl/",
+    "us": "/wɪl/, /wəl/"
+  },
+  "about": {
+    "uk": "/əˈbaʊt/",
+    "us": "/əˈbaʊt/"
+  },
+  "across": {
+    "uk": "/əˈkɹɒs/",
+    "us": "/əˈkɹɔs/"
+  },
+  "after": {
+    "uk": "/ˈɑːftə/",
+    "us": "/ˈæftɝ/"
+  },
+  "against": {
+    "uk": "/əˈɡenst/, /əˈɡeɪnst/",
+    "us": "/əˈɡenst/, /əˈɡeɪnst/"
+  },
+  "among": {
+    "uk": "/əˈmʌŋ/",
+    "us": "/əˈmʌŋ/"
+  },
+  "at": {
+    "uk": "/æt/, /ət/",
+    "us": "/æt/, /ət/"
+  },
+  "before": {
+    "uk": "/bɪˈfɔː/",
+    "us": "/ˌbiˈfɔɹ/"
+  },
+  "between": {
+    "uk": "/bɪˈtwiːn/",
+    "us": "/bitˈwin/"
+  },
+  "by": {
+    "uk": "/baɪ/",
+    "us": "/baɪ/"
+  },
+  "down": {
+    "uk": "/daʊn/",
+    "us": "/daʊn/"
+  },
+  "from": {
+    "uk": "/frɒm/, /frəm/",
+    "us": "/frəm/"
+  },
+  "in": {
+    "uk": "/ɪn/",
+    "us": "/ɪn/"
+  },
+  "off": {
+    "uk": "/ɒf/",
+    "us": "/ɔf/"
+  },
+  "on": {
+    "uk": "/ɒn/",
+    "us": "/ɑn/"
+  },
+  "over": {
+    "uk": "/ˈəʊvə/",
+    "us": "/ˈoʊvɝ/"
+  },
+  "through": {
+    "uk": "/θɹuː/",
+    "us": "/θɹu/"
+  },
+  "to": {
+    "uk": "/tuː/, /tə/",
+    "us": "/tu/, /tə/"
+  },
+  "under": {
+    "uk": "/ˈʌndə/",
+    "us": "/ˈʌndɝ/"
+  },
+  "up": {
+    "uk": "/ʌp/",
+    "us": "/ʌp/"
+  },
+  "with": {
+    "uk": "/wɪð/",
+    "us": "/wɪð/, /wɪθ/"
+  },
+  "as": {
+    "uk": "/æz/, /əz/",
+    "us": "/æz/, /əz/"
+  },
+  "for": {
+    "uk": "/fɔː/, /fə/",
+    "us": "/fɔɹ/, /fɚ/"
+  },
+  "of": {
+    "uk": "/ɒv/, /əv/",
+    "us": "/ʌv/, /əv/"
+  },
+  "till": {
+    "uk": "/tɪl/",
+    "us": "/tɪl/"
+  },
+  "than": {
+    "uk": "/ðæn/, /ðən/",
+    "us": "/ðæn/, /ðən/"
+  },
+  "a": {
+    "uk": "/ə/, /eɪ/",
+    "us": "/ə/, /eɪ/"
+  },
+  "the": {
+    "uk": "/ðə/, /ðiː/",
+    "us": "/ðə/, /ðiː/"
+  },
+  "all": {
+    "uk": "/ɔːl/",
+    "us": "/ɔl/"
+  },
+  "any": {
+    "uk": "/ˈɛni/",
+    "us": "/ˈɛni/"
+  },
+  "every": {
+    "uk": "/ˈɛvɹi/",
+    "us": "/ˈɛvɝi/"
+  },
+  "little": {
+    "uk": "/ˈlɪtəl/",
+    "us": "/ˈlɪtəl/"
+  },
+  "much": {
+    "uk": "/mʌtʃ/",
+    "us": "/mʌtʃ/"
+  },
+  "no": {
+    "uk": "/nəʊ/",
+    "us": "/noʊ/"
+  },
+  "other": {
+    "uk": "/ˈʌðə/",
+    "us": "/ˈʌðɝ/"
+  },
+  "some": {
+    "uk": "/sʌm/",
+    "us": "/sʌm/"
+  },
+  "such": {
+    "uk": "/sʌtʃ/",
+    "us": "/sʌtʃ/"
+  },
+  "that": {
+    "uk": "/ðæt/, /ðət/",
+    "us": "/ðæt/, /ðət/"
+  },
+  "this": {
+    "uk": "/ðɪs/",
+    "us": "/ðɪs/"
+  },
+  "I": {
+    "uk": "/aɪ/",
+    "us": "/aɪ/"
+  },
+  "he": {
+    "uk": "/hiː/, /hi/",
+    "us": "/hi/"
+  },
+  "you": {
+    "uk": "/juː/, /jə/",
+    "us": "/ju/, /jə/"
+  },
+  "who": {
+    "uk": "/huː/",
+    "us": "/hu/"
+  },
+  "and": {
+    "uk": "/ænd/, /ənd/",
+    "us": "/ænd/, /ənd/"
+  },
+  "because": {
+    "uk": "/bɪˈkɒz/",
+    "us": "/bɪˈkɑz/"
+  },
+  "but": {
+    "uk": "/bʌt/",
+    "us": "/bʌt/"
+  },
+  "or": {
+    "uk": "/ɔː/",
+    "us": "/ɔɹ/, /ɚ/"
+  },
+  "if": {
+    "uk": "/ɪf/",
+    "us": "/ɪf/"
+  },
+  "though": {
+    "uk": "/ðəʊ/",
+    "us": "/ðoʊ/"
+  },
+  "while": {
+    "uk": "/waɪl/",
+    "us": "/waɪl/"
+  },
+  "how": {
+    "uk": "/haʊ/",
+    "us": "/haʊ/"
+  },
+  "when": {
+    "uk": "/wen/",
+    "us": "/wɛn/"
+  },
+  "where": {
+    "uk": "/weə/",
+    "us": "/wɛɹ/"
+  },
+  "why": {
+    "uk": "/waɪ/",
+    "us": "/waɪ/"
+  },
+  "again": {
+    "uk": "/əˈɡen/, /əˈɡeɪn/",
+    "us": "/əˈɡen/, /əˈɡeɪn/"
+  },
+  "ever": {
+    "uk": "/ˈɛvə/",
+    "us": "/ˈɛvɝ/"
+  },
+  "far": {
+    "uk": "/fɑː/",
+    "us": "/fɑɹ/"
+  },
+  "forward": {
+    "uk": "/ˈfɔːwəd/",
+    "us": "/ˈfɔɹwɝd/"
+  },
+  "here": {
+    "uk": "/hɪə/",
+    "us": "/hiɹ/"
+  },
+  "near": {
+    "uk": "/nɪə/",
+    "us": "/nɪɹ/"
+  },
+  "now": {
+    "uk": "/naʊ/",
+    "us": "/naʊ/"
+  },
+  "out": {
+    "uk": "/aʊt/",
+    "us": "/aʊt/"
+  },
+  "still": {
+    "uk": "/stɪl/",
+    "us": "/stɪl/"
+  },
+  "then": {
+    "uk": "/ðɛn/",
+    "us": "/ðɛn/"
+  },
+  "there": {
+    "uk": "/ðɛə/",
+    "us": "/ðɛɹ/"
+  },
+  "together": {
+    "uk": "/təˈɡɛðə/",
+    "us": "/təˈɡɛðɝ/"
+  },
+  "well": {
+    "uk": "/wɛl/",
+    "us": "/wɛl/"
+  },
+  "almost": {
+    "uk": "/ˈɔːlməʊst/",
+    "us": "/ˈɔlmoʊst/"
+  },
+  "enough": {
+    "uk": "/ɪˈnʌf/",
+    "us": "/iˈnʌf/"
+  },
+  "even": {
+    "uk": "/ˈiːvən/",
+    "us": "/ˈivɪn/"
+  },
+  "not": {
+    "uk": "/nɒt/",
+    "us": "/nɑt/"
+  },
+  "only": {
+    "uk": "/ˈəʊnli/",
+    "us": "/ˈoʊnli/"
+  },
+  "quite": {
+    "uk": "/kwaɪt/",
+    "us": "/kwaɪt/"
+  },
+  "so": {
+    "uk": "/səʊ/",
+    "us": "/soʊ/"
+  },
+  "very": {
+    "uk": "/ˈvɛɹi/",
+    "us": "/ˈvɛɹi/"
+  },
+  "tomorrow": {
+    "uk": "/təˈmɒˌɹəʊ/",
+    "us": "/təˈmɑˌɹoʊ/"
+  },
+  "yesterday": {
+    "uk": "/ˈjɛstədi/",
+    "us": "/ˈjɛstɝˌdeɪ/"
+  },
+  "north": {
+    "uk": "/nɔːθ/",
+    "us": "/nɔɹθ/"
+  },
+  "south": {
+    "uk": "/saʊθ/",
+    "us": "/saʊθ/"
+  },
+  "east": {
+    "uk": "/iːst/",
+    "us": "/ist/"
+  },
+  "west": {
+    "uk": "/wɛst/",
+    "us": "/wɛst/"
+  },
+  "please": {
+    "uk": "/pliːz/",
+    "us": "/pliz/"
+  },
+  "yes": {
+    "uk": "/jɛs/",
+    "us": "/jɛs/"
+  },
+  "account": {
+    "uk": "/əˈkaʊnt/",
+    "us": "/əˈkaʊnt/"
+  },
+  "act": {
+    "uk": "/ækt/",
+    "us": "/ækt/"
+  },
+  "addition": {
+    "uk": "/əˈdɪʃən/",
+    "us": "/əˈdɪʃən/"
+  },
+  "adjustment": {
+    "uk": "/əˈdʒʌstmənt/",
+    "us": "/əˈdʒʌstmənt/"
+  },
+  "advertisement": {
+    "uk": "/əˈdvɜːtɪsmənt/",
+    "us": "/ˌædvɝˈtaɪzmənt/"
+  },
+  "agreement": {
+    "uk": "/əˈɡɹiːmənt/",
+    "us": "/əˈɡɹimənt/"
+  },
+  "air": {
+    "uk": "/ɛə/",
+    "us": "/ɛɹ/"
+  },
+  "amount": {
+    "uk": "/əˈmaʊnt/",
+    "us": "/əˈmaʊnt/"
+  },
+  "amusement": {
+    "uk": "/əˈmjuːzmənt/",
+    "us": "/əmˈjuzmənt/"
+  },
+  "animal": {
+    "uk": "/ˈænɪməl/",
+    "us": "/ˈænəməl/"
+  },
+  "answer": {
+    "uk": "/ˈɑːnsə/",
+    "us": "/ˈænsɝ/"
+  },
+  "apparatus": {
+    "uk": "/ˌæpəˈɹætəs/",
+    "us": "/ˌæpɝˈætəs/"
+  },
+  "approval": {
+    "uk": "/əˈpɹuːvəl/",
+    "us": "/əˈpɹuvəl/"
+  },
+  "argument": {
+    "uk": "/ˈɑːɡjʊmənt/",
+    "us": "/ˈɑɹɡjəmənt/"
+  },
+  "art": {
+    "uk": "/ɑːt/",
+    "us": "/ɑɹt/"
+  },
+  "attack": {
+    "uk": "/əˈtæk/",
+    "us": "/əˈtæk/"
+  },
+  "attempt": {
+    "uk": "/əˈtɛmpt/",
+    "us": "/əˈtɛmpt/"
+  },
+  "attention": {
+    "uk": "/əˈtɛnʃən/",
+    "us": "/əˈtɛnʃən/"
+  },
+  "attraction": {
+    "uk": "/əˈtɹækʃən/",
+    "us": "/əˈtɹækʃən/"
+  },
+  "authority": {
+    "uk": "/ɔːˈθɒɹɪti/",
+    "us": "/əˈθɔɹəti/"
+  },
+  "back": {
+    "uk": "/bæk/",
+    "us": "/bæk/"
+  },
+  "balance": {
+    "uk": "/ˈbæləns/",
+    "us": "/ˈbæləns/"
+  },
+  "base": {
+    "uk": "/beɪs/",
+    "us": "/beɪs/"
+  },
+  "behavior": {
+    "uk": "/bɪˈheɪvjə/",
+    "us": "/bɪˈheɪvjɝ/"
+  },
+  "belief": {
+    "uk": "/bɪˈliːf/",
+    "us": "/bɪˈlif/"
+  },
+  "birth": {
+    "uk": "/bɜːθ/",
+    "us": "/bɝθ/"
+  },
+  "bit": {
+    "uk": "/bɪt/",
+    "us": "/bɪt/"
+  },
+  "bite": {
+    "uk": "/baɪt/",
+    "us": "/baɪt/"
+  },
+  "blood": {
+    "uk": "/blʌd/",
+    "us": "/blʌd/"
+  },
+  "blow": {
+    "uk": "/bləʊ/",
+    "us": "/bloʊ/"
+  },
+  "body": {
+    "uk": "/ˈbɒdi/",
+    "us": "/ˈbɑdi/"
+  },
+  "brass": {
+    "uk": "/bɹɑːs/",
+    "us": "/bɹæs/"
+  },
+  "bread": {
+    "uk": "/bɹɛd/",
+    "us": "/bɹɛd/"
+  },
+  "breath": {
+    "uk": "/bɹɛθ/",
+    "us": "/bɹɛθ/"
+  },
+  "brother": {
+    "uk": "/ˈbɹʌðə/",
+    "us": "/ˈbɹʌðɝ/"
+  },
+  "building": {
+    "uk": "/ˈbɪldɪŋ/",
+    "us": "/ˈbɪldɪŋ/"
+  },
+  "burn": {
+    "uk": "/bɜːn/",
+    "us": "/bɝn/"
+  },
+  "burst": {
+    "uk": "/bɜːst/",
+    "us": "/bɝst/"
+  },
+  "business": {
+    "uk": "/ˈbɪznɪs/",
+    "us": "/ˈbɪznəs/"
+  },
+  "butter": {
+    "uk": "/ˈbʌtə/",
+    "us": "/ˈbʌtɝ/"
+  },
+  "canvas": {
+    "uk": "/ˈkænvəs/",
+    "us": "/ˈkænvəs/"
+  },
+  "care": {
+    "uk": "/kɛə/",
+    "us": "/kɛɹ/"
+  },
+  "cause": {
+    "uk": "/kɔːz/",
+    "us": "/kɑz/"
+  },
+  "chalk": {
+    "uk": "/tʃɔːk/",
+    "us": "/tʃɑk/"
+  },
+  "chance": {
+    "uk": "/tʃɑːns/",
+    "us": "/tʃæns/"
+  },
+  "change": {
+    "uk": "/tʃeɪndʒ/",
+    "us": "/tʃeɪndʒ/"
+  },
+  "cloth": {
+    "uk": "/klɒθ/",
+    "us": "/klɔθ/"
+  },
+  "coal": {
+    "uk": "/kəʊl/",
+    "us": "/koʊl/"
+  },
+  "color": {
+    "uk": "/ˈkʌlə/",
+    "us": "/ˈkʌlɝ/"
+  },
+  "comfort": {
+    "uk": "/ˈkʌmfət/",
+    "us": "/ˈkʌmfɝt/"
+  },
+  "committee": {
+    "uk": "/kəˈmɪti/",
+    "us": "/kəˈmɪti/"
+  },
+  "company": {
+    "uk": "/ˈkʌmpəni/",
+    "us": "/ˈkʌmpəˌni/"
+  },
+  "comparison": {
+    "uk": "/kəˈmpæɹɪsən/",
+    "us": "/kəmˈpɛɹəsən/"
+  },
+  "competition": {
+    "uk": "/ˌkɒmpɪˈtɪʃən/",
+    "us": "/ˌkɑmpəˈtɪʃən/"
+  },
+  "condition": {
+    "uk": "/kəˈndɪʃən/",
+    "us": "/kənˈdɪʃən/"
+  },
+  "connection": {
+    "uk": "/kəˈnɛkʃən/",
+    "us": "/kəˈnɛkʃən/"
+  },
+  "control": {
+    "uk": "/kəˈntɹəʊl/",
+    "us": "/kənˈtɹoʊl/"
+  },
+  "cook": {
+    "uk": "/kʊk/",
+    "us": "/kʊk/"
+  },
+  "copper": {
+    "uk": "/ˈkɒpə/",
+    "us": "/ˈkɑpɝ/"
+  },
+  "copy": {
+    "uk": "/ˈkɒpi/",
+    "us": "/ˈkɑpi/"
+  },
+  "cork": {
+    "uk": "/kɔːk/",
+    "us": "/kɔɹk/"
+  },
+  "cotton": {
+    "uk": "/ˈkɒtən/",
+    "us": "/ˈkɑtən/"
+  },
+  "cough": {
+    "uk": "/kɒf/",
+    "us": "/kɑf/"
+  },
+  "country": {
+    "uk": "/ˈkʌntɹi/",
+    "us": "/ˈkʌntɹi/"
+  },
+  "cover": {
+    "uk": "/ˈkʌvə/",
+    "us": "/ˈkʌvɝ/"
+  },
+  "crack": {
+    "uk": "/kɹæk/",
+    "us": "/kɹæk/"
+  },
+  "credit": {
+    "uk": "/ˈkɹɛdɪt/",
+    "us": "/ˈkɹɛdət/"
+  },
+  "crime": {
+    "uk": "/kɹaɪm/",
+    "us": "/kɹaɪm/"
+  },
+  "crush": {
+    "uk": "/kɹʌʃ/",
+    "us": "/kɹʌʃ/"
+  },
+  "cry": {
+    "uk": "/kɹaɪ/",
+    "us": "/kɹaɪ/"
+  },
+  "current": {
+    "uk": "/ˈkʌɹənt/",
+    "us": "/ˈkɑɹənt/"
+  },
+  "curve": {
+    "uk": "/kɜːv/",
+    "us": "/kɝv/"
+  },
+  "damage": {
+    "uk": "/ˈdæmɪdʒ/",
+    "us": "/ˈdæmədʒ/"
+  },
+  "danger": {
+    "uk": "/ˈdeɪndʒə/",
+    "us": "/ˈdeɪndʒɝ/"
+  },
+  "daughter": {
+    "uk": "/ˈdɔːtə/",
+    "us": "/ˈdɔtɝ/"
+  },
+  "day": {
+    "uk": "/deɪ/",
+    "us": "/deɪ/"
+  },
+  "death": {
+    "uk": "/dɛθ/",
+    "us": "/dɛθ/"
+  },
+  "debt": {
+    "uk": "/dɛt/",
+    "us": "/dɛt/"
+  },
+  "decision": {
+    "uk": "/dɪˈsɪʒən/",
+    "us": "/dɪˈsɪʒən/"
+  },
+  "degree": {
+    "uk": "/dɪˈɡɹiː/",
+    "us": "/dɪˈɡɹi/"
+  },
+  "design": {
+    "uk": "/dɪˈzaɪn/",
+    "us": "/dɪˈzaɪn/"
+  },
+  "desire": {
+    "uk": "/dɪˈzaɪə/",
+    "us": "/dɪˈzaɪɝ/"
+  },
+  "destruction": {
+    "uk": "/dɪˈstɹʌkʃən/",
+    "us": "/dɪˈstɹʌkʃən/"
+  },
+  "detail": {
+    "uk": "/ˈdiːteɪl/",
+    "us": "/ˈditeɪl/"
+  },
+  "development": {
+    "uk": "/dɪˈvɛləpmənt/",
+    "us": "/dɪˈvɛləpmənt/"
+  },
+  "digestion": {
+    "uk": "/daɪˈdʒɛstʃən/",
+    "us": "/daɪˈdʒɛstʃən/"
+  },
+  "direction": {
+    "uk": "/daɪˈɹɛkʃən/",
+    "us": "/daɪˈɹɛkʃɪn/"
+  },
+  "discovery": {
+    "uk": "/dɪˈskʌvɹi/",
+    "us": "/ˌdɪsˈkʌvɹi/"
+  },
+  "discussion": {
+    "uk": "/dɪˈskʌʃən/",
+    "us": "/dɪˈskʌʃən/"
+  },
+  "disease": {
+    "uk": "/dɪˈziːz/",
+    "us": "/dɪˈziz/"
+  },
+  "disgust": {
+    "uk": "/dɪˈsɡʌst/",
+    "us": "/dɪsˈɡʌst/"
+  },
+  "distance": {
+    "uk": "/ˈdɪstəns/",
+    "us": "/ˈdɪstəns/"
+  },
+  "distribution": {
+    "uk": "/ˌdɪstɹɪˈbjuːʃən/",
+    "us": "/ˌdɪstɹəbˈjuʃən/"
+  },
+  "division": {
+    "uk": "/dɪˈvɪʒən/",
+    "us": "/dɪˈvɪʒən/"
+  },
+  "doubt": {
+    "uk": "/daʊt/",
+    "us": "/daʊt/"
+  },
+  "drink": {
+    "uk": "/dɹɪŋk/",
+    "us": "/dɹɪŋk/"
+  },
+  "driving": {
+    "uk": "/ˈdɹaɪvɪŋ/",
+    "us": "/ˈdɹaɪvɪŋ/"
+  },
+  "dust": {
+    "uk": "/dʌst/",
+    "us": "/dʌst/"
+  },
+  "earth": {
+    "uk": "/ɜːθ/",
+    "us": "/ɝθ/"
+  },
+  "edge": {
+    "uk": "/ɛdʒ/",
+    "us": "/ɛdʒ/"
+  },
+  "education": {
+    "uk": "/ˌɛdjʊˈkeɪʃən/",
+    "us": "/ˌɛdʒəˈkeɪʃən/"
+  },
+  "effect": {
+    "uk": "/ɪˈfɛkt/",
+    "us": "/ˈifɛkt/"
+  },
+  "end": {
+    "uk": "/ɛnd/",
+    "us": "/ɛnd/"
+  },
+  "error": {
+    "uk": "/ˈɛɹə/",
+    "us": "/ˈɛɹɝ/"
+  },
+  "event": {
+    "uk": "/ɪˈvɛnt/",
+    "us": "/iˈvɛnt/"
+  },
+  "example": {
+    "uk": "/ɪˈɡzɑːmpəl/",
+    "us": "/ɪɡˈzæmpəl/"
+  },
+  "exchange": {
+    "uk": "/ɪˈkstʃeɪndʒ/",
+    "us": "/ɪksˈtʃeɪndʒ/"
+  },
+  "existence": {
+    "uk": "/ɛˈɡzɪstəns/",
+    "us": "/ɛɡˈzɪstəns/"
+  },
+  "expansion": {
+    "uk": "/ɪˈkspænʃən/",
+    "us": "/ɪkˈspænʃən/"
+  },
+  "experience": {
+    "uk": "/ɪˈkspɪəɹɪəns/",
+    "us": "/ɪkˈspɪɹiəns/"
+  },
+  "expert": {
+    "uk": "/ˈɛkspɜːt/",
+    "us": "/ˈɛkspɝt/"
+  },
+  "fact": {
+    "uk": "/fækt/",
+    "us": "/fækt/"
+  },
+  "fall": {
+    "uk": "/fɔːl/",
+    "us": "/fɑl/"
+  },
+  "family": {
+    "uk": "/ˈfæmli/",
+    "us": "/ˈfæməli/"
+  },
+  "father": {
+    "uk": "/ˈfɑːðə/",
+    "us": "/ˈfɑðɝ/"
+  },
+  "fear": {
+    "uk": "/fɪə/",
+    "us": "/fɪɹ/"
+  },
+  "feeling": {
+    "uk": "/ˈfiːlɪŋ/",
+    "us": "/ˈfilɪŋ/"
+  },
+  "fiction": {
+    "uk": "/ˈfɪkʃən/",
+    "us": "/ˈfɪkʃən/"
+  },
+  "field": {
+    "uk": "/fiːld/",
+    "us": "/fild/"
+  },
+  "fight": {
+    "uk": "/faɪt/",
+    "us": "/faɪt/"
+  },
+  "fire": {
+    "uk": "/ˈfaɪə/",
+    "us": "/ˈfaɪɝ/"
+  },
+  "flame": {
+    "uk": "/fleɪm/",
+    "us": "/fleɪm/"
+  },
+  "flight": {
+    "uk": "/flaɪt/",
+    "us": "/flaɪt/"
+  },
+  "flower": {
+    "uk": "/ˈflaʊə/",
+    "us": "/ˈflaʊɝ/"
+  },
+  "fold": {
+    "uk": "/fəʊld/",
+    "us": "/foʊld/"
+  },
+  "food": {
+    "uk": "/fuːd/",
+    "us": "/fud/"
+  },
+  "force": {
+    "uk": "/fɔːs/",
+    "us": "/fɔɹs/"
+  },
+  "form": {
+    "uk": "/fɔːm/",
+    "us": "/fɔɹm/"
+  },
+  "friend": {
+    "uk": "/fɹɛnd/",
+    "us": "/fɹɛnd/"
+  },
+  "front": {
+    "uk": "/fɹʌnt/",
+    "us": "/fɹʌnt/"
+  },
+  "fruit": {
+    "uk": "/fɹuːt/",
+    "us": "/fɹut/"
+  },
+  "glass": {
+    "uk": "/ɡlɑːs/",
+    "us": "/ɡlæs/"
+  },
+  "gold": {
+    "uk": "/ɡəʊld/",
+    "us": "/ɡoʊld/"
+  },
+  "government": {
+    "uk": "/ˈɡʌvəmənt/",
+    "us": "/ˈɡʌvɝmənt/"
+  },
+  "grain": {
+    "uk": "/ɡɹeɪn/",
+    "us": "/ɡɹeɪn/"
+  },
+  "grass": {
+    "uk": "/ɡɹɑːs/",
+    "us": "/ɡɹæs/"
+  },
+  "grip": {
+    "uk": "/ɡɹɪp/",
+    "us": "/ɡɹɪp/"
+  },
+  "group": {
+    "uk": "/ɡɹuːp/",
+    "us": "/ɡɹup/"
+  },
+  "growth": {
+    "uk": "/ɡɹəʊθ/",
+    "us": "/ɡɹoʊθ/"
+  },
+  "guide": {
+    "uk": "/ɡaɪd/",
+    "us": "/ɡaɪd/"
+  },
+  "harbor": {
+    "uk": "/ˈhɑːbə/",
+    "us": "/ˈhɑɹbɝ/"
+  },
+  "harmony": {
+    "uk": "/ˈhɑːməni/",
+    "us": "/ˈhɑɹməni/"
+  },
+  "hate": {
+    "uk": "/heɪt/",
+    "us": "/heɪt/"
+  },
+  "hearing": {
+    "uk": "/ˈhɪəɹɪŋ/",
+    "us": "/ˈhiɹɪŋ/"
+  },
+  "heat": {
+    "uk": "/hiːt/",
+    "us": "/hit/"
+  },
+  "help": {
+    "uk": "/hɛlp/",
+    "us": "/hɛlp/"
+  },
+  "history": {
+    "uk": "/ˈhɪstɹi/",
+    "us": "/ˈhɪstɝi/"
+  },
+  "hole": {
+    "uk": "/həʊl/",
+    "us": "/hoʊl/"
+  },
+  "hope": {
+    "uk": "/həʊp/",
+    "us": "/hoʊp/"
+  },
+  "hour": {
+    "uk": "/ˈaʊə/",
+    "us": "/ˈaʊɝ/"
+  },
+  "humor": {
+    "uk": "/ˈhjuːmə/",
+    "us": "/ˈhjumɝ/"
+  },
+  "ice": {
+    "uk": "/aɪs/",
+    "us": "/aɪs/"
+  },
+  "idea": {
+    "uk": "/aɪˈdɪə/",
+    "us": "/aɪˈdiə/"
+  },
+  "impulse": {
+    "uk": "/ˈɪmpʌls/",
+    "us": "/ˈɪmpəls/"
+  },
+  "increase": {
+    "uk": "/ˈɪŋkɹiːs/",
+    "us": "/ˈɪnˌkɹis/"
+  },
+  "industry": {
+    "uk": "/ˈɪndəstɹi/",
+    "us": "/ˈɪndəstɹi/"
+  },
+  "ink": {
+    "uk": "/ɪŋk/",
+    "us": "/ɪŋk/"
+  },
+  "insect": {
+    "uk": "/ˈɪˌnsɛkt/",
+    "us": "/ˈɪnˌsɛkt/"
+  },
+  "instrument": {
+    "uk": "/ˈɪnstɹəmənt/",
+    "us": "/ˈɪnstɹəmənt/"
+  },
+  "insurance": {
+    "uk": "/ɪˈnʃɔːɹəns/",
+    "us": "/ˌɪnˈʃʊɹəns/"
+  },
+  "interest": {
+    "uk": "/ˈɪntɹɪst/",
+    "us": "/ˈɪntɝəst/"
+  },
+  "invention": {
+    "uk": "/ɪˈnvɛnʃən/",
+    "us": "/ˌɪnˈvɛnʃən/"
+  },
+  "iron": {
+    "uk": "/ˈaɪən/",
+    "us": "/ˈaɪɝn/"
+  },
+  "jelly": {
+    "uk": "/ˈdʒɛli/",
+    "us": "/ˈdʒɛli/"
+  },
+  "join": {
+    "uk": "/dʒɔɪn/",
+    "us": "/dʒɔɪn/"
+  },
+  "journey": {
+    "uk": "/ˈdʒɜːni/",
+    "us": "/ˈdʒɝni/"
+  },
+  "judge": {
+    "uk": "/dʒʌdʒ/",
+    "us": "/dʒʌdʒ/"
+  },
+  "jump": {
+    "uk": "/dʒʌmp/",
+    "us": "/dʒʌmp/"
+  },
+  "kick": {
+    "uk": "/kɪk/",
+    "us": "/kɪk/"
+  },
+  "kiss": {
+    "uk": "/kɪs/",
+    "us": "/kɪs/"
+  },
+  "knowledge": {
+    "uk": "/ˈnɒlɪdʒ/",
+    "us": "/ˈnɑlədʒ/"
+  },
+  "land": {
+    "uk": "/lænd/",
+    "us": "/lænd/"
+  },
+  "language": {
+    "uk": "/ˈlæŋɡwɪdʒ/",
+    "us": "/ˈlæŋɡwədʒ/"
+  },
+  "laugh": {
+    "uk": "/lɑːf/",
+    "us": "/læf/"
+  },
+  "law": {
+    "uk": "/lɔː/",
+    "us": "/lɑ/"
+  },
+  "lead": {
+    "uk": "/led/",
+    "us": "/lɛd/"
+  },
+  "learning": {
+    "uk": "/ˈlɜːnɪŋ/",
+    "us": "/ˈlɝnɪŋ/"
+  },
+  "leather": {
+    "uk": "/ˈlɛðə/",
+    "us": "/ˈlɛðɝ/"
+  },
+  "letter": {
+    "uk": "/ˈlɛtə/",
+    "us": "/ˈlɛtɝ/"
+  },
+  "level": {
+    "uk": "/ˈlɛvəl/",
+    "us": "/ˈlɛvəl/"
+  },
+  "lift": {
+    "uk": "/lɪft/",
+    "us": "/lɪft/"
+  },
+  "light": {
+    "uk": "/laɪt/",
+    "us": "/laɪt/"
+  },
+  "limit": {
+    "uk": "/ˈlɪmɪt/",
+    "us": "/ˈlɪmət/"
+  },
+  "linen": {
+    "uk": "/ˈlɪnɪn/",
+    "us": "/ˈlɪnən/"
+  },
+  "liquid": {
+    "uk": "/ˈlɪkwɪd/",
+    "us": "/ˈlɪkwəd/"
+  },
+  "list": {
+    "uk": "/lɪst/",
+    "us": "/lɪst/"
+  },
+  "look": {
+    "uk": "/lʊk/",
+    "us": "/lʊk/"
+  },
+  "loss": {
+    "uk": "/lɒs/",
+    "us": "/lɔs/"
+  },
+  "love": {
+    "uk": "/lʌv/",
+    "us": "/lʌv/"
+  },
+  "machine": {
+    "uk": "/məˈʃiːn/",
+    "us": "/məˈʃin/"
+  },
+  "man": {
+    "uk": "/mæn/",
+    "us": "/mæn/"
+  },
+  "manager": {
+    "uk": "/ˈmænɪdʒə/",
+    "us": "/ˈmænədʒɝ/"
+  },
+  "mark": {
+    "uk": "/mɑːk/",
+    "us": "/mɑɹk/"
+  },
+  "market": {
+    "uk": "/ˈmɑːkɪt/",
+    "us": "/ˈmɑɹkət/"
+  },
+  "mass": {
+    "uk": "/mæs/",
+    "us": "/mæs/"
+  },
+  "meal": {
+    "uk": "/miːl/",
+    "us": "/mil/"
+  },
+  "measure": {
+    "uk": "/ˈmɛʒə/",
+    "us": "/ˈmɛʒɝ/"
+  },
+  "meat": {
+    "uk": "/miːt/",
+    "us": "/mit/"
+  },
+  "meeting": {
+    "uk": "/ˈmiːtɪŋ/",
+    "us": "/ˈmitɪŋ/"
+  },
+  "memory": {
+    "uk": "/ˈmɛməɹi/",
+    "us": "/ˈmɛmɝi/"
+  },
+  "metal": {
+    "uk": "/ˈmɛtəl/",
+    "us": "/ˈmɛtəl/"
+  },
+  "middle": {
+    "uk": "/ˈmɪdəl/",
+    "us": "/ˈmɪdəl/"
+  },
+  "milk": {
+    "uk": "/mɪlk/",
+    "us": "/mɪlk/"
+  },
+  "mind": {
+    "uk": "/maɪnd/",
+    "us": "/maɪnd/"
+  },
+  "mine": {
+    "uk": "/maɪn/",
+    "us": "/maɪn/"
+  },
+  "minute": {
+    "uk": "/ˈmɪnɪt/",
+    "us": "/ˈmɪnət/"
+  },
+  "mist": {
+    "uk": "/mɪst/",
+    "us": "/mɪst/"
+  },
+  "money": {
+    "uk": "/ˈmʌni/",
+    "us": "/ˈmʌni/"
+  },
+  "month": {
+    "uk": "/mʌnθ/",
+    "us": "/mʌnθ/"
+  },
+  "morning": {
+    "uk": "/ˈmɔːnɪŋ/",
+    "us": "/ˈmɔɹnɪŋ/"
+  },
+  "mother": {
+    "uk": "/ˈmʌðə/",
+    "us": "/ˈmʌðɝ/"
+  },
+  "motion": {
+    "uk": "/ˈməʊʃən/",
+    "us": "/ˈmoʊʃən/"
+  },
+  "mountain": {
+    "uk": "/ˈmaʊntɪn/",
+    "us": "/ˈmaʊntən/"
+  },
+  "move": {
+    "uk": "/muːv/",
+    "us": "/muv/"
+  },
+  "music": {
+    "uk": "/ˈmjuːzɪk/",
+    "us": "/ˈmjuzɪk/"
+  },
+  "name": {
+    "uk": "/neɪm/",
+    "us": "/neɪm/"
+  },
+  "nation": {
+    "uk": "/ˈneɪʃən/",
+    "us": "/ˈneɪʃən/"
+  },
+  "need": {
+    "uk": "/niːd/",
+    "us": "/nid/"
+  },
+  "news": {
+    "uk": "/njuːz/",
+    "us": "/njuz/"
+  },
+  "night": {
+    "uk": "/naɪt/",
+    "us": "/naɪt/"
+  },
+  "noise": {
+    "uk": "/nɔɪz/",
+    "us": "/nɔɪz/"
+  },
+  "note": {
+    "uk": "/nəʊt/",
+    "us": "/noʊt/"
+  },
+  "number": {
+    "uk": "/ˈnʌmbə/",
+    "us": "/ˈnʌmbɝ/"
+  },
+  "observation": {
+    "uk": "/ˌɒbzəˈveɪʃən/",
+    "us": "/ˌɑbzɝˈveɪʃən/"
+  },
+  "offer": {
+    "uk": "/ˈɒfə/",
+    "us": "/ˈɔfɝ/"
+  },
+  "oil": {
+    "uk": "/ɔɪl/",
+    "us": "/ɔɪl/"
+  },
+  "operation": {
+    "uk": "/ˌɒpəˈɹeɪʃən/",
+    "us": "/ˌɑpɝˈeɪʃən/"
+  },
+  "opinion": {
+    "uk": "/əˈpɪnjən/",
+    "us": "/əˈpɪnjən/"
+  },
+  "order": {
+    "uk": "/ˈɔːdə/",
+    "us": "/ˈɔɹdɝ/"
+  },
+  "organization": {
+    "uk": "/ˌɔːɡənaɪˈzeɪʃən/",
+    "us": "/ˌɔɹɡənəˈzeɪʃən/"
+  },
+  "ornament": {
+    "uk": "/ˈɔːnəmənt/",
+    "us": "/ˈɔɹnəmənt/"
+  },
+  "owner": {
+    "uk": "/ˈəʊnə/",
+    "us": "/ˈoʊnɝ/"
+  },
+  "page": {
+    "uk": "/peɪdʒ/",
+    "us": "/peɪdʒ/"
+  },
+  "pain": {
+    "uk": "/peɪn/",
+    "us": "/peɪn/"
+  },
+  "paint": {
+    "uk": "/peɪnt/",
+    "us": "/peɪnt/"
+  },
+  "paper": {
+    "uk": "/ˈpeɪpə/",
+    "us": "/ˈpeɪpɝ/"
+  },
+  "part": {
+    "uk": "/pɑːt/",
+    "us": "/pɑɹt/"
+  },
+  "paste": {
+    "uk": "/peɪst/",
+    "us": "/peɪst/"
+  },
+  "payment": {
+    "uk": "/ˈpeɪmənt/",
+    "us": "/ˈpeɪmənt/"
+  },
+  "peace": {
+    "uk": "/piːs/",
+    "us": "/pis/"
+  },
+  "person": {
+    "uk": "/ˈpɜːsən/",
+    "us": "/ˈpɝsən/"
+  },
+  "place": {
+    "uk": "/pleɪs/",
+    "us": "/pleɪs/"
+  },
+  "plant": {
+    "uk": "/plɑːnt/",
+    "us": "/plænt/"
+  },
+  "play": {
+    "uk": "/pleɪ/",
+    "us": "/pleɪ/"
+  },
+  "pleasure": {
+    "uk": "/ˈplɛʒə/",
+    "us": "/ˈplɛʒɝ/"
+  },
+  "point": {
+    "uk": "/pɔɪnt/",
+    "us": "/pɔɪnt/"
+  },
+  "poison": {
+    "uk": "/ˈpɔɪzən/",
+    "us": "/ˈpɔɪzən/"
+  },
+  "polish": {
+    "uk": "/ˈpɒlɪʃ/",
+    "us": "/ˈpɑlɪʃ/"
+  },
+  "porter": {
+    "uk": "/ˈpɔːtə/",
+    "us": "/ˈpɔɹtɝ/"
+  },
+  "position": {
+    "uk": "/pəˈzɪʃən/",
+    "us": "/pəˈzɪʃən/"
+  },
+  "powder": {
+    "uk": "/ˈpaʊdə/",
+    "us": "/ˈpaʊdɝ/"
+  },
+  "power": {
+    "uk": "/ˈpaʊə/",
+    "us": "/ˈpaʊɝ/"
+  },
+  "price": {
+    "uk": "/pɹaɪs/",
+    "us": "/pɹaɪs/"
+  },
+  "print": {
+    "uk": "/pɹɪnt/",
+    "us": "/pɹɪnt/"
+  },
+  "process": {
+    "uk": "/ˈpɹəʊses/",
+    "us": "/ˈpɹɑses/"
+  },
+  "produce": {
+    "uk": "/ˈpɹɒdjuːs/",
+    "us": "/ˈpɹoʊduːs/"
+  },
+  "profit": {
+    "uk": "/ˈpɹɒfɪt/",
+    "us": "/ˈpɹɑfət/"
+  },
+  "property": {
+    "uk": "/ˈpɹɒpəti/",
+    "us": "/ˈpɹɑpɝti/"
+  },
+  "prose": {
+    "uk": "/pɹəʊz/",
+    "us": "/pɹoʊz/"
+  },
+  "protest": {
+    "uk": "/ˈpɹəʊtest/",
+    "us": "/ˈpɹoʊtest/"
+  },
+  "pull": {
+    "uk": "/pʊl/",
+    "us": "/pʊl/"
+  },
+  "punishment": {
+    "uk": "/ˈpʌnɪʃmənt/",
+    "us": "/ˈpʌnɪʃmənt/"
+  },
+  "purpose": {
+    "uk": "/ˈpɜːpəs/",
+    "us": "/ˈpɝpəs/"
+  },
+  "push": {
+    "uk": "/pʊʃ/",
+    "us": "/pʊʃ/"
+  },
+  "quality": {
+    "uk": "/ˈkwɒlɪti/",
+    "us": "/ˈkwɑləti/"
+  },
+  "question": {
+    "uk": "/ˈkwɛstʃən/",
+    "us": "/ˈkwɛstʃən/"
+  },
+  "rain": {
+    "uk": "/ɹeɪn/",
+    "us": "/ɹeɪn/"
+  },
+  "range": {
+    "uk": "/ɹeɪndʒ/",
+    "us": "/ɹeɪndʒ/"
+  },
+  "rate": {
+    "uk": "/ɹeɪt/",
+    "us": "/ɹeɪt/"
+  },
+  "ray": {
+    "uk": "/ɹeɪ/",
+    "us": "/ɹeɪ/"
+  },
+  "reaction": {
+    "uk": "/ɹɪˈækʃən/",
+    "us": "/ɹiˈækʃən/"
+  },
+  "reading": {
+    "uk": "/ˈɹiːdɪŋ/",
+    "us": "/ˈɹidɪŋ/"
+  },
+  "reason": {
+    "uk": "/ˈɹiːzən/",
+    "us": "/ˈɹizən/"
+  },
+  "record": {
+    "uk": "/ˈɹekɔːd/",
+    "us": "/ˈɹɛkɚd/"
+  },
+  "regret": {
+    "uk": "/ɹɪˈɡɹɛt/",
+    "us": "/ɹəˈɡɹɛt/"
+  },
+  "relation": {
+    "uk": "/ɹɪˈleɪʃən/",
+    "us": "/ɹiˈleɪʃən/"
+  },
+  "religion": {
+    "uk": "/ɹɪˈlɪdʒən/",
+    "us": "/ɹiˈlɪdʒən/"
+  },
+  "representative": {
+    "uk": "/ˌɹɛpɹɪˈzɛntətɪv/",
+    "us": "/ˌɹɛpɹəˈzɛnətɪv/"
+  },
+  "request": {
+    "uk": "/ɹɪˈkwɛst/",
+    "us": "/ɹiˈkwɛst/"
+  },
+  "respect": {
+    "uk": "/ɹɪˈspɛkt/",
+    "us": "/ɹiˈspɛkt/"
+  },
+  "rest": {
+    "uk": "/ɹɛst/",
+    "us": "/ɹɛst/"
+  },
+  "reward": {
+    "uk": "/ɹɪˈwɔːd/",
+    "us": "/ɹiˈwɔɹd/"
+  },
+  "rhythm": {
+    "uk": "/ˈɹɪðəm/",
+    "us": "/ˈɹɪðəm/"
+  },
+  "rice": {
+    "uk": "/ɹaɪs/",
+    "us": "/ɹaɪs/"
+  },
+  "river": {
+    "uk": "/ˈɹɪvə/",
+    "us": "/ˈɹɪvɝ/"
+  },
+  "road": {
+    "uk": "/ɹəʊd/",
+    "us": "/ɹoʊd/"
+  },
+  "roll": {
+    "uk": "/ɹəʊl/",
+    "us": "/ɹoʊl/"
+  },
+  "room": {
+    "uk": "/ɹuːm/",
+    "us": "/ɹum/"
+  },
+  "rub": {
+    "uk": "/ɹʌb/",
+    "us": "/ɹʌb/"
+  },
+  "rule": {
+    "uk": "/ɹuːl/",
+    "us": "/ɹul/"
+  },
+  "run": {
+    "uk": "/ɹʌn/",
+    "us": "/ɹʌn/"
+  },
+  "salt": {
+    "uk": "/sɒlt/",
+    "us": "/sɔlt/"
+  },
+  "sand": {
+    "uk": "/sænd/",
+    "us": "/sænd/"
+  },
+  "scale": {
+    "uk": "/skeɪl/",
+    "us": "/skeɪl/"
+  },
+  "science": {
+    "uk": "/ˈsaɪəns/",
+    "us": "/ˈsaɪəns/"
+  },
+  "sea": {
+    "uk": "/siː/",
+    "us": "/si/"
+  },
+  "seat": {
+    "uk": "/siːt/",
+    "us": "/sit/"
+  },
+  "secretary": {
+    "uk": "/ˈsɛkɹɪtəɹi/",
+    "us": "/ˈsɛkɹəˌtɛɹi/"
+  },
+  "selection": {
+    "uk": "/sɪˈlɛkʃən/",
+    "us": "/səˈlɛkʃən/"
+  },
+  "self": {
+    "uk": "/sɛlf/",
+    "us": "/sɛlf/"
+  },
+  "sense": {
+    "uk": "/sɛns/",
+    "us": "/sɛns/"
+  },
+  "servant": {
+    "uk": "/ˈsɜːvənt/",
+    "us": "/ˈsɝvənt/"
+  },
+  "sex": {
+    "uk": "/sɛks/",
+    "us": "/sɛks/"
+  },
+  "shade": {
+    "uk": "/ʃeɪd/",
+    "us": "/ʃeɪd/"
+  },
+  "shake": {
+    "uk": "/ʃeɪk/",
+    "us": "/ʃeɪk/"
+  },
+  "shame": {
+    "uk": "/ʃeɪm/",
+    "us": "/ʃeɪm/"
+  },
+  "shock": {
+    "uk": "/ʃɒk/",
+    "us": "/ʃɑk/"
+  },
+  "side": {
+    "uk": "/saɪd/",
+    "us": "/saɪd/"
+  },
+  "sign": {
+    "uk": "/saɪn/",
+    "us": "/saɪn/"
+  },
+  "silk": {
+    "uk": "/sɪlk/",
+    "us": "/sɪlk/"
+  },
+  "silver": {
+    "uk": "/ˈsɪlvə/",
+    "us": "/ˈsɪlvɝ/"
+  },
+  "sister": {
+    "uk": "/ˈsɪstə/",
+    "us": "/ˈsɪstɝ/"
+  },
+  "size": {
+    "uk": "/saɪz/",
+    "us": "/saɪz/"
+  },
+  "sky": {
+    "uk": "/skaɪ/",
+    "us": "/skaɪ/"
+  },
+  "sleep": {
+    "uk": "/sliːp/",
+    "us": "/slip/"
+  },
+  "slip": {
+    "uk": "/slɪp/",
+    "us": "/slɪp/"
+  },
+  "slope": {
+    "uk": "/sləʊp/",
+    "us": "/sloʊp/"
+  },
+  "smash": {
+    "uk": "/smæʃ/",
+    "us": "/smæʃ/"
+  },
+  "smell": {
+    "uk": "/smɛl/",
+    "us": "/smɛl/"
+  },
+  "smile": {
+    "uk": "/smaɪl/",
+    "us": "/smaɪl/"
+  },
+  "smoke": {
+    "uk": "/sməʊk/",
+    "us": "/smoʊk/"
+  },
+  "sneeze": {
+    "uk": "/sniːz/",
+    "us": "/sniz/"
+  },
+  "snow": {
+    "uk": "/snəʊ/",
+    "us": "/snoʊ/"
+  },
+  "soap": {
+    "uk": "/səʊp/",
+    "us": "/soʊp/"
+  },
+  "society": {
+    "uk": "/səˈsaɪəti/",
+    "us": "/səˈsaɪəti/"
+  },
+  "son": {
+    "uk": "/sʌn/",
+    "us": "/sʌn/"
+  },
+  "song": {
+    "uk": "/sɒŋ/",
+    "us": "/sɔŋ/"
+  },
+  "sort": {
+    "uk": "/sɔːt/",
+    "us": "/sɔɹt/"
+  },
+  "sound": {
+    "uk": "/saʊnd/",
+    "us": "/saʊnd/"
+  },
+  "soup": {
+    "uk": "/suːp/",
+    "us": "/sup/"
+  },
+  "space": {
+    "uk": "/speɪs/",
+    "us": "/speɪs/"
+  },
+  "stage": {
+    "uk": "/steɪdʒ/",
+    "us": "/steɪdʒ/"
+  },
+  "start": {
+    "uk": "/stɑːt/",
+    "us": "/stɑɹt/"
+  },
+  "statement": {
+    "uk": "/ˈsteɪtmənt/",
+    "us": "/ˈsteɪtmənt/"
+  },
+  "steam": {
+    "uk": "/stiːm/",
+    "us": "/stim/"
+  },
+  "steel": {
+    "uk": "/stiːl/",
+    "us": "/stil/"
+  },
+  "step": {
+    "uk": "/stɛp/",
+    "us": "/stɛp/"
+  },
+  "stitch": {
+    "uk": "/stɪtʃ/",
+    "us": "/stɪtʃ/"
+  },
+  "stone": {
+    "uk": "/stəʊn/",
+    "us": "/stoʊn/"
+  },
+  "stop": {
+    "uk": "/stɒp/",
+    "us": "/stɑp/"
+  },
+  "story": {
+    "uk": "/ˈstɔːɹi/",
+    "us": "/ˈstɔɹi/"
+  },
+  "stretch": {
+    "uk": "/stɹɛtʃ/",
+    "us": "/stɹɛtʃ/"
+  },
+  "structure": {
+    "uk": "/ˈstɹʌktʃə/",
+    "us": "/ˈstɹʌktʃɝ/"
+  },
+  "substance": {
+    "uk": "/ˈsʌbstəns/",
+    "us": "/ˈsʌbstəns/"
+  },
+  "sugar": {
+    "uk": "/ˈʃʊɡə/",
+    "us": "/ˈʃʊɡɝ/"
+  },
+  "suggestion": {
+    "uk": "/səˈdʒɛstʃən/",
+    "us": "/səˈdʒɛstʃən/"
+  },
+  "summer": {
+    "uk": "/ˈsʌmə/",
+    "us": "/ˈsʌmɝ/"
+  },
+  "support": {
+    "uk": "/səˈpɔːt/",
+    "us": "/səˈpɔɹt/"
+  },
+  "surprise": {
+    "uk": "/səˈpɹaɪz/",
+    "us": "/səˈpɹaɪz/"
+  },
+  "swim": {
+    "uk": "/swɪm/",
+    "us": "/swɪm/"
+  },
+  "system": {
+    "uk": "/ˈsɪstəm/",
+    "us": "/ˈsɪstəm/"
+  },
+  "talk": {
+    "uk": "/tɔːk/",
+    "us": "/tɔk/"
+  },
+  "taste": {
+    "uk": "/teɪst/",
+    "us": "/teɪst/"
+  },
+  "tax": {
+    "uk": "/tæks/",
+    "us": "/tæks/"
+  },
+  "teaching": {
+    "uk": "/ˈtiːtʃɪŋ/",
+    "us": "/ˈtitʃɪŋ/"
+  },
+  "tendency": {
+    "uk": "/ˈtɛndənsi/",
+    "us": "/ˈtɛndənsi/"
+  },
+  "test": {
+    "uk": "/tɛst/",
+    "us": "/tɛst/"
+  },
+  "theory": {
+    "uk": "/ˈθɪəɹi/",
+    "us": "/ˈθiɝi/"
+  },
+  "thing": {
+    "uk": "/θɪŋ/",
+    "us": "/θɪŋ/"
+  },
+  "thought": {
+    "uk": "/θɔːt/",
+    "us": "/θɔt/"
+  },
+  "thunder": {
+    "uk": "/ˈθʌndə/",
+    "us": "/ˈθʌndɝ/"
+  },
+  "time": {
+    "uk": "/taɪm/",
+    "us": "/taɪm/"
+  },
+  "tin": {
+    "uk": "/tɪn/",
+    "us": "/tɪn/"
+  },
+  "top": {
+    "uk": "/tɒp/",
+    "us": "/tɑp/"
+  },
+  "touch": {
+    "uk": "/tʌtʃ/",
+    "us": "/tʌtʃ/"
+  },
+  "trade": {
+    "uk": "/tɹeɪd/",
+    "us": "/tɹeɪd/"
+  },
+  "transport": {
+    "uk": "/ˈtɹænspɔːt/",
+    "us": "/ˈtɹænspɔɹt/"
+  },
+  "trick": {
+    "uk": "/tɹɪk/",
+    "us": "/tɹɪk/"
+  },
+  "trouble": {
+    "uk": "/ˈtɹʌbəl/",
+    "us": "/ˈtɹʌbəl/"
+  },
+  "turn": {
+    "uk": "/tɜːn/",
+    "us": "/tɝn/"
+  },
+  "twist": {
+    "uk": "/twɪst/",
+    "us": "/twɪst/"
+  },
+  "unit": {
+    "uk": "/ˈjuːnɪt/",
+    "us": "/ˈjunət/"
+  },
+  "use": {
+    "uk": "/juːs/",
+    "us": "/jus/"
+  },
+  "value": {
+    "uk": "/ˈvæljuː/",
+    "us": "/ˈvælju/"
+  },
+  "verse": {
+    "uk": "/vɜːs/",
+    "us": "/vɝs/"
+  },
+  "vessel": {
+    "uk": "/ˈvɛsəl/",
+    "us": "/ˈvɛsəl/"
+  },
+  "view": {
+    "uk": "/vjuː/",
+    "us": "/vju/"
+  },
+  "voice": {
+    "uk": "/vɔɪs/",
+    "us": "/vɔɪs/"
+  },
+  "walk": {
+    "uk": "/wɔːk/",
+    "us": "/wɑk/"
+  },
+  "war": {
+    "uk": "/wɔː/",
+    "us": "/wɔɹ/"
+  },
+  "wash": {
+    "uk": "/wɒʃ/",
+    "us": "/wɑʃ/"
+  },
+  "waste": {
+    "uk": "/weɪst/",
+    "us": "/weɪst/"
+  },
+  "water": {
+    "uk": "/ˈwɔːtə/",
+    "us": "/ˈwɔtɝ/"
+  },
+  "wave": {
+    "uk": "/weɪv/",
+    "us": "/weɪv/"
+  },
+  "wax": {
+    "uk": "/wæks/",
+    "us": "/wæks/"
+  },
+  "way": {
+    "uk": "/weɪ/",
+    "us": "/weɪ/"
+  },
+  "weather": {
+    "uk": "/ˈwɛðə/",
+    "us": "/ˈwɛðɝ/"
+  },
+  "week": {
+    "uk": "/wiːk/",
+    "us": "/wik/"
+  },
+  "weight": {
+    "uk": "/weɪt/",
+    "us": "/weɪt/"
+  },
+  "wind": {
+    "uk": "/wɪnd/",
+    "us": "/wɪnd/"
+  },
+  "wine": {
+    "uk": "/waɪn/",
+    "us": "/waɪn/"
+  },
+  "winter": {
+    "uk": "/ˈwɪntə/",
+    "us": "/ˈwɪntɝ/"
+  },
+  "woman": {
+    "uk": "/ˈwʊmən/",
+    "us": "/ˈwʊmən/"
+  },
+  "wood": {
+    "uk": "/wʊd/",
+    "us": "/wʊd/"
+  },
+  "wool": {
+    "uk": "/wʊl/",
+    "us": "/wʊl/"
+  },
+  "word": {
+    "uk": "/wɜːd/",
+    "us": "/wɝd/"
+  },
+  "work": {
+    "uk": "/wɜːk/",
+    "us": "/wɝk/"
+  },
+  "wound": {
+    "uk": "/wuːnd/",
+    "us": "/wund/"
+  },
+  "writing": {
+    "uk": "/ˈɹaɪtɪŋ/",
+    "us": "/ˈɹaɪtɪŋ/"
+  },
+  "year": {
+    "uk": "/jɪə/",
+    "us": "/jɪɹ/"
+  },
+  "angle": {
+    "uk": "/ˈæŋɡəl/",
+    "us": "/ˈæŋɡəl/"
+  },
+  "ant": {
+    "uk": "/ænt/",
+    "us": "/ænt/"
+  },
+  "apple": {
+    "uk": "/ˈæpəl/",
+    "us": "/ˈæpəl/"
+  },
+  "arch": {
+    "uk": "/ɑːtʃ/",
+    "us": "/ɑɹtʃ/"
+  },
+  "arm": {
+    "uk": "/ɑːm/",
+    "us": "/ɑɹm/"
+  },
+  "army": {
+    "uk": "/ˈɑːmi/",
+    "us": "/ˈɑɹmi/"
+  },
+  "baby": {
+    "uk": "/ˈbeɪbi/",
+    "us": "/ˈbeɪbi/"
+  },
+  "bag": {
+    "uk": "/bæɡ/",
+    "us": "/bæɡ/"
+  },
+  "ball": {
+    "uk": "/bɔːl/",
+    "us": "/bɔl/"
+  },
+  "band": {
+    "uk": "/bænd/",
+    "us": "/bænd/"
+  },
+  "basin": {
+    "uk": "/ˈbeɪsɪn/",
+    "us": "/ˈbeɪsən/"
+  },
+  "basket": {
+    "uk": "/ˈbɑːskɪt/",
+    "us": "/ˈbæskət/"
+  },
+  "bath": {
+    "uk": "/bɑːθ/",
+    "us": "/bæθ/"
+  },
+  "bed": {
+    "uk": "/bɛd/",
+    "us": "/bɛd/"
+  },
+  "bee": {
+    "uk": "/biː/",
+    "us": "/bi/"
+  },
+  "bell": {
+    "uk": "/bɛl/",
+    "us": "/bɛl/"
+  },
+  "berry": {
+    "uk": "/ˈbɛɹi/",
+    "us": "/ˈbɛɹi/"
+  },
+  "bird": {
+    "uk": "/bɜːd/",
+    "us": "/bɝd/"
+  },
+  "blade": {
+    "uk": "/bleɪd/",
+    "us": "/bleɪd/"
+  },
+  "board": {
+    "uk": "/bɔːd/",
+    "us": "/bɔɹd/"
+  },
+  "boat": {
+    "uk": "/bəʊt/",
+    "us": "/boʊt/"
+  },
+  "bone": {
+    "uk": "/bəʊn/",
+    "us": "/boʊn/"
+  },
+  "book": {
+    "uk": "/bʊk/",
+    "us": "/bʊk/"
+  },
+  "boot": {
+    "uk": "/buːt/",
+    "us": "/but/"
+  },
+  "bottle": {
+    "uk": "/ˈbɒtəl/",
+    "us": "/ˈbɑtəl/"
+  },
+  "box": {
+    "uk": "/bɒks/",
+    "us": "/bɑks/"
+  },
+  "boy": {
+    "uk": "/bɔɪ/",
+    "us": "/bɔɪ/"
+  },
+  "brain": {
+    "uk": "/bɹeɪn/",
+    "us": "/bɹeɪn/"
+  },
+  "brake": {
+    "uk": "/bɹeɪk/",
+    "us": "/bɹeɪk/"
+  },
+  "branch": {
+    "uk": "/bɹɑːntʃ/",
+    "us": "/bɹæntʃ/"
+  },
+  "brick": {
+    "uk": "/bɹɪk/",
+    "us": "/bɹɪk/"
+  },
+  "bridge": {
+    "uk": "/bɹɪdʒ/",
+    "us": "/bɹɪdʒ/"
+  },
+  "brush": {
+    "uk": "/bɹʌʃ/",
+    "us": "/bɹʌʃ/"
+  },
+  "bucket": {
+    "uk": "/ˈbʌkɪt/",
+    "us": "/ˈbʌkət/"
+  },
+  "bulb": {
+    "uk": "/bʌlb/",
+    "us": "/bʌlb/"
+  },
+  "button": {
+    "uk": "/ˈbʌtən/",
+    "us": "/ˈbʌtən/"
+  },
+  "cake": {
+    "uk": "/keɪk/",
+    "us": "/keɪk/"
+  },
+  "camera": {
+    "uk": "/ˈkæmɹə/",
+    "us": "/ˈkæmɝə/"
+  },
+  "card": {
+    "uk": "/kɑːd/",
+    "us": "/kɑɹd/"
+  },
+  "cart": {
+    "uk": "/kɑːt/",
+    "us": "/kɑɹt/"
+  },
+  "carriage": {
+    "uk": "/ˈkæɹɪdʒ/",
+    "us": "/ˈkæɹɪdʒ/"
+  },
+  "cat": {
+    "uk": "/kæt/",
+    "us": "/kæt/"
+  },
+  "chain": {
+    "uk": "/tʃeɪn/",
+    "us": "/tʃeɪn/"
+  },
+  "cheese": {
+    "uk": "/tʃiːz/",
+    "us": "/tʃiz/"
+  },
+  "chest": {
+    "uk": "/tʃɛst/",
+    "us": "/tʃɛst/"
+  },
+  "chin": {
+    "uk": "/tʃɪn/",
+    "us": "/tʃɪn/"
+  },
+  "church": {
+    "uk": "/tʃɜːtʃ/",
+    "us": "/tʃɝtʃ/"
+  },
+  "circle": {
+    "uk": "/ˈsɜːkəl/",
+    "us": "/ˈsɝkəl/"
+  },
+  "clock": {
+    "uk": "/klɒk/",
+    "us": "/klɑk/"
+  },
+  "cloud": {
+    "uk": "/klaʊd/",
+    "us": "/klaʊd/"
+  },
+  "coat": {
+    "uk": "/kəʊt/",
+    "us": "/koʊt/"
+  },
+  "collar": {
+    "uk": "/ˈkɒlə/",
+    "us": "/ˈkɑlɝ/"
+  },
+  "comb": {
+    "uk": "/kəʊm/",
+    "us": "/koʊm/"
+  },
+  "cord": {
+    "uk": "/kɔːd/",
+    "us": "/kɔɹd/"
+  },
+  "cow": {
+    "uk": "/kaʊ/",
+    "us": "/kaʊ/"
+  },
+  "cup": {
+    "uk": "/kʌp/",
+    "us": "/kʌp/"
+  },
+  "curtain": {
+    "uk": "/ˈkɜːtən/",
+    "us": "/ˈkɝtən/"
+  },
+  "cushion": {
+    "uk": "/ˈkʊʃən/",
+    "us": "/ˈkʊʃən/"
+  },
+  "dog": {
+    "uk": "/dɒɡ/",
+    "us": "/dɔɡ/"
+  },
+  "door": {
+    "uk": "/dɔː/",
+    "us": "/dɔɹ/"
+  },
+  "drain": {
+    "uk": "/dɹeɪn/",
+    "us": "/dɹeɪn/"
+  },
+  "drawer": {
+    "uk": "/ˈdɹɔːə/",
+    "us": "/dɹɔɹ/"
+  },
+  "dress": {
+    "uk": "/dɹɛs/",
+    "us": "/dɹɛs/"
+  },
+  "drop": {
+    "uk": "/dɹɒp/",
+    "us": "/dɹɑp/"
+  },
+  "ear": {
+    "uk": "/ɪə/",
+    "us": "/iɹ/"
+  },
+  "egg": {
+    "uk": "/ɛɡ/",
+    "us": "/ɛɡ/"
+  },
+  "engine": {
+    "uk": "/ˈɛndʒɪn/",
+    "us": "/ˈɛndʒən/"
+  },
+  "eye": {
+    "uk": "/aɪ/",
+    "us": "/aɪ/"
+  },
+  "face": {
+    "uk": "/feɪs/",
+    "us": "/feɪs/"
+  },
+  "farm": {
+    "uk": "/fɑːm/",
+    "us": "/fɑɹm/"
+  },
+  "feather": {
+    "uk": "/ˈfɛðə/",
+    "us": "/ˈfɛðɝ/"
+  },
+  "finger": {
+    "uk": "/ˈfɪŋɡə/",
+    "us": "/ˈfɪŋɡɝ/"
+  },
+  "fish": {
+    "uk": "/fɪʃ/",
+    "us": "/fɪʃ/"
+  },
+  "flag": {
+    "uk": "/flæɡ/",
+    "us": "/flæɡ/"
+  },
+  "floor": {
+    "uk": "/flɔː/",
+    "us": "/flɔɹ/"
+  },
+  "fly": {
+    "uk": "/flaɪ/",
+    "us": "/flaɪ/"
+  },
+  "foot": {
+    "uk": "/fʊt/",
+    "us": "/fʊt/"
+  },
+  "fork": {
+    "uk": "/fɔːk/",
+    "us": "/fɔɹk/"
+  },
+  "fowl": {
+    "uk": "/faʊl/",
+    "us": "/faʊl/"
+  },
+  "frame": {
+    "uk": "/fɹeɪm/",
+    "us": "/fɹeɪm/"
+  },
+  "garden": {
+    "uk": "/ˈɡɑːdən/",
+    "us": "/ˈɡɑɹdən/"
+  },
+  "girl": {
+    "uk": "/ɡɜːl/",
+    "us": "/ɡɝl/"
+  },
+  "glove": {
+    "uk": "/ɡlʌv/",
+    "us": "/ɡlʌv/"
+  },
+  "goat": {
+    "uk": "/ɡəʊt/",
+    "us": "/ɡoʊt/"
+  },
+  "gun": {
+    "uk": "/ɡʌn/",
+    "us": "/ɡʌn/"
+  },
+  "hair": {
+    "uk": "/hɛə/",
+    "us": "/hɛɹ/"
+  },
+  "hammer": {
+    "uk": "/ˈhæmə/",
+    "us": "/ˈhæmɝ/"
+  },
+  "hand": {
+    "uk": "/hænd/",
+    "us": "/hænd/"
+  },
+  "hat": {
+    "uk": "/hæt/",
+    "us": "/hæt/"
+  },
+  "head": {
+    "uk": "/hɛd/",
+    "us": "/hɛd/"
+  },
+  "heart": {
+    "uk": "/hɑːt/",
+    "us": "/hɑɹt/"
+  },
+  "hook": {
+    "uk": "/hʊk/",
+    "us": "/hʊk/"
+  },
+  "horn": {
+    "uk": "/hɔːn/",
+    "us": "/hɔɹn/"
+  },
+  "horse": {
+    "uk": "/hɔːs/",
+    "us": "/hɔɹs/"
+  },
+  "hospital": {
+    "uk": "/ˈhɒˌspɪtəl/",
+    "us": "/ˈhɑˌspɪtəl/"
+  },
+  "house": {
+    "uk": "/haʊs/",
+    "us": "/haʊs/"
+  },
+  "island": {
+    "uk": "/ˈaɪlənd/",
+    "us": "/ˈaɪlənd/"
+  },
+  "jewel": {
+    "uk": "/ˈdʒuːəl/",
+    "us": "/ˈdʒuəl/"
+  },
+  "kettle": {
+    "uk": "/ˈkɛtəl/",
+    "us": "/ˈkɛtəl/"
+  },
+  "key": {
+    "uk": "/kiː/",
+    "us": "/ki/"
+  },
+  "knee": {
+    "uk": "/niː/",
+    "us": "/ni/"
+  },
+  "knife": {
+    "uk": "/naɪf/",
+    "us": "/naɪf/"
+  },
+  "knot": {
+    "uk": "/nɒt/",
+    "us": "/nɑt/"
+  },
+  "leaf": {
+    "uk": "/liːf/",
+    "us": "/lif/"
+  },
+  "leg": {
+    "uk": "/lɛɡ/",
+    "us": "/lɛɡ/"
+  },
+  "library": {
+    "uk": "/ˈlaɪbɹəɹi/",
+    "us": "/ˈlaɪbɹɛˌɹi/"
+  },
+  "line": {
+    "uk": "/laɪn/",
+    "us": "/laɪn/"
+  },
+  "lip": {
+    "uk": "/lɪp/",
+    "us": "/lɪp/"
+  },
+  "lock": {
+    "uk": "/lɒk/",
+    "us": "/lɑk/"
+  },
+  "map": {
+    "uk": "/mæp/",
+    "us": "/mæp/"
+  },
+  "match": {
+    "uk": "/mætʃ/",
+    "us": "/mætʃ/"
+  },
+  "monkey": {
+    "uk": "/ˈmʌŋki/",
+    "us": "/ˈmʌŋki/"
+  },
+  "moon": {
+    "uk": "/muːn/",
+    "us": "/mun/"
+  },
+  "mouth": {
+    "uk": "/maʊθ/",
+    "us": "/maʊθ/"
+  },
+  "muscle": {
+    "uk": "/ˈmʌsəl/",
+    "us": "/ˈmʌsəl/"
+  },
+  "nail": {
+    "uk": "/neɪl/",
+    "us": "/neɪl/"
+  },
+  "neck": {
+    "uk": "/nɛk/",
+    "us": "/nɛk/"
+  },
+  "needle": {
+    "uk": "/ˈniːdəl/",
+    "us": "/ˈnidəl/"
+  },
+  "nerve": {
+    "uk": "/nɜːv/",
+    "us": "/nɝv/"
+  },
+  "net": {
+    "uk": "/nɛt/",
+    "us": "/nɛt/"
+  },
+  "nose": {
+    "uk": "/nəʊz/",
+    "us": "/noʊz/"
+  },
+  "nut": {
+    "uk": "/nʌt/",
+    "us": "/nʌt/"
+  },
+  "office": {
+    "uk": "/ˈɒfɪs/",
+    "us": "/ˈɔfɪs/"
+  },
+  "orange": {
+    "uk": "/ˈɒɹɪndʒ/",
+    "us": "/ˈɔɹəndʒ/"
+  },
+  "oven": {
+    "uk": "/ˈʌvən/",
+    "us": "/ˈʌvən/"
+  },
+  "parcel": {
+    "uk": "/ˈpɑːsəl/",
+    "us": "/ˈpɑɹsəl/"
+  },
+  "pen": {
+    "uk": "/pɛn/",
+    "us": "/pɛn/"
+  },
+  "pencil": {
+    "uk": "/ˈpɛnsəl/",
+    "us": "/ˈpɛnsəl/"
+  },
+  "picture": {
+    "uk": "/ˈpɪktʃə/",
+    "us": "/ˈpɪktʃɝ/"
+  },
+  "pig": {
+    "uk": "/pɪɡ/",
+    "us": "/pɪɡ/"
+  },
+  "pin": {
+    "uk": "/pɪn/",
+    "us": "/pɪn/"
+  },
+  "pipe": {
+    "uk": "/paɪp/",
+    "us": "/paɪp/"
+  },
+  "plane": {
+    "uk": "/pleɪn/",
+    "us": "/pleɪn/"
+  },
+  "plate": {
+    "uk": "/pleɪt/",
+    "us": "/pleɪt/"
+  },
+  "plough": {
+    "uk": "/plaʊ/",
+    "us": "/plaʊ/"
+  },
+  "pocket": {
+    "uk": "/ˈpɒkɪt/",
+    "us": "/ˈpɑkət/"
+  },
+  "pot": {
+    "uk": "/pɒt/",
+    "us": "/pɑt/"
+  },
+  "potato": {
+    "uk": "/pəˈteɪˌtəʊ/",
+    "us": "/pəˈteɪˌtoʊ/"
+  },
+  "prison": {
+    "uk": "/ˈpɹɪzən/",
+    "us": "/ˈpɹɪzən/"
+  },
+  "pump": {
+    "uk": "/pʌmp/",
+    "us": "/pʌmp/"
+  },
+  "rail": {
+    "uk": "/ɹeɪl/",
+    "us": "/ɹeɪl/"
+  },
+  "rat": {
+    "uk": "/ɹæt/",
+    "us": "/ɹæt/"
+  },
+  "receipt": {
+    "uk": "/ɹɪˈsiːt/",
+    "us": "/ɹiˈsit/"
+  },
+  "ring": {
+    "uk": "/ɹɪŋ/",
+    "us": "/ɹɪŋ/"
+  },
+  "rod": {
+    "uk": "/ɹɒd/",
+    "us": "/ɹɑd/"
+  },
+  "roof": {
+    "uk": "/ɹuːf/",
+    "us": "/ɹuf/"
+  },
+  "root": {
+    "uk": "/ɹuːt/",
+    "us": "/ɹut/"
+  },
+  "sail": {
+    "uk": "/seɪl/",
+    "us": "/seɪl/"
+  },
+  "school": {
+    "uk": "/skuːl/",
+    "us": "/skul/"
+  },
+  "scissors": {
+    "uk": "/ˈsɪzəz/",
+    "us": "/ˈsɪzɝz/"
+  },
+  "screw": {
+    "uk": "/skɹuː/",
+    "us": "/skɹu/"
+  },
+  "seed": {
+    "uk": "/siːd/",
+    "us": "/sid/"
+  },
+  "sheep": {
+    "uk": "/ʃiːp/",
+    "us": "/ʃip/"
+  },
+  "shelf": {
+    "uk": "/ʃɛlf/",
+    "us": "/ʃɛlf/"
+  },
+  "ship": {
+    "uk": "/ʃɪp/",
+    "us": "/ʃɪp/"
+  },
+  "shirt": {
+    "uk": "/ʃɜːt/",
+    "us": "/ʃɝt/"
+  },
+  "shoe": {
+    "uk": "/ʃuː/",
+    "us": "/ʃu/"
+  },
+  "skin": {
+    "uk": "/skɪn/",
+    "us": "/skɪn/"
+  },
+  "skirt": {
+    "uk": "/skɜːt/",
+    "us": "/skɝt/"
+  },
+  "snake": {
+    "uk": "/sneɪk/",
+    "us": "/sneɪk/"
+  },
+  "sock": {
+    "uk": "/sɒk/",
+    "us": "/sɑk/"
+  },
+  "spade": {
+    "uk": "/speɪd/",
+    "us": "/speɪd/"
+  },
+  "sponge": {
+    "uk": "/spʌndʒ/",
+    "us": "/spʌndʒ/"
+  },
+  "spoon": {
+    "uk": "/spuːn/",
+    "us": "/spun/"
+  },
+  "spring": {
+    "uk": "/spɹɪŋ/",
+    "us": "/spɹɪŋ/"
+  },
+  "square": {
+    "uk": "/skwɛə/",
+    "us": "/skwɛɹ/"
+  },
+  "stamp": {
+    "uk": "/stæmp/",
+    "us": "/stæmp/"
+  },
+  "star": {
+    "uk": "/stɑː/",
+    "us": "/stɑɹ/"
+  },
+  "station": {
+    "uk": "/ˈsteɪʃən/",
+    "us": "/ˈsteɪʃən/"
+  },
+  "stem": {
+    "uk": "/stɛm/",
+    "us": "/stɛm/"
+  },
+  "stick": {
+    "uk": "/stɪk/",
+    "us": "/stɪk/"
+  },
+  "stocking": {
+    "uk": "/ˈstɒkɪŋ/",
+    "us": "/ˈstɑkɪŋ/"
+  },
+  "stomach": {
+    "uk": "/ˈstʌmək/",
+    "us": "/ˈstʌmək/"
+  },
+  "store": {
+    "uk": "/stɔː/",
+    "us": "/stɔɹ/"
+  },
+  "street": {
+    "uk": "/stɹiːt/",
+    "us": "/stɹit/"
+  },
+  "sun": {
+    "uk": "/sʌn/",
+    "us": "/sʌn/"
+  },
+  "table": {
+    "uk": "/ˈteɪbəl/",
+    "us": "/ˈteɪbəl/"
+  },
+  "tail": {
+    "uk": "/teɪl/",
+    "us": "/teɪl/"
+  },
+  "thread": {
+    "uk": "/θɹɛd/",
+    "us": "/θɹɛd/"
+  },
+  "throat": {
+    "uk": "/θɹəʊt/",
+    "us": "/θɹoʊt/"
+  },
+  "thumb": {
+    "uk": "/θʌm/",
+    "us": "/θʌm/"
+  },
+  "ticket": {
+    "uk": "/ˈtɪkɪt/",
+    "us": "/ˈtɪkət/"
+  },
+  "toe": {
+    "uk": "/təʊ/",
+    "us": "/toʊ/"
+  },
+  "tongue": {
+    "uk": "/tʌŋ/",
+    "us": "/tʌŋ/"
+  },
+  "tooth": {
+    "uk": "/tuːθ/",
+    "us": "/tuθ/"
+  },
+  "town": {
+    "uk": "/taʊn/",
+    "us": "/taʊn/"
+  },
+  "train": {
+    "uk": "/tɹeɪn/",
+    "us": "/tɹeɪn/"
+  },
+  "tray": {
+    "uk": "/tɹeɪ/",
+    "us": "/tɹeɪ/"
+  },
+  "tree": {
+    "uk": "/tɹiː/",
+    "us": "/tɹi/"
+  },
+  "trousers": {
+    "uk": "/ˈtɹaʊzəz/",
+    "us": "/ˈtɹaʊzɝz/"
+  },
+  "umbrella": {
+    "uk": "/ʌmˈbɹɛlə/",
+    "us": "/ʌmˈbɹɛlə/"
+  },
+  "wall": {
+    "uk": "/wɔːl/",
+    "us": "/wɔl/"
+  },
+  "watch": {
+    "uk": "/wɒtʃ/",
+    "us": "/wɑtʃ/"
+  },
+  "wheel": {
+    "uk": "/wiːl/",
+    "us": "/wil/"
+  },
+  "whip": {
+    "uk": "/wɪp/",
+    "us": "/wɪp/"
+  },
+  "whistle": {
+    "uk": "/ˈwɪsəl/",
+    "us": "/ˈwɪsəl/"
+  },
+  "window": {
+    "uk": "/ˈwɪndəʊ/",
+    "us": "/ˈwɪndoʊ/"
+  },
+  "wing": {
+    "uk": "/wɪŋ/",
+    "us": "/wɪŋ/"
+  },
+  "wire": {
+    "uk": "/ˈwaɪə/",
+    "us": "/ˈwaɪɝ/"
+  },
+  "worm": {
+    "uk": "/wɜːm/",
+    "us": "/wɝm/"
+  },
+  "able": {
+    "uk": "/ˈeɪbəl/",
+    "us": "/ˈeɪbəl/"
+  },
+  "acid": {
+    "uk": "/ˈæsɪd/",
+    "us": "/ˈæsəd/"
+  },
+  "angry": {
+    "uk": "/ˈæŋɡɹi/",
+    "us": "/ˈæŋɡɹi/"
+  },
+  "automatic": {
+    "uk": "/ˌɔːtəˈmætɪk/",
+    "us": "/ˌɔtəˈmætɪk/"
+  },
+  "beautiful": {
+    "uk": "/ˈbjuːtɪfəl/",
+    "us": "/ˈbjutəfəl/"
+  },
+  "black": {
+    "uk": "/blæk/",
+    "us": "/blæk/"
+  },
+  "boiling": {
+    "uk": "/ˈbɔɪlɪŋ/",
+    "us": "/ˈbɔɪlɪŋ/"
+  },
+  "bright": {
+    "uk": "/bɹaɪt/",
+    "us": "/bɹaɪt/"
+  },
+  "broken": {
+    "uk": "/ˈbɹəʊkən/",
+    "us": "/ˈbɹoʊkən/"
+  },
+  "brown": {
+    "uk": "/bɹaʊn/",
+    "us": "/bɹaʊn/"
+  },
+  "cheap": {
+    "uk": "/tʃiːp/",
+    "us": "/tʃip/"
+  },
+  "chemical": {
+    "uk": "/ˈkɛmɪkəl/",
+    "us": "/ˈkɛməkəl/"
+  },
+  "chief": {
+    "uk": "/tʃiːf/",
+    "us": "/tʃif/"
+  },
+  "clean": {
+    "uk": "/kliːn/",
+    "us": "/klin/"
+  },
+  "clear": {
+    "uk": "/klɪə/",
+    "us": "/klɪɹ/"
+  },
+  "common": {
+    "uk": "/ˈkɒmən/",
+    "us": "/ˈkɑmən/"
+  },
+  "complex": {
+    "uk": "/ˈkɒmpleks/",
+    "us": "/ˈkɑmplɛks/"
+  },
+  "conscious": {
+    "uk": "/ˈkɒnʃəs/",
+    "us": "/ˈkɑnʃəs/"
+  },
+  "cut": {
+    "uk": "/kʌt/",
+    "us": "/kʌt/"
+  },
+  "deep": {
+    "uk": "/diːp/",
+    "us": "/dip/"
+  },
+  "dependent": {
+    "uk": "/dɪˈpɛndənt/",
+    "us": "/dɪˈpɛndənt/"
+  },
+  "early": {
+    "uk": "/ˈɜːli/",
+    "us": "/ˈɝli/"
+  },
+  "elastic": {
+    "uk": "/ɪˈlæstɪk/",
+    "us": "/ɪˈlæstɪk/"
+  },
+  "electric": {
+    "uk": "/ɪˈlɛktɹɪk/",
+    "us": "/ɪˈlɛktɹɪk/"
+  },
+  "equal": {
+    "uk": "/ˈiːkwəl/",
+    "us": "/ˈikwəl/"
+  },
+  "fat": {
+    "uk": "/fæt/",
+    "us": "/fæt/"
+  },
+  "fertile": {
+    "uk": "/ˈfɜːtaɪl/",
+    "us": "/ˈfɝtəl/"
+  },
+  "first": {
+    "uk": "/fɜːst/",
+    "us": "/fɝst/"
+  },
+  "fixed": {
+    "uk": "/fɪkst/",
+    "us": "/fɪkst/"
+  },
+  "flat": {
+    "uk": "/flæt/",
+    "us": "/flæt/"
+  },
+  "free": {
+    "uk": "/fɹiː/",
+    "us": "/fɹi/"
+  },
+  "frequent": {
+    "uk": "/ˈfɹiːkwənt/",
+    "us": "/ˈfɹiːkwənt/"
+  },
+  "full": {
+    "uk": "/fʊl/",
+    "us": "/fʊl/"
+  },
+  "general": {
+    "uk": "/ˈdʒɛnɹəl/",
+    "us": "/ˈdʒɛnɝəl/"
+  },
+  "good": {
+    "uk": "/ɡʊd/",
+    "us": "/ɡʊd/"
+  },
+  "great": {
+    "uk": "/ɡɹeɪt/",
+    "us": "/ɡɹeɪt/"
+  },
+  "grey": {
+    "uk": "/ɡɹeɪ/",
+    "us": "/ɡɹeɪ/"
+  },
+  "hanging": {
+    "uk": "/ˈhæŋɪŋ/",
+    "us": "/ˈhæŋɡɪŋ/"
+  },
+  "happy": {
+    "uk": "/ˈhæpi/",
+    "us": "/ˈhæpi/"
+  },
+  "hard": {
+    "uk": "/hɑːd/",
+    "us": "/hɑɹd/"
+  },
+  "healthy": {
+    "uk": "/ˈhɛlθi/",
+    "us": "/ˈhɛlθi/"
+  },
+  "high": {
+    "uk": "/haɪ/",
+    "us": "/haɪ/"
+  },
+  "hollow": {
+    "uk": "/ˈhɒləʊ/",
+    "us": "/ˈhɑloʊ/"
+  },
+  "important": {
+    "uk": "/ɪˈmpɔːtənt/",
+    "us": "/ˌɪmˈpɔɹtənt/"
+  },
+  "kind": {
+    "uk": "/kaɪnd/",
+    "us": "/kaɪnd/"
+  },
+  "like": {
+    "uk": "/laɪk/",
+    "us": "/laɪk/"
+  },
+  "living": {
+    "uk": "/ˈlɪvɪŋ/",
+    "us": "/ˈlɪvɪŋ/"
+  },
+  "long": {
+    "uk": "/lɒŋ/",
+    "us": "/lɔŋ/"
+  },
+  "male": {
+    "uk": "/meɪl/",
+    "us": "/meɪl/"
+  },
+  "married": {
+    "uk": "/ˈmæɹid/",
+    "us": "/ˈmɛɹid/"
+  },
+  "material": {
+    "uk": "/məˈtɪəɹɪəl/",
+    "us": "/məˈtɪɹiəl/"
+  },
+  "medical": {
+    "uk": "/ˈmɛdɪkəl/",
+    "us": "/ˈmɛdəkəl/"
+  },
+  "military": {
+    "uk": "/ˈmɪlɪtəɹi/",
+    "us": "/ˈmɪləˌtɛɹi/"
+  },
+  "natural": {
+    "uk": "/ˈnætʃɹəl/",
+    "us": "/ˈnætʃɝəl/"
+  },
+  "necessary": {
+    "uk": "/ˈnɛsəsəɹi/",
+    "us": "/ˈnɛsəˌsɛɹi/"
+  },
+  "new": {
+    "uk": "/njuː/",
+    "us": "/nju/"
+  },
+  "normal": {
+    "uk": "/ˈnɔːməl/",
+    "us": "/ˈnɔɹməl/"
+  },
+  "open": {
+    "uk": "/ˈəʊpən/",
+    "us": "/ˈoʊpən/"
+  },
+  "parallel": {
+    "uk": "/ˈpæɹəˌlɛl/",
+    "us": "/ˈpɛɹəˌlɛl/"
+  },
+  "past": {
+    "uk": "/pɑːst/",
+    "us": "/pæst/"
+  },
+  "physical": {
+    "uk": "/ˈfɪzɪkəl/",
+    "us": "/ˈfɪzɪkəl/"
+  },
+  "political": {
+    "uk": "/pəˈlɪtɪkəl/",
+    "us": "/pəˈlɪtəkəl/"
+  },
+  "poor": {
+    "uk": "/pɔː/",
+    "us": "/pʊɹ/"
+  },
+  "possible": {
+    "uk": "/ˈpɒsɪbəl/",
+    "us": "/ˈpɑsəbəl/"
+  },
+  "present": {
+    "uk": "/ˈpɹezənt/",
+    "us": "/ˈpɹɛzənt/"
+  },
+  "private": {
+    "uk": "/ˈpɹaɪvɪt/",
+    "us": "/ˈpɹaɪvət/"
+  },
+  "probable": {
+    "uk": "/ˈpɹɒbəbəl/",
+    "us": "/ˈpɹɑbəbəl/"
+  },
+  "quick": {
+    "uk": "/kwɪk/",
+    "us": "/kwɪk/"
+  },
+  "quiet": {
+    "uk": "/ˈkwaɪət/",
+    "us": "/ˈkwaɪət/"
+  },
+  "ready": {
+    "uk": "/ˈɹɛdi/",
+    "us": "/ˈɹɛdi/"
+  },
+  "red": {
+    "uk": "/ɹɛd/",
+    "us": "/ɹɛd/"
+  },
+  "regular": {
+    "uk": "/ˈɹɛɡjʊlə/",
+    "us": "/ˈɹeɪɡjəlɝ/"
+  },
+  "responsible": {
+    "uk": "/ɹɪˈspɒnsɪbəl/",
+    "us": "/ɹiˈspɑnsəbəl/"
+  },
+  "right": {
+    "uk": "/ɹaɪt/",
+    "us": "/ɹaɪt/"
+  },
+  "round": {
+    "uk": "/ɹaʊnd/",
+    "us": "/ɹaʊnd/"
+  },
+  "same": {
+    "uk": "/seɪm/",
+    "us": "/seɪm/"
+  },
+  "second": {
+    "uk": "/ˈsɛkənd/",
+    "us": "/ˈsɛkənd/"
+  },
+  "separate": {
+    "uk": "/ˈsepɹət/",
+    "us": "/ˈsɛpɹət/"
+  },
+  "serious": {
+    "uk": "/ˈsɪəɹɪəs/",
+    "us": "/ˈsɪɹiəs/"
+  },
+  "sharp": {
+    "uk": "/ʃɑːp/",
+    "us": "/ʃɑɹp/"
+  },
+  "smooth": {
+    "uk": "/smuːð/",
+    "us": "/smuð/"
+  },
+  "sticky": {
+    "uk": "/ˈstɪki/",
+    "us": "/ˈstɪki/"
+  },
+  "stiff": {
+    "uk": "/stɪf/",
+    "us": "/stɪf/"
+  },
+  "straight": {
+    "uk": "/stɹeɪt/",
+    "us": "/stɹeɪt/"
+  },
+  "strong": {
+    "uk": "/stɹɒŋ/",
+    "us": "/stɹɔŋ/"
+  },
+  "sudden": {
+    "uk": "/ˈsʌdən/",
+    "us": "/ˈsʌdən/"
+  },
+  "sweet": {
+    "uk": "/swiːt/",
+    "us": "/swit/"
+  },
+  "tall": {
+    "uk": "/tɔːl/",
+    "us": "/tɔl/"
+  },
+  "thick": {
+    "uk": "/θɪk/",
+    "us": "/θɪk/"
+  },
+  "tight": {
+    "uk": "/taɪt/",
+    "us": "/taɪt/"
+  },
+  "tired": {
+    "uk": "/ˈtaɪəd/",
+    "us": "/ˈtaɪɝd/"
+  },
+  "true": {
+    "uk": "/tɹuː/",
+    "us": "/tɹu/"
+  },
+  "violent": {
+    "uk": "/ˈvaɪlənt/",
+    "us": "/ˈvaɪələnt/"
+  },
+  "waiting": {
+    "uk": "/ˈweɪtɪŋ/",
+    "us": "/ˈweɪtɪŋ/"
+  },
+  "warm": {
+    "uk": "/wɔːm/",
+    "us": "/wɔɹm/"
+  },
+  "wet": {
+    "uk": "/wɛt/",
+    "us": "/wɛt/"
+  },
+  "wide": {
+    "uk": "/waɪd/",
+    "us": "/waɪd/"
+  },
+  "wise": {
+    "uk": "/waɪz/",
+    "us": "/waɪz/"
+  },
+  "yellow": {
+    "uk": "/ˈjɛləʊ/",
+    "us": "/ˈjɛloʊ/"
+  },
+  "young": {
+    "uk": "/jʌŋ/",
+    "us": "/jʌŋ/"
+  },
+  "awake": {
+    "uk": "/əˈweɪk/",
+    "us": "/əˈweɪk/"
+  },
+  "bad": {
+    "uk": "/bæd/",
+    "us": "/bæd/"
+  },
+  "bent": {
+    "uk": "/bɛnt/",
+    "us": "/bɛnt/"
+  },
+  "bitter": {
+    "uk": "/ˈbɪtə/",
+    "us": "/ˈbɪtɝ/"
+  },
+  "blue": {
+    "uk": "/bluː/",
+    "us": "/blu/"
+  },
+  "certain": {
+    "uk": "/ˈsɜːtən/",
+    "us": "/ˈsɝtən/"
+  },
+  "cold": {
+    "uk": "/kəʊld/",
+    "us": "/koʊld/"
+  },
+  "complete": {
+    "uk": "/kəˈmpliːt/",
+    "us": "/kəmˈplit/"
+  },
+  "cruel": {
+    "uk": "/kɹʊəl/",
+    "us": "/ˈkɹuəl/"
+  },
+  "dark": {
+    "uk": "/dɑːk/",
+    "us": "/dɑɹk/"
+  },
+  "dead": {
+    "uk": "/dɛd/",
+    "us": "/dɛd/"
+  },
+  "dear": {
+    "uk": "/dɪə/",
+    "us": "/dɪɹ/"
+  },
+  "delicate": {
+    "uk": "/ˈdɛlɪkɪt/",
+    "us": "/ˈdɛləkət/"
+  },
+  "different": {
+    "uk": "/ˈdɪfɹənt/",
+    "us": "/ˈdɪfɝənt/"
+  },
+  "dirty": {
+    "uk": "/ˈdɜːti/",
+    "us": "/ˈdɝti/"
+  },
+  "dry": {
+    "uk": "/dɹaɪ/",
+    "us": "/dɹaɪ/"
+  },
+  "false": {
+    "uk": "/fɔːls/",
+    "us": "/fɔls/"
+  },
+  "feeble": {
+    "uk": "/ˈfiːbəl/",
+    "us": "/ˈfibəl/"
+  },
+  "female": {
+    "uk": "/ˈfiːmeɪl/",
+    "us": "/ˈfimeɪl/"
+  },
+  "foolish": {
+    "uk": "/ˈfuːlɪʃ/",
+    "us": "/ˈfulɪʃ/"
+  },
+  "future": {
+    "uk": "/ˈfjuːtʃə/",
+    "us": "/ˈfjutʃɝ/"
+  },
+  "green": {
+    "uk": "/ɡɹiːn/",
+    "us": "/ɡɹin/"
+  },
+  "ill": {
+    "uk": "/ɪl/",
+    "us": "/ɪl/"
+  },
+  "last": {
+    "uk": "/lɑːst/",
+    "us": "/læs/"
+  },
+  "late": {
+    "uk": "/leɪt/",
+    "us": "/leɪt/"
+  },
+  "left": {
+    "uk": "/lɛft/",
+    "us": "/lɛft/"
+  },
+  "loose": {
+    "uk": "/luːs/",
+    "us": "/lus/"
+  },
+  "loud": {
+    "uk": "/laʊd/",
+    "us": "/laʊd/"
+  },
+  "low": {
+    "uk": "/ləʊ/",
+    "us": "/loʊ/"
+  },
+  "mixed": {
+    "uk": "/mɪkst/",
+    "us": "/mɪkst/"
+  },
+  "narrow": {
+    "uk": "/ˈnæɹəʊ/",
+    "us": "/ˈnæɹoʊ/"
+  },
+  "old": {
+    "uk": "/əʊld/",
+    "us": "/oʊld/"
+  },
+  "opposite": {
+    "uk": "/ˈɒpəzɪt/",
+    "us": "/ˈɑpəzət/"
+  },
+  "public": {
+    "uk": "/ˈpʌblɪk/",
+    "us": "/ˈpʌblɪk/"
+  },
+  "rough": {
+    "uk": "/ɹʌf/",
+    "us": "/ɹʌf/"
+  },
+  "sad": {
+    "uk": "/sæd/",
+    "us": "/sæd/"
+  },
+  "safe": {
+    "uk": "/seɪf/",
+    "us": "/seɪf/"
+  },
+  "secret": {
+    "uk": "/ˈsiːkɹɪt/",
+    "us": "/ˈsikɹət/"
+  },
+  "short": {
+    "uk": "/ʃɔːt/",
+    "us": "/ʃɔɹt/"
+  },
+  "shut": {
+    "uk": "/ʃʌt/",
+    "us": "/ʃʌt/"
+  },
+  "simple": {
+    "uk": "/ˈsɪmpəl/",
+    "us": "/ˈsɪmpəl/"
+  },
+  "slow": {
+    "uk": "/sləʊ/",
+    "us": "/sloʊ/"
+  },
+  "small": {
+    "uk": "/smɔːl/",
+    "us": "/smɔl/"
+  },
+  "soft": {
+    "uk": "/sɒft/",
+    "us": "/sɑft/"
+  },
+  "solid": {
+    "uk": "/ˈsɒlɪd/",
+    "us": "/ˈsɑləd/"
+  },
+  "special": {
+    "uk": "/ˈspɛʃəl/",
+    "us": "/ˈspɛʃəl/"
+  },
+  "strange": {
+    "uk": "/stɹeɪndʒ/",
+    "us": "/stɹeɪndʒ/"
+  },
+  "thin": {
+    "uk": "/θɪn/",
+    "us": "/θɪn/"
+  },
+  "white": {
+    "uk": "/waɪt/",
+    "us": "/waɪt/"
+  },
+  "wrong": {
+    "uk": "/ɹɒŋ/",
+    "us": "/ɹɔŋ/"
+  }
+}
