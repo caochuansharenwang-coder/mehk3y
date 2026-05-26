@@ -23,7 +23,7 @@
       const cached = sessionStorage.getItem(SESSION_KEY);
       if (cached) return JSON.parse(cached);
     } catch (_) {}
-    const res = await fetch('/data/english.json', { cache: 'force-cache' });
+    const res = await fetch('/data/english.json?v=2', { cache: 'no-cache' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch (_) {}
