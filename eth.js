@@ -160,6 +160,12 @@ function applyBmnrWeekly(currentHoldings) {
     return;
   }
   const delta = currentHoldings - best.h;
+  if (delta === 0) {
+    el.textContent = fmtEth(currentHoldings);
+    el.style.color = 'var(--dim)';
+    sub.textContent = '持仓无变动 · 较 ' + best.d;
+    return;
+  }
   const pct = (delta / best.h * 100);
   el.textContent = (delta >= 0 ? '+' : '−') + fmtEth(Math.abs(delta));
   el.style.color = delta >= 0 ? 'var(--green)' : 'var(--red)';
