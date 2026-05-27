@@ -43,12 +43,14 @@
     const ipaHtml = ipaUs ? `<span class="ipa">${ipaUs}</span>` : '';
     return `<article class="card" data-cat="${w.c}" data-w="${esc(w.w)}">
       <div class="card-head">
-        <div class="word-row">
-          <div class="word">${esc(w.w)}</div>
+        <div class="word-line">
+          <span class="word">${esc(w.w)}</span>
           ${ipaHtml}
-          <button class="speak" data-text="${esc(w.w)}" data-rate="0.85" aria-label="读单词" style="margin-left:auto">${SPEAKER_SVG}</button>
         </div>
-        <span class="tag">${TAGS[w.c]}</span>
+        <div class="card-head-r">
+          <button class="speak" data-text="${esc(w.w)}" data-rate="0.85" aria-label="读单词">${SPEAKER_SVG}</button>
+          <span class="tag">${TAGS[w.c]}</span>
+        </div>
       </div>
       <div class="def-zh">${esc(w.zh)}</div>
       <div class="def-en">${esc(w.en)}</div>
