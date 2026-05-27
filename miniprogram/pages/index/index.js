@@ -1,4 +1,4 @@
-const englishData = require('../../utils/english.json');
+const englishData = require('../../utils/english.js');
 
 const TAGS = { op: '操作词', gt: '普通事物', pt: '可描绘', qg: '性质词', qo: '反义词' };
 const CATEGORIES = [
