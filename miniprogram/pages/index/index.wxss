@@ -149,18 +149,12 @@
 
 /* Example */
 .example {
-  position: relative;
   background: var(--bg); border: 1rpx solid var(--border);
-  border-radius: 16rpx; padding: 18rpx 70rpx 18rpx 22rpx;
+  border-radius: 16rpx; padding: 18rpx 22rpx;
   margin-bottom: 16rpx;
 }
 .example-en { font-size: 28rpx; color: var(--text); line-height: 1.45; }
 .example-zh { font-size: 26rpx; color: var(--text-2); margin-top: 4rpx; line-height: 1.45; }
-.example-speak {
-  position: absolute; top: 14rpx; right: 12rpx;
-  width: 48rpx; height: 48rpx; line-height: 48rpx;
-  font-size: 24rpx;
-}
 
 /* Synonyms */
 .syns {
@@ -185,6 +179,53 @@
   transform: scale(0.96);
 }
 .syn-hover::before { opacity: 1; }
+
+/* Synonym modal */
+.modal-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45); z-index: 100;
+  display: flex; align-items: flex-end;
+}
+.modal-sheet {
+  background: var(--surface); border-radius: 32rpx 32rpx 0 0;
+  width: 100%; padding: 36rpx 36rpx 60rpx;
+  box-sizing: border-box;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28rpx;
+}
+.modal-title { flex: 1; }
+.modal-syn-word { font-size: 44rpx; font-weight: 800; color: var(--text); }
+.modal-vs { font-size: 22rpx; color: var(--dim); margin: 0 8rpx; }
+.modal-main-word { font-size: 26rpx; color: var(--dim); font-weight: 500; }
+.modal-speak {
+  width: 60rpx; height: 60rpx; line-height: 60rpx; text-align: center;
+  font-size: 30rpx; background: var(--surface-2); border-radius: 50%;
+  flex-shrink: 0;
+}
+.modal-row {
+  display: flex; align-items: flex-start; gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.modal-label {
+  font-size: 22rpx; font-weight: 600; color: #c0392b;
+  background: #fef0ee; padding: 4rpx 12rpx; border-radius: 8rpx;
+  white-space: nowrap; flex-shrink: 0; margin-top: 2rpx;
+}
+.modal-val { font-size: 28rpx; color: var(--text); line-height: 1.5; flex: 1; }
+.modal-val-dim { color: var(--dim); font-size: 26rpx; }
+.modal-example { flex: 1; }
+.modal-ex-en { font-size: 28rpx; color: var(--text); line-height: 1.5; }
+.modal-ex-zh { font-size: 24rpx; color: var(--dim); margin-top: 4rpx; }
+.modal-not-found {
+  font-size: 26rpx; color: var(--dim); text-align: center;
+  padding: 30rpx 0;
+}
+.modal-close {
+  margin-top: 24rpx; text-align: center;
+  font-size: 28rpx; color: var(--dim); padding: 16rpx;
+}
 
 /* Empty + footer */
 .empty {

@@ -10,12 +10,15 @@ const CATEGORIES = [
   { cat: 'qo',  label: '反义词', count: 50 }
 ];
 
-// Pre-process: attach IPA + tag label
 const ALL_WORDS = englishData.words.map((w) => ({
   ...w,
   ipa: w.ipa_us || w.ipa_uk || '',
   tagLabel: TAGS[w.c] || ''
 }));
+
+// Lookup map for synonym detail
+const WORD_MAP = {};
+for (const w of ALL_WORDS) WORD_MAP[w.w.toLowerCase()] = w;
 
 function buildSections(words) {
   const map = {};
@@ -31,7 +34,6 @@ function buildSections(words) {
 }
 
 let audioCtx = null;
-let lastPlayedText = '';
 
 function playAudio(text) {
   if (!audioCtx) {
@@ -39,10 +41,8 @@ function playAudio(text) {
   } else {
     audioCtx.stop();
   }
-  const url = 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(text) + '&type=2';
-  audioCtx.src = url;
+  audioCtx.src = 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(text) + '&type=2';
   audioCtx.play();
-  lastPlayedText = text;
 }
 
 Page({
@@ -51,14 +51,14 @@ Page({
     activeCat: 'all',
     categories: CATEGORIES,
     sections: buildSections(ALL_WORDS),
-    empty: false
+    empty: false,
+    synModal: null
   },
 
   _filterTimer: null,
 
   onQueryInput(e) {
-    const q = e.detail.value;
-    this.setData({ query: q });
+    this.setData({ query: e.detail.value });
     this._scheduleFilter();
   },
 
@@ -68,8 +68,7 @@ Page({
   },
 
   onPillTap(e) {
-    const cat = e.currentTarget.dataset.cat;
-    this.setData({ activeCat: cat });
+    this.setData({ activeCat: e.currentTarget.dataset.cat });
     this._scheduleFilter();
   },
 
@@ -102,6 +101,25 @@ Page({
     if (!text) return;
     playAudio(text);
   },
+
+  onSynTap(e) {
+    const syn = e.currentTarget.dataset.syn;
+    const main = e.currentTarget.dataset.main;
+    if (!syn) return;
+    playAudio(syn);
+    const found = WORD_MAP[syn.toLowerCase()];
+    this.setData({
+      synModal: found
+        ? { syn, main, found: true, zh: found.zh, en: found.en, ex: found.ex || '', exz: found.exz || '', ipa: found.ipa || '' }
+        : { syn, main, found: false }
+    });
+  },
+
+  closeSynModal() {
+    this.setData({ synModal: null });
+  },
+
+  stopPropagation() {},
 
   onUnload() {
     if (audioCtx) {
