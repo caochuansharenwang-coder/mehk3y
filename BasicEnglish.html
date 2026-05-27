@@ -39,33 +39,21 @@
 }
 body { line-height: 1.58; }
 .english-wrap { max-width: 880px; padding-bottom: 64px; }
-.hdr { align-items: baseline; margin-bottom: 14px; }
-.intro {
-  margin-bottom: 16px;
-  padding: 20px 0 4px;
-}
-.eyebrow {
-  display: block; margin-bottom: 10px;
-  font-size: 10px; font-weight: 650;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-}
-.intro-head {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
-}
+.hdr { align-items: baseline; margin-bottom: 10px; }
+.intro { margin: 18px 0 20px; }
 .intro h1 {
-  font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -0.05em;
-  margin: 0;
+  font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.05em;
+  margin: 0 0 10px;
 }
 .intro h1 em { color: var(--text-2); font-style: normal; }
-.intro-badge {
-  font-size: 12px; font-weight: 650;
-  padding: 4px 12px; border-radius: 999px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--dim); white-space: nowrap;
+.intro-meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 11.5px; color: var(--dim); margin-bottom: 12px;
 }
+.intro-meta .dot { opacity: 0.35; }
 .intro p {
   color: var(--dim); font-size: 14px; line-height: 1.75;
-  max-width: 640px; margin: 0;
+  max-width: 580px; margin: 0;
 }
 .intro p strong { color: var(--text); font-weight: 650; }
 
@@ -273,7 +261,7 @@ footer { margin-top: 36px; }
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
-  .intro h1 { font-size: 30px; }
+  .intro h1 { font-size: 32px; }
   .study-panel { position: static; margin-top: 16px; }
   .study-panel-row { align-items: stretch; }
   .audio-toggle { width: 100%; justify-content: space-between; }
@@ -312,10 +300,13 @@ footer { margin-top: 36px; }
   <div class="divider"></div>
 
   <section class="intro" aria-labelledby="page-title">
-    <span class="eyebrow">Ogden Basic English · C.K. Ogden · 1930</span>
-    <div class="intro-head">
-      <h1 id="page-title">Basic <em>English</em></h1>
-      <span class="intro-badge">850 词</span>
+    <h1 id="page-title">Basic <em>English</em></h1>
+    <div class="intro-meta">
+      <span>850 个核心词</span>
+      <span class="dot">·</span>
+      <span>Ogden Basic English</span>
+      <span class="dot">·</span>
+      <span>C.K. Ogden · 1930</span>
     </div>
     <p>850个英语核心常用词，没有繁琐的骨架。<strong>英语不是靠死背海量单词，而是靠少量高频词的组合能力。</strong></p>
   </section>
