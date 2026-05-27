@@ -80,7 +80,7 @@
             hover-stay-time="120"
             data-text="{{syn}}"
             catchtap="onSpeakTap"
-          ><text class="syn-icon">🔊</text>{{syn}}</view>
+          >{{syn}}</view>
         </view>
       </view>
     </view>
