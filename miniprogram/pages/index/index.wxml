@@ -76,9 +76,11 @@
             wx:for-item="syn"
             wx:key="*this"
             class="syn"
+            hover-class="syn-hover"
+            hover-stay-time="120"
             data-text="{{syn}}"
             catchtap="onSpeakTap"
-          >{{syn}}</view>
+          ><text class="syn-icon">🔊</text>{{syn}}</view>
         </view>
       </view>
     </view>

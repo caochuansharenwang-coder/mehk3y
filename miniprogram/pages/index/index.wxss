@@ -167,10 +167,21 @@
   display: flex; flex-wrap: wrap; gap: 10rpx;
 }
 .syn {
+  display: inline-flex; align-items: center; gap: 6rpx;
   font-size: 22rpx; color: var(--text-2);
   background: var(--bg); border: 1rpx solid var(--border);
   padding: 8rpx 16rpx; border-radius: 12rpx;
+  transition: all 0.15s ease;
 }
+.syn-icon {
+  font-size: 18rpx; opacity: 0.55;
+}
+.syn-hover {
+  background: var(--accent); color: var(--accent-fg);
+  border-color: var(--accent);
+  transform: scale(0.96);
+}
+.syn-hover .syn-icon { opacity: 1; }
 
 /* Empty + footer */
 .empty {
