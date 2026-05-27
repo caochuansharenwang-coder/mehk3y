@@ -17,7 +17,7 @@
     String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // —— Load data —— //
-  const SESSION_KEY = 'english_data_v2';
+  const SESSION_KEY = 'english_data_v3';
   async function loadData() {
     try {
       const cached = sessionStorage.getItem(SESSION_KEY);
@@ -39,9 +39,8 @@
         return `<button class="syn" data-syn="${esc(s)}" data-main="${esc(w.w)}"><span class="syn-word">${esc(s)}</span>${zh}</button>`;
       })
       .join('');
-    const ipaUk = w.ipa_uk ? esc(w.ipa_uk) : '';
-    const ipaUs = w.ipa_us ? esc(w.ipa_us) : '';
-    const ipaHtml = ipaUk ? `<span class="ipa" data-uk="${ipaUk}" data-us="${ipaUs}">${ipaUk}</span>` : '';
+    const ipaUs = w.ipa_us ? esc(w.ipa_us) : (w.ipa_uk ? esc(w.ipa_uk) : '');
+    const ipaHtml = ipaUs ? `<span class="ipa">${ipaUs}</span>` : '';
     return `<article class="card" data-cat="${w.c}" data-w="${esc(w.w)}">
       <div class="card-head">
         <div class="word-row">
@@ -106,7 +105,7 @@
   }
 
   // —— TTS —— //
-  let audioSource = 'youdao-uk';
+  let audioSource = 'youdao-us';
   let chosenVoice = null;
   let currentAudio = null;
   let currentBtn = null;
@@ -236,18 +235,6 @@
         }
         speak(syn, 0.85, null);
       }
-    });
-    document.querySelectorAll('.audio-toggle button').forEach((b) => {
-      b.addEventListener('click', () => {
-        document.querySelectorAll('.audio-toggle button').forEach((x) => x.classList.remove('active'));
-        b.classList.add('active');
-        audioSource = b.dataset.src;
-        stopSpeaking();
-        const isUs = audioSource === 'youdao-us';
-        document.querySelectorAll('.ipa').forEach((el) => {
-          el.textContent = isUs ? el.dataset.us : el.dataset.uk;
-        });
-      });
     });
   }
 

@@ -83,10 +83,10 @@ body { line-height: 1.58; }
   background: var(--surface); border: 1px solid var(--line);
   border-radius: 4px; padding: 1px 5px;
 }
-.pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+.pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .pill {
-  font-family: var(--sans); font-size: 11.5px; font-weight: 560;
-  padding: 5px 9px; border-radius: 999px;
+  font-family: var(--sans); font-size: 12px; font-weight: 560;
+  padding: 6px 12px; border-radius: 999px;
   border: 1px solid transparent; background: var(--bg); color: var(--ink-soft);
   cursor: pointer; user-select: none; white-space: nowrap;
   transition: background-color .15s, border-color .15s, color .15s;
@@ -204,22 +204,6 @@ main { padding-top: 0; }
 .word-row { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
 .ipa { font-size: 13px; color: var(--dim); font-family: serif; letter-spacing: 0.01em; line-height: 1; flex-shrink: 0; }
 
-.audio-toggle {
-  display: flex; align-items: center;
-  background: var(--bg); border: 1px solid var(--line);
-  border-radius: 999px; padding: 3px;
-  font-family: var(--sans); font-size: 11px; gap: 2px;
-}
-.audio-toggle button {
-  border: none; background: transparent;
-  padding: 4px 10px; border-radius: 999px; cursor: pointer;
-  color: var(--ink-faint); font-size: 11px; font-weight: 500;
-  font-family: inherit; white-space: nowrap;
-  transition: all .15s;
-}
-.audio-toggle button:hover { color: var(--ink); }
-.audio-toggle button.active { background: var(--accent); color: var(--accent-fg); }
-
 .empty {
   text-align: center; padding: 80px 32px;
   color: var(--ink-faint); font-family: var(--sans);
@@ -264,8 +248,6 @@ footer { margin-top: 36px; }
   .intro h1 { font-size: 32px; }
   .study-panel { position: static; margin-top: 16px; }
   .study-panel-row { align-items: stretch; }
-  .audio-toggle { width: 100%; justify-content: space-between; }
-  .audio-toggle button { flex: 1; }
   .section-header { flex-wrap: wrap; }
   .section-header::after { min-width: 100%; order: 4; }
   .grid { grid-template-columns: 1fr; }
@@ -318,19 +300,14 @@ footer { margin-top: 36px; }
         <input id="q" type="text" placeholder="搜索单词、释义或例句..." autocomplete="off" aria-label="搜索">
         <kbd>/</kbd>
       </div>
-      <div class="audio-toggle" id="audio-toggle" title="发音源" role="group" aria-label="发音源">
-        <button data-src="youdao-uk" class="active">英音</button>
-        <button data-src="youdao-us">美音</button>
-        <button data-src="local">本机</button>
-      </div>
     </div>
     <div class="pills" id="pills" role="tablist" aria-label="词类筛选">
-      <span class="pill active" data-cat="all" role="tab" aria-selected="true">All 全部 <span class="count">850</span></span>
-      <span class="pill" data-cat="op" role="tab" aria-selected="false">Operations 操作词 <span class="count">100</span></span>
-      <span class="pill" data-cat="gt" role="tab" aria-selected="false">General Things 普通事物 <span class="count">400</span></span>
-      <span class="pill" data-cat="pt" role="tab" aria-selected="false">Picturable 可描绘事物 <span class="count">200</span></span>
-      <span class="pill" data-cat="qg" role="tab" aria-selected="false">Qualities 性质词 <span class="count">100</span></span>
-      <span class="pill" data-cat="qo" role="tab" aria-selected="false">Opposites 反义词 <span class="count">50</span></span>
+      <span class="pill active" data-cat="all" role="tab" aria-selected="true">全部 <span class="count">850</span></span>
+      <span class="pill" data-cat="op" role="tab" aria-selected="false">操作词 <span class="count">100</span></span>
+      <span class="pill" data-cat="gt" role="tab" aria-selected="false">普通事物 <span class="count">400</span></span>
+      <span class="pill" data-cat="pt" role="tab" aria-selected="false">可描绘 <span class="count">200</span></span>
+      <span class="pill" data-cat="qg" role="tab" aria-selected="false">性质词 <span class="count">100</span></span>
+      <span class="pill" data-cat="qo" role="tab" aria-selected="false">反义词 <span class="count">50</span></span>
     </div>
   </section>
 
