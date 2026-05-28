@@ -121,6 +121,9 @@
         
         <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-slate-900/50">
             <div>
+                <a href="/" class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-white transition-colors mb-1">
+                    <span aria-hidden="true">←</span> Mehk3y
+                </a>
                 <h1 class="text-xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-rose-400">
                     约炮模拟器
                 </h1>
@@ -227,6 +230,9 @@
 
     <div id="intro-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl transition-opacity duration-500">
         <div class="bg-slate-900 p-8 rounded-3xl max-w-sm w-full border border-white/10 shadow-2xl text-center relative">
+            <a href="/" class="absolute left-5 top-5 inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-white transition-colors">
+                <span aria-hidden="true">←</span> Mehk3y
+            </a>
             
             <div class="text-7xl mb-4 animate-bounce drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">💘</div>
             <h1 class="text-3xl font-black text-white mb-2 tracking-tight">约炮模拟器</h1>
@@ -237,6 +243,24 @@
                 <p>2. <b>心理压力</b>：无套或高危行为会累积心理压力。压力过高会导致<b>视线模糊</b>。</p>
                 <p>3. <b>去医院</b>：确认自己是否安全的唯一方法，但代价高昂。</p>
                 <p>4. <b>目标</b>：将压抑值降至 0，且身体健康。</p>
+            </div>
+
+            <div class="text-left mb-6">
+                <div class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-2">想遇到</div>
+                <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="选择想遇到的伴侣性别">
+                    <label class="cursor-pointer">
+                        <input class="peer sr-only" type="radio" name="partner-gender" value="female" checked>
+                        <span class="block rounded-xl border border-pink-500/25 bg-pink-950/20 px-3 py-3 text-center text-xs font-black text-pink-100 transition-all peer-checked:border-pink-400 peer-checked:bg-pink-600 peer-checked:text-white">女生</span>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input class="peer sr-only" type="radio" name="partner-gender" value="male">
+                        <span class="block rounded-xl border border-sky-500/25 bg-sky-950/20 px-3 py-3 text-center text-xs font-black text-sky-100 transition-all peer-checked:border-sky-400 peer-checked:bg-sky-600 peer-checked:text-white">男生</span>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input class="peer sr-only" type="radio" name="partner-gender" value="any">
+                        <span class="block rounded-xl border border-violet-500/25 bg-violet-950/20 px-3 py-3 text-center text-xs font-black text-violet-100 transition-all peer-checked:border-violet-400 peer-checked:bg-violet-600 peer-checked:text-white">都可以</span>
+                    </label>
+                </div>
             </div>
             
             <div class="space-y-3">
@@ -375,13 +399,17 @@
             turn: 1,
             items: { testkit: 1 },
             currentPartner: null,
+            partnerGender: "female",
             isInfected: false,
             infectionData: null,
             isGameOver: false,
             history: [] // { partner, action, outcomeLabel, outcomeClass }
         };
 
-        const AVATARS = ['🌚', '🦊', '🐷', '🐶', '🦄', '🐲', '🐙', '👽', '💀', '🤡', '🤠', '👻', '🧛', '🧟'];
+        const AVATARS = {
+            male: ['🌚', '🦊', '🐶', '🐲', '👽', '🤡', '🤠', '👻', '🧛', '🧟', '🧔', '👨'],
+            female: ['🌝', '🦊', '🐱', '🦄', '🐙', '👽', '👻', '🧛‍♀️', '🧟‍♀️', '👩', '👱‍♀️', '💃']
+        };
 
         const DISEASES = {
             HIV: { name: "艾滋病 (HIV)", riskType: "fluid", desc: "免疫崩溃，不可逆转。", transmission: "体液传播" },
@@ -498,6 +526,8 @@
         // --- GAME LOGIC ---
 
         function startGame() {
+            const selectedGender = document.querySelector('input[name="partner-gender"]:checked');
+            STATE.partnerGender = selectedGender ? selectedGender.value : "female";
             document.getElementById('intro-modal').style.display = 'none';
             document.getElementById('game-container').classList.remove('hidden');
             initGame();
@@ -514,6 +544,7 @@
             STATE.anxiety = 0;
             STATE.turn = 1;
             STATE.items = { testkit: 1 };
+            if (!STATE.partnerGender) STATE.partnerGender = "female";
             STATE.isGameOver = false;
             STATE.isInfected = false;
             STATE.infectionData = null;
@@ -523,7 +554,42 @@
             generateNewPartner();
         }
 
+        function getCurrentPartnerGender() {
+            if (STATE.partnerGender === "any") return Math.random() < 0.5 ? "female" : "male";
+            return STATE.partnerGender;
+        }
+
+        function adaptTextForGender(text, gender) {
+            if (gender !== "female") return text;
+            const replacements = [
+                ["体育学院猛男", "体育学院辣妹"],
+                ["艺术学院留长发男", "艺术学院文艺女"],
+                ["金融男/投行精英", "金融女/投行精英"],
+                ["清纯男大", "清纯女大"],
+                ["性压抑的小处男", "性压抑的小处女"],
+                ["刚做完包皮手术", "刚做完妇科小手术"],
+                ["男生宿舍", "女生宿舍"],
+                ["他可能", "她可能"],
+                ["他的", "她的"],
+                ["他感到", "她感到"],
+                ["他。", "她。"],
+                ["给未来的老婆/老公", "给未来的老公/老婆"],
+                ["你帮他", "你帮她"]
+            ];
+            return replacements.reduce((value, [from, to]) => value.split(from).join(to), text);
+        }
+
+        function adaptTagForGender(tag, gender) {
+            if (gender !== "female") return { ...tag };
+            return {
+                ...tag,
+                text: adaptTextForGender(tag.text, gender),
+                clue: adaptTextForGender(tag.clue || "", gender)
+            };
+        }
+
         function generateNewPartner() {
+            const partnerGender = getCurrentPartnerGender();
             const numTags = Math.floor(Math.random() * 2) + 3; 
             const partnerTags = [];
             const selectedIndices = new Set();
@@ -536,6 +602,7 @@
                 const idx = Math.floor(Math.random() * ALL_TAGS.length);
                 if(selectedIndices.has(idx)) continue;
                 const tagTemplate = ALL_TAGS[idx];
+                if (partnerGender === "male" && /生理期|大姨妈/.test(tagTemplate.text)) continue;
                 if (isCarrier && partnerTags.length === 0 && !tagTemplate.color.includes('red') && !tagTemplate.color.includes('purple')) continue;
                 if (hasConstraint && !partnerTags.some(t => t.constraint) && !tagTemplate.constraint && loopLimit < 50) continue;
                 
@@ -548,7 +615,7 @@
                 let isHidden = false;
                 const currentHiddenCount = partnerTags.filter(t => !t.revealed).length;
                 if (currentHiddenCount === 0 && tagTemplate.hiddenChance > 0) isHidden = Math.random() < tagTemplate.hiddenChance;
-                partnerTags.push({ ...tagTemplate, revealed: !isHidden });
+                partnerTags.push({ ...adaptTagForGender(tagTemplate, partnerGender), revealed: !isHidden });
             }
             if (partnerTags.every(t => !t.revealed)) partnerTags[0].revealed = true;
 
@@ -569,7 +636,8 @@
             STATE.currentPartner = {
                 tags: partnerTags,
                 diseases: activeDiseases,
-                avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)]
+                gender: partnerGender,
+                avatar: AVATARS[partnerGender][Math.floor(Math.random() * AVATARS[partnerGender].length)]
             };
 
             renderPartner();
