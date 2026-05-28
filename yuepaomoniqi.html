@@ -237,6 +237,7 @@
             <div class="text-7xl mb-4 animate-bounce drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">💘</div>
             <h1 class="text-3xl font-black text-white mb-2 tracking-tight">约炮模拟器</h1>
             <p class="text-xs font-bold text-pink-500 tracking-widest uppercase mb-6">Panic Edition</p>
+            <p class="text-[10px] text-slate-600 mb-4">访问会记录基础 IP 与设备类型，用于站点安全。</p>
             
             <div class="text-left text-xs text-slate-300 space-y-3 mb-6 bg-slate-800/50 p-5 rounded-xl border border-white/5">
                 <p>1. <b>延迟判决</b>：高危行为后，你<b>不会</b>立即知道是否感染。</p>
@@ -1150,6 +1151,29 @@
             document.getElementById('restart-btn').classList.remove('hidden');
             document.getElementById('view-history-btn').classList.remove('hidden');
         }
+
+        function logVisit() {
+            const payload = JSON.stringify({
+                page: location.pathname,
+                referrer: document.referrer,
+                screen: `${screen.width}x${screen.height}`
+            });
+
+            if (navigator.sendBeacon) {
+                const blob = new Blob([payload], { type: 'application/json' });
+                navigator.sendBeacon('/api/visit-log', blob);
+                return;
+            }
+
+            fetch('/api/visit-log', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: payload,
+                keepalive: true
+            }).catch(() => {});
+        }
+
+        logVisit();
     </script>
 </body>
 </html>
