@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="约炮模拟器">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#020617"/>
+      <stop offset=".48" stop-color="#312e81"/>
+      <stop offset="1" stop-color="#881337"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".28" cy=".22" r=".7">
+      <stop offset="0" stop-color="#f472b6" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <circle cx="945" cy="126" r="180" fill="#a855f7" opacity=".28"/>
+  <circle cx="230" cy="506" r="210" fill="#14b8a6" opacity=".16"/>
+  <text x="96" y="280" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="92" font-weight="900">约炮模拟器</text>
+  <text x="102" y="356" fill="#f9a8d4" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="800" letter-spacing="6">PANIC EDITION</text>
+  <text x="100" y="454" fill="#cbd5e1" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="30">冲动、风险和心理压力之间的单页小游戏</text>
+</svg>

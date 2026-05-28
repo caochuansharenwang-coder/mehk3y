@@ -43,7 +43,7 @@
         { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
         {
           "key":   "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self' https://dict.youdao.com; connect-src 'self' https://vercel.live https://cloudflare-dns.com https://one.one.one.one https://ipwho.is https://free.freeipapi.com https://claude.ai https://www.anthropic.com https://status.claude.com; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://vercel.live https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self' https://dict.youdao.com; connect-src 'self' https://vercel.live https://cloudflare-dns.com https://one.one.one.one https://ipwho.is https://free.freeipapi.com https://claude.ai https://www.anthropic.com https://status.claude.com; frame-ancestors 'none'"
         }
       ]
     }
