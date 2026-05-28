@@ -1,21 +1,10 @@
-// /api/visit-log — minimal visit logging for selected pages.
-// IP addresses are personal data, so keep this intentionally small.
+// /api/visit-log — backward-compatible explicit visit endpoint.
+// Most page views are tracked by middleware; this endpoint can still be used by
+// page scripts or manual tests.
+
+import { createVisitEntry, recordVisit, truncate } from '../lib/analytics-store.js';
 
 export const config = { runtime: 'edge' };
-
-const MOBILE_UA = /android|iphone|ipad|ipod|mobile|windows phone|harmonyos/i;
-const BOT_UA = /bot|crawl|spider|slurp|facebookexternalhit|bingpreview|yandex|baidu|duckduck|semrush|ahref|mj12|dotbot|petalbot|bytespider|gptbot|claudebot/i;
-
-function getClientIp(request) {
-  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      || request.headers.get('x-real-ip')
-      || request.headers.get('cf-connecting-ip')
-      || null;
-}
-
-function truncate(value, max = 160) {
-  return String(value || '').slice(0, max);
-}
 
 async function getPayload(request) {
   try {
@@ -39,22 +28,14 @@ export default async function handler(request) {
     });
   }
 
-  const ua = request.headers.get('user-agent') || '';
   const payload = await getPayload(request);
-  const entry = {
-    event: 'visit',
-    ts: new Date().toISOString(),
-    ip: getClientIp(request),
-    page: truncate(payload.page || '/yuepaomoniqi', 80),
-    referrer: truncate(payload.referrer || request.headers.get('referer'), 200),
-    userAgent: truncate(ua, 260),
-    isMobile: MOBILE_UA.test(ua),
-    isBot: BOT_UA.test(ua),
-    language: truncate(request.headers.get('accept-language'), 120),
-    screen: truncate(payload.screen, 40),
-  };
+  const entry = createVisitEntry(request);
+  entry.page = truncate(payload.page || entry.page, 80);
+  entry.referrer = truncate(payload.referrer || entry.referrer, 220);
+  entry.screen = truncate(payload.screen, 40);
 
   console.log(JSON.stringify(entry));
+  await recordVisit(entry);
 
   return new Response(JSON.stringify({ ok: true }), {
     headers: {
