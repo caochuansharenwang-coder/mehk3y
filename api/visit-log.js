@@ -1,8 +1,9 @@
 // /api/visit-log — backward-compatible explicit visit endpoint.
-// Most page views are tracked by middleware; this endpoint can still be used by
-// page scripts or manual tests.
+// Page views are tracked by the shared analytics.js beacon.
 
 import { createVisitEntry, recordVisit, truncate } from '../lib/analytics-store.js';
+
+export const config = { runtime: 'edge' };
 
 async function getPayload(request) {
   try {

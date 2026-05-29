@@ -1,6 +1,8 @@
 import { isAuthenticated } from '../lib/admin-auth.js';
 import { readAnalytics } from '../lib/analytics-store.js';
 
+export const config = { runtime: 'edge' };
+
 export default async function handler(request) {
   if (!(await isAuthenticated(request))) {
     return new Response(JSON.stringify({ ok: false, error: 'unauthorized' }), {
