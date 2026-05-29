@@ -200,15 +200,20 @@
         event.pixelRatio && event.pixelRatio !== 1 ? '@' + event.pixelRatio + 'x' : '',
         event.cpuCores ? event.cpuCores + '核' : '',
         event.deviceMemory ? event.deviceMemory + 'GB' : '',
+        event.colorScheme ? (event.colorScheme === 'dark' ? '深色' : '浅色') : '',
+        event.touch ? '触屏' : '',
         event.netType ? event.netType.toUpperCase() : '',
+        event.netRtt ? event.netRtt + 'ms' : '',
+        event.timezone || '',
+        event.languages || event.language || '',
       ].filter(Boolean).join(' · ');
       $('events').innerHTML = (stats.events || []).map((event) => `
         <tr>
           <td>${escapeHtml(new Date(event.ts).toLocaleString('zh-CN'))}</td>
-          <td><code>${escapeHtml(event.page)}</code>${event.utmSource ? ` <span class="badge">${escapeHtml(event.utmSource)}</span>` : ''}</td>
+          <td><code>${escapeHtml(event.page)}${event.query ? escapeHtml(event.query) : ''}</code>${event.title ? `<div class="hint" style="margin-top:4px">${escapeHtml(event.title)}</div>` : ''}${event.utmSource ? ` <span class="badge">${escapeHtml(event.utmSource)}</span>` : ''}</td>
           <td><code>${escapeHtml(event.ip)}</code></td>
           <td>${escapeHtml(event.isp || '-')}${event.asn ? ` <span class="badge">${escapeHtml(event.asn)}</span>` : ''}${event.isHosting ? ' <span class="badge">机房/VPN</span>' : ''}</td>
-          <td><span class="badge">${deviceLabel(event)}</span>${event.isReturning ? ' <span class="badge">回访</span>' : ''}${event.isBot ? ' <span class="badge">Bot</span>' : ''}<div class="hint" style="margin-top:4px">${escapeHtml(hardware(event))}</div></td>
+          <td><span class="badge">${deviceLabel(event)}</span>${event.isReturning ? ' <span class="badge">回访</span>' : ''}${event.dnt ? ' <span class="badge">DNT</span>' : ''}${event.isBot ? ' <span class="badge">爬虫</span>' : ''}<div class="hint" style="margin-top:4px">${escapeHtml(hardware(event))}</div></td>
           <td>${escapeHtml([event.os, event.browser].filter(Boolean).join(' / ') || '-')}</td>
           <td>${escapeHtml([event.country, event.region, event.city].filter(Boolean).join(' / ') || '-')}</td>
           <td><code>${escapeHtml(event.referrer || '-')}</code></td>

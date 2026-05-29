@@ -47,8 +47,11 @@ export default async function handler(req, res) {
 
   const entry = createVisitEntry(request);
   entry.page = truncate(payload.page || entry.page, 80);
+  entry.query = truncate(payload.query, 200);
+  entry.title = truncate(payload.title, 120);
   entry.referrer = truncate(payload.referrer || entry.referrer, 220);
   if (payload.language) entry.language = truncate(payload.language, 140);
+  entry.languages = truncate(payload.languages, 120);
   if (payload.timezone) entry.timezone = truncate(payload.timezone, 60);
 
   // 设备硬件
@@ -59,8 +62,13 @@ export default async function handler(req, res) {
   entry.cpuCores = Number(payload.cpuCores) || 0;
   entry.deviceMemory = Number(payload.deviceMemory) || 0;
   entry.touch = Boolean(payload.touch);
+  entry.colorScheme = truncate(payload.colorScheme, 8);
+  entry.orientation = truncate(payload.orientation, 24);
+  entry.dnt = Boolean(payload.dnt);
   entry.netType = truncate(payload.netType, 16);
   entry.netDownlink = Number(payload.netDownlink) || 0;
+  entry.netRtt = Number(payload.netRtt) || 0;
+  entry.netSaveData = Boolean(payload.netSaveData);
 
   // 访客 / 会话
   entry.vid = truncate(payload.vid, 48);
@@ -82,6 +90,7 @@ export default async function handler(req, res) {
     entry.isHosting = ipInfo.isHosting;
   }
 
+  entry.source = 'client';
   console.log(JSON.stringify(entry));
   await recordVisit(entry);
 

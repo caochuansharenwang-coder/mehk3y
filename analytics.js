@@ -28,11 +28,16 @@
   var tz = val(function () { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; }, '');
   var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
   var params = new URLSearchParams(location.search);
+  var colorScheme = val(function () { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }, '');
+  var orientation = val(function () { return (screen.orientation && screen.orientation.type) || ''; }, '');
 
   var payload = JSON.stringify({
     page: location.pathname,
+    query: (location.search || '').slice(0, 200),
+    title: (document.title || '').slice(0, 120),
     referrer: document.referrer || '',
     language: navigator.language || '',
+    languages: (navigator.languages || []).slice(0, 5).join(','),
     timezone: tz,
     // 屏幕 / 设备硬件
     screen: window.screen ? window.screen.width + 'x' + window.screen.height : '',
@@ -42,8 +47,14 @@
     cpuCores: navigator.hardwareConcurrency || 0,
     deviceMemory: navigator.deviceMemory || 0,
     touch: (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window,
+    colorScheme: colorScheme,
+    orientation: orientation,
+    dnt: navigator.doNotTrack === '1' || window.doNotTrack === '1',
+    // 网络
     netType: conn.effectiveType || '',
     netDownlink: conn.downlink || 0,
+    netRtt: conn.rtt || 0,
+    netSaveData: Boolean(conn.saveData),
     // 访客 / 会话
     vid: vid,
     sid: sid,
