@@ -1,5 +1,3 @@
-import { createVisitEntry, recordVisit, shouldTrackRequest } from './lib/analytics-store.js';
-
 // 速率限制 - 阻止低强度滥用 /api/* 端点。
 //
 // 实现说明:
@@ -10,7 +8,7 @@ import { createVisitEntry, recordVisit, shouldTrackRequest } from './lib/analyti
 // 阈值: 每 IP 每分钟 30 次。普通用户用任何工具都到不了, 爬虫一上来就被拦。
 
 export const config = {
-  matcher: ['/((?!assets/|fonts/|data/|tools/|.*\\.(?:js|css|png|jpg|jpeg|webp|avif|svg|ico|json|txt|xml|woff2?|ttf|map)$).*)'],
+  matcher: ['/api/(.*)'],
 };
 
 const buckets = new Map();
@@ -18,14 +16,7 @@ const WINDOW_MS = 60_000;
 const MAX_REQS  = 30;
 const GC_AT     = 1000; // 超过这么多 IP 就回收一次过期 bucket
 
-export default function middleware(request, event) {
-  if (shouldTrackRequest(request)) {
-    event.waitUntil(recordVisit(createVisitEntry(request)));
-  }
-
-  const url = new URL(request.url);
-  if (!url.pathname.startsWith('/api/')) return;
-
+export default function middleware(request) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim()
           || request.headers.get('x-real-ip')
           || 'anonymous';

@@ -4,8 +4,6 @@
 
 import { createVisitEntry, recordVisit, truncate } from '../lib/analytics-store.js';
 
-export const config = { runtime: 'edge' };
-
 async function getPayload(request) {
   try {
     const text = await request.text();
