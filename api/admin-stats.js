@@ -1,20 +1,30 @@
 import { isAuthenticated } from '../lib/admin-auth.js';
 import { readAnalytics } from '../lib/analytics-store.js';
 
-export const config = { runtime: 'edge' };
+function json(res, status, data) {
+  res.statusCode = status;
+  res.setHeader('content-type', 'application/json; charset=utf-8');
+  res.setHeader('cache-control', 'no-store');
+  res.end(JSON.stringify(data));
+}
 
-export default async function handler(request) {
+function toWebRequest(req) {
+  const host = req.headers.host || 'mehk3y.com';
+  return new Request(`https://${host}${req.url || '/api/admin-stats'}`, {
+    method: req.method,
+    headers: req.headers,
+  });
+}
+
+export default async function handler(req, res) {
+  const request = toWebRequest(req);
+
   if (!(await isAuthenticated(request))) {
-    return new Response(JSON.stringify({ ok: false, error: 'unauthorized' }), {
-      status: 401,
-      headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
-    });
+    return json(res, 401, { ok: false, error: 'unauthorized' });
   }
 
   const url = new URL(request.url);
   const limit = Number(url.searchParams.get('limit') || 300);
   const stats = await readAnalytics(limit);
-  return new Response(JSON.stringify({ ok: true, stats }), {
-    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
-  });
+  return json(res, 200, { ok: true, stats });
 }
