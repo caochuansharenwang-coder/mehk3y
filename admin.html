@@ -38,7 +38,7 @@
       .top { align-items: flex-start; flex-direction: column; }
       .grid, .cols, .cols.three { grid-template-columns: 1fr; }
       .table-wrap { overflow-x: auto; }
-      table { min-width: 900px; }
+      table { min-width: 1100px; }
     }
   </style>
 </head>
@@ -78,9 +78,13 @@
 
       <div class="grid">
         <div class="panel metric"><div class="label">总访问</div><div id="m-visits" class="value">0</div></div>
+        <div class="panel metric"><div class="label">独立访客</div><div id="m-visitors" class="value">0</div></div>
         <div class="panel metric"><div class="label">独立 IP</div><div id="m-ips" class="value">0</div></div>
-        <div class="panel metric"><div class="label">手机访问</div><div id="m-mobile" class="value">0</div></div>
         <div class="panel metric"><div class="label">今日独立 IP</div><div id="m-today-ips" class="value">0</div></div>
+        <div class="panel metric"><div class="label">手机访问</div><div id="m-mobile" class="value">0</div></div>
+        <div class="panel metric"><div class="label">新访客占比</div><div id="m-new" class="value">—</div></div>
+        <div class="panel metric"><div class="label">平均停留</div><div id="m-duration" class="value">—</div></div>
+        <div class="panel metric"><div class="label">人均页数</div><div id="m-ppsession" class="value">—</div></div>
       </div>
 
       <div class="cols">
@@ -109,12 +113,27 @@
         </section>
       </div>
 
+      <div class="cols three">
+        <section class="panel">
+          <h2 style="font-size:16px;margin-bottom:10px">运营商 / ISP</h2>
+          <div id="isp"></div>
+        </section>
+        <section class="panel">
+          <h2 style="font-size:16px;margin-bottom:10px">网络类型</h2>
+          <div id="network-kind"></div>
+        </section>
+        <section class="panel">
+          <h2 style="font-size:16px;margin-bottom:10px">来源渠道 (UTM)</h2>
+          <div id="sources"></div>
+        </section>
+      </div>
+
       <section class="panel" style="margin-top:10px">
         <h2 style="font-size:16px;margin-bottom:10px">最近访问</h2>
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>时间</th><th>页面</th><th>IP</th><th>设备</th><th>系统/浏览器</th><th>地区</th><th>来源</th><th>User Agent</th></tr>
+              <tr><th>时间</th><th>页面</th><th>IP</th><th>网络/运营商</th><th>设备</th><th>系统/浏览器</th><th>地区</th><th>来源</th><th>User Agent</th></tr>
             </thead>
             <tbody id="events"></tbody>
           </table>
@@ -142,35 +161,60 @@
       $(id).innerHTML = `<table><tbody>${rows.map((row) => `<tr><td><code>${escapeHtml(row.key)}</code></td><td style="text-align:right;font-weight:800">${row.count}</td></tr>`).join('')}</tbody></table>`;
     }
 
+    function formatDuration(ms) {
+      const s = Math.round((ms || 0) / 1000);
+      if (!s) return '—';
+      if (s < 60) return s + ' 秒';
+      return Math.floor(s / 60) + ' 分 ' + (s % 60) + ' 秒';
+    }
+
     function renderStats(stats) {
       $('storage-warning').classList.toggle('hidden', stats.configured !== false);
-      const total = (stats.pages || []).reduce((sum, row) => sum + row.count, 0);
+      const total = Number(stats.pageviewsTotal || 0) || (stats.pages || []).reduce((sum, row) => sum + row.count, 0);
+      const newCount = countOf(stats.visitorType, 'new');
+      const returningCount = countOf(stats.visitorType, 'returning');
+      const sessions = newCount + returningCount;
       $('m-visits').textContent = total.toLocaleString('zh-CN');
+      $('m-visitors').textContent = Number(stats.uniqueVisitors || 0).toLocaleString('zh-CN');
       $('m-ips').textContent = Number(stats.uniqueIps || 0).toLocaleString('zh-CN');
-      $('m-mobile').textContent = countOf(stats.devices, 'mobile').toLocaleString('zh-CN');
       $('m-today-ips').textContent = Number(stats.todayUniqueIps || 0).toLocaleString('zh-CN');
+      $('m-mobile').textContent = countOf(stats.devices, 'mobile').toLocaleString('zh-CN');
+      $('m-new').textContent = sessions ? Math.round((newCount / sessions) * 100) + '%' : '—';
+      $('m-duration').textContent = formatDuration(stats.avgDurationMs);
+      $('m-ppsession').textContent = stats.avgPagesPerSession ? Number(stats.avgPagesPerSession).toFixed(1) : '—';
       renderPairs('pages', stats.pages || []);
       renderPairs('today-pages', stats.todayPages || []);
       renderPairs('os', stats.os || []);
       renderPairs('browsers', stats.browsers || []);
       renderPairs('countries', stats.countries || []);
+      renderPairs('isp', stats.isp || []);
+      renderPairs('network-kind', stats.networkKind || []);
+      renderPairs('sources', stats.sources || []);
       const deviceLabel = (event) => {
         if (event.deviceType === 'tablet') return '平板';
         if (event.deviceType === 'mobile' || event.isMobile) return '手机';
         return '桌面';
       };
+      const hardware = (event) => [
+        event.screen ? '屏 ' + event.screen : '',
+        event.pixelRatio && event.pixelRatio !== 1 ? '@' + event.pixelRatio + 'x' : '',
+        event.cpuCores ? event.cpuCores + '核' : '',
+        event.deviceMemory ? event.deviceMemory + 'GB' : '',
+        event.netType ? event.netType.toUpperCase() : '',
+      ].filter(Boolean).join(' · ');
       $('events').innerHTML = (stats.events || []).map((event) => `
         <tr>
           <td>${escapeHtml(new Date(event.ts).toLocaleString('zh-CN'))}</td>
-          <td><code>${escapeHtml(event.page)}</code></td>
+          <td><code>${escapeHtml(event.page)}</code>${event.utmSource ? ` <span class="badge">${escapeHtml(event.utmSource)}</span>` : ''}</td>
           <td><code>${escapeHtml(event.ip)}</code></td>
-          <td><span class="badge">${deviceLabel(event)}</span>${event.isBot ? ' <span class="badge">Bot</span>' : ''}</td>
+          <td>${escapeHtml(event.isp || '-')}${event.asn ? ` <span class="badge">${escapeHtml(event.asn)}</span>` : ''}${event.isHosting ? ' <span class="badge">机房/VPN</span>' : ''}</td>
+          <td><span class="badge">${deviceLabel(event)}</span>${event.isReturning ? ' <span class="badge">回访</span>' : ''}${event.isBot ? ' <span class="badge">Bot</span>' : ''}<div class="hint" style="margin-top:4px">${escapeHtml(hardware(event))}</div></td>
           <td>${escapeHtml([event.os, event.browser].filter(Boolean).join(' / ') || '-')}</td>
           <td>${escapeHtml([event.country, event.region, event.city].filter(Boolean).join(' / ') || '-')}</td>
           <td><code>${escapeHtml(event.referrer || '-')}</code></td>
           <td><code>${escapeHtml(event.userAgent)}</code></td>
         </tr>
-      `).join('') || '<tr><td colspan="8">暂无访问记录</td></tr>';
+      `).join('') || '<tr><td colspan="9">暂无访问记录</td></tr>';
     }
 
     async function loadStats() {
