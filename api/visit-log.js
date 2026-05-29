@@ -42,6 +42,9 @@ export default async function handler(req, res) {
   entry.page = truncate(payload.page || entry.page, 80);
   entry.referrer = truncate(payload.referrer || entry.referrer, 220);
   entry.screen = truncate(payload.screen, 40);
+  entry.viewport = truncate(payload.viewport, 40);
+  entry.timezone = truncate(payload.timezone, 60);
+  if (payload.language) entry.language = truncate(payload.language, 140);
 
   console.log(JSON.stringify(entry));
   await recordVisit(entry);
