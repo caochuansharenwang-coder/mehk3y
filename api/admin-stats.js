@@ -1,5 +1,5 @@
 import { isAuthenticated } from '../lib/admin-auth.js';
-import { readAnalytics } from '../lib/analytics-store.js';
+import { getRedisConfig, readAnalytics } from '../lib/analytics-store.js';
 
 function json(res, status, data) {
   res.statusCode = status;
@@ -26,5 +26,17 @@ export default async function handler(req, res) {
   const url = new URL(request.url);
   const limit = Number(url.searchParams.get('limit') || 300);
   const stats = await readAnalytics(limit);
-  return json(res, 200, { ok: true, stats });
+  const redis = getRedisConfig();
+  return json(res, 200, {
+    ok: true,
+    stats,
+    diagnostics: {
+      runtime: 'node',
+      upstashUrl: Boolean(process.env.UPSTASH_REDIS_REST_URL),
+      upstashToken: Boolean(process.env.UPSTASH_REDIS_REST_TOKEN),
+      kvUrl: Boolean(process.env.KV_REST_API_URL),
+      kvToken: Boolean(process.env.KV_REST_API_TOKEN),
+      redisReady: redis.ready,
+    },
+  });
 }
