@@ -1,5 +1,5 @@
 import { isAuthenticated } from '../lib/admin-auth.js';
-import { getRedisConfig, readAnalytics } from '../lib/analytics-store.js';
+import { getRedisConfig, readAnalytics, readIpTrail, readTrend } from '../lib/analytics-store.js';
 
 function json(res, status, data) {
   res.statusCode = status;
@@ -24,12 +24,22 @@ export default async function handler(req, res) {
   }
 
   const url = new URL(request.url);
+
+  // 单 IP 轨迹查询
+  const ip = url.searchParams.get('ip');
+  if (ip) {
+    const trail = await readIpTrail(ip, 200);
+    return json(res, 200, { ok: true, ip, trail });
+  }
+
   const limit = Number(url.searchParams.get('limit') || 300);
   const stats = await readAnalytics(limit);
+  const trend = await readTrend(90);
   const redis = getRedisConfig();
   return json(res, 200, {
     ok: true,
     stats,
+    trend,
     diagnostics: {
       runtime: 'node',
       upstashUrl: Boolean(process.env.UPSTASH_REDIS_REST_URL),
