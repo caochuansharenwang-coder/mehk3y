@@ -16,6 +16,7 @@ credentials.json
 .credentials
 *.pem
 *.key
+.gitconfig
 
 # Dependencies
 node_modules/
