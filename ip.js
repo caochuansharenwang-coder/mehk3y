@@ -237,23 +237,6 @@ function render(ip, dev, dnsResult, webrtcResult) {
   const ccUp  = (ip.countryCode || '').toUpperCase();
   const restrictedName = CLAUDE_RESTRICTED_CC[ccUp] || null;
 
-  // 风险偏高时（低分 / 受限区域 / 机房·VPN·代理·Tor）推荐换用干净的住宅 IP。
-  // IP 干净（高分且非代理）时不显示，避免打扰。
-  const ipRisky = Boolean(restrictedName) || score < 80
-    || ip.isHosting || ip.isVPN || ip.proxy || ip.isTOR;
-  const cleanIpCta = ipRisky ? `
-    <a class="card" href="https://iproyal.cn/?r=1393536" target="_blank" rel="nofollow sponsored noopener"
-       style="display:block;text-decoration:none;margin-bottom:8px;border:1px solid var(--tint-orange-fg);background:var(--tint-orange-bg)">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:20px;line-height:1">🛡️</span>
-        <div style="flex:1;min-width:0">
-          <div style="color:var(--text);font-size:13px;font-weight:700;margin-bottom:2px">当前 IP 风险偏高，登录 AI 易触发风控</div>
-          <div style="color:var(--text-2);font-size:12px;line-height:1.5">换用干净的住宅 IP 可显著降低封号风险 · 推荐 IPRoyal 住宅代理 →</div>
-        </div>
-        <span style="color:var(--tint-orange-fg);font-size:16px;font-weight:700">›</span>
-      </div>
-    </a>` : '';
-
   const ipType = ip.isVPN ? 'VPN' : ip.isTOR ? 'Tor' : ip.proxy ? '代理 IP' : ip.isHosting ? '数据中心 IP' : '家庭 IP';
   const itColor = (ip.proxy || ip.isVPN || ip.isTOR) ? '#dc2626' : ip.isHosting ? '#f7931a' : '#16a34a';
   const itBg    = (ip.proxy || ip.isVPN || ip.isTOR) ? '#fef2f2' : ip.isHosting ? '#fff7ed' : '#f0fdf4';
@@ -360,8 +343,6 @@ function render(ip, dev, dnsResult, webrtcResult) {
       </div>
       ${claudeCard}
     </div>
-
-    ${cleanIpCta}
 
     <!-- IP属性 + 安全检测 — 2 columns -->
     <div class="ip-grid2">
