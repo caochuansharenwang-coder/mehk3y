@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mehk3y — 个人工具集 · 加密链上 · 网络检测 · 服务渠道</title>
-  <meta name="description" content="一个轻量、无追踪的个人工具站：BTC / ETH 实时链上仪表盘、IP 与浏览器指纹检测、eSIM 激活码解析与 OpenEUICC 教程、giffgaff 速查、Apple 礼品卡渠道。">
-  <meta name="keywords" content="BTC,ETH,链上数据,IP 检测,VPN,eSIM,OpenEUICC,giffgaff,Apple 礼品卡,Claude">
+  <meta name="description" content="一个轻量、无追踪的个人工具站：BTC / ETH 实时链上仪表盘、IP 与浏览器指纹检测、Apple 礼品卡渠道对比、Basic English 850 核心词、照片转拼豆像素图。">
+  <meta name="keywords" content="BTC,ETH,链上数据,IP 检测,VPN,Apple 礼品卡,Basic English,拼豆,像素图,Claude">
   <meta name="author" content="Mehk3y">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
 
   <meta property="og:title" content="Mehk3y — 个人工具集 · 加密链上 · 网络检测 · 服务渠道">
-  <meta property="og:description" content="BTC / ETH 实时指标 · IP/指纹检测 · eSIM 激活码解析 · giffgaff · Apple 礼品卡渠道汇总。无追踪、无广告、无前置依赖。">
+  <meta property="og:description" content="BTC / ETH 实时指标 · IP/指纹检测 · Apple 礼品卡渠道 · Basic English · 拼豆像素图。无追踪、无广告、无前置依赖。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mehk3y.com/">
   <meta property="og:image" content="https://mehk3y.com/og-image.png">
@@ -33,7 +33,34 @@
 
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/common.css">
-  <script src="/theme.js"></script>
+  <script>
+  /* Inlined theme controller (was /theme.js) — runs before paint to avoid FOUC
+     and removes a render-blocking request on the homepage. */
+  (function () {
+    'use strict';
+    var KEY = 'theme';
+    var html = document.documentElement;
+    function read() { try { return localStorage.getItem(KEY) || 'auto'; } catch (_) { return 'auto'; } }
+    function write(v) { try { localStorage.setItem(KEY, v); } catch (_) {} }
+    function apply(v) {
+      if (v === 'auto') html.removeAttribute('data-theme');
+      else html.setAttribute('data-theme', v);
+      if (v === 'auto') html.setAttribute('data-theme', 'auto');
+    }
+    apply(read());
+    function next(v) { return v === 'auto' ? 'light' : v === 'light' ? 'dark' : 'auto'; }
+    function bind() {
+      document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var n = next(read()); write(n); apply(n);
+          btn.setAttribute('aria-label', '主题：' + n);
+        });
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+    else bind();
+  })();
+  </script>
 
   <script type="application/ld+json">
   {
@@ -95,7 +122,7 @@
     .hero > * { animation: none !important; opacity: 1 !important; }
     .logo {
       font-size: 44px; font-weight: 600; letter-spacing: -0.045em;
-      line-height: 1; margin-bottom: 14px;
+      line-height: 1; margin: 0 0 14px;
       background: linear-gradient(180deg, var(--text) 0%, var(--text-2) 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -214,7 +241,7 @@
 
   <div class="container">
     <div class="hero">
-      <div class="logo">Mehk3y</div>
+      <h1 class="logo">Mehk3y</h1>
       <p class="tagline">个人工具集 — 链上数据 <span class="dot">·</span> 网络检测 <span class="dot">·</span> 服务渠道</p>
     </div>
 
