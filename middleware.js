@@ -6,7 +6,7 @@
 //
 // 说明: in-memory Map 每个 Edge 实例独立, 冷启动会重置 - 对个人站够用。
 
-import { createVisitEntry, enrichIp, isBotUa, recordVisit, shouldTrackRequest } from './lib/analytics-store.js';
+import { createVisitEntry, enrichIp, isBlockedBot, isBotUa, recordVisit, shouldTrackRequest } from './lib/analytics-store.js';
 
 export const config = {
   // 匹配所有页面与 API, 排除静态资源。
@@ -14,9 +14,10 @@ export const config = {
 };
 
 const buckets = new Map();
-const WINDOW_MS = 60_000;
-const MAX_REQS  = 30;
-const GC_AT     = 1000; // 超过这么多 IP 就回收一次过期 bucket
+const WINDOW_MS    = 60_000;
+const MAX_REQS     = 30;  // /api/ 每 IP 每分钟上限
+const MAX_PAGES    = 60;  // 页面每 IP 每分钟上限(真人多开标签也够用)
+const GC_AT        = 1000; // 超过这么多 IP 就回收一次过期 bucket
 
 // IP 富化结果缓存, 避免同一爬虫反复抓站时狂打 geo 接口。
 const ipCache = new Map();
@@ -28,18 +29,19 @@ function clientIp(request) {
       || 'anonymous';
 }
 
-function rateLimit(ip) {
+function rateLimit(ip, max = MAX_REQS, prefix = 'api') {
   const now = Date.now();
-  const b = buckets.get(ip);
+  const key = `${prefix}:${ip}`;
+  const b = buckets.get(key);
   if (!b || now > b.resetAt) {
-    buckets.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    buckets.set(key, { count: 1, resetAt: now + WINDOW_MS });
     if (buckets.size > GC_AT) {
       for (const [k, v] of buckets) if (v.resetAt < now) buckets.delete(k);
     }
     return null;
   }
   b.count++;
-  if (b.count > MAX_REQS) {
+  if (b.count > max) {
     const retryAfter = Math.ceil((b.resetAt - now) / 1000);
     return new Response(JSON.stringify({ error: 'rate limited', retry_after: retryAfter }), {
       status: 429,
@@ -47,6 +49,14 @@ function rateLimit(ip) {
     });
   }
   return null;
+}
+
+// 拦截爬虫: 返回 403, 不缓存。搜索引擎/社交预览已在 isBlockedBot 内放行。
+function blockBot() {
+  return new Response('Forbidden', {
+    status: 403,
+    headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
+  });
 }
 
 async function cachedEnrichIp(ip) {
@@ -76,13 +86,21 @@ async function recordBotVisit(request) {
 
 export default function middleware(request, context) {
   const url = new URL(request.url);
+  const ua = request.headers.get('user-agent') || '';
+  const ip = clientIp(request);
 
   if (url.pathname.startsWith('/api/')) {
-    return rateLimit(clientIp(request)) || undefined;
+    // 接口: 坏爬虫直接 403, 其余按 IP 限流。
+    if (isBlockedBot(ua)) return blockBot();
+    return rateLimit(ip, MAX_REQS, 'api') || undefined;
   }
 
-  // 页面请求: 只对爬虫做服务端补记 (真实用户走 beacon, 避免重复)。
-  const ua = request.headers.get('user-agent') || '';
+  // 页面请求: 先拦坏爬虫(放行搜索引擎/社交预览), 再按 IP 限流。
+  if (isBlockedBot(ua)) return blockBot();
+  const limited = rateLimit(ip, MAX_PAGES, 'page');
+  if (limited) return limited;
+
+  // 对放行的搜索引擎/预览爬虫做服务端补记 (真实用户走 beacon, 避免重复)。
   if (isBotUa(ua) && shouldTrackRequest(request)) {
     const task = recordBotVisit(request).catch(() => {});
     if (context && typeof context.waitUntil === 'function') context.waitUntil(task);
