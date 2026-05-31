@@ -89,6 +89,10 @@ export default function middleware(request, context) {
   const ua = request.headers.get('user-agent') || '';
   const ip = clientIp(request);
 
+  // 对外付费 API: 由自身的 key 计费/限额把关 (lib/api-keys.js), 不走爬虫拦截
+  // 与 IP 限流 —— 付费客户端本就用 curl/python/axios 等脚本调用。
+  if (url.pathname.startsWith('/api/v1/')) return undefined;
+
   if (url.pathname.startsWith('/api/')) {
     // 接口: 坏爬虫直接 403, 其余按 IP 限流。
     if (isBlockedBot(ua)) return blockBot();
