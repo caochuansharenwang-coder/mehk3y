@@ -15,8 +15,40 @@
     <link rel="preload" href="./fonts/yMJRMIlzdpvBhQQL_Qq7dy0.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="./fonts.css?v=20260529c">
     <link rel="stylesheet" href="./style.css?v=20260529c">
+    <style>
+      /* 横屏建议提示：仅在手机竖屏(触屏)时出现，旋转到横屏自动消失，可手动关闭 */
+      #orientation-hint {
+        position: fixed; left: 50%; top: 12px; transform: translateX(-50%);
+        z-index: 9999; display: none;
+        align-items: center; gap: 10px;
+        max-width: calc(100vw - 24px);
+        padding: 9px 12px 9px 14px;
+        font-family: 'Outfit', system-ui, sans-serif; font-size: 13px; line-height: 1.35;
+        color: #e6edf6; background: rgba(20, 24, 34, 0.92);
+        border: 1px solid rgba(120, 200, 255, 0.35); border-radius: 12px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45); backdrop-filter: blur(8px);
+      }
+      #orientation-hint .rot-ico { flex-shrink: 0; color: #5fd0e0; animation: rot-wobble 2.2s ease-in-out infinite; }
+      #orientation-hint .rot-close {
+        flex-shrink: 0; margin-left: 2px; width: 24px; height: 24px;
+        display: flex; align-items: center; justify-content: center;
+        border: none; border-radius: 6px; cursor: pointer;
+        background: rgba(255, 255, 255, 0.08); color: #aebaccc0; font-size: 16px; line-height: 1;
+      }
+      @keyframes rot-wobble { 0%,100% { transform: rotate(-12deg); } 50% { transform: rotate(78deg); } }
+      /* 触屏 + 竖屏才显示 */
+      @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+        #orientation-hint:not(.dismissed) { display: flex; }
+      }
+    </style>
 </head>
 <body>
+    <!-- 横屏体验提示 -->
+    <div id="orientation-hint" role="status">
+      <svg class="rot-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="11" height="14" rx="2"/><path d="M14 11h3a4 4 0 0 1 4 4v0"/><path d="m18 8-2 3 3 1"/></svg>
+      <span>横屏游玩视野更开阔，更容易看到车位 · Rotate to landscape for a wider view</span>
+      <button class="rot-close" type="button" aria-label="关闭">×</button>
+    </div>
     <div id="app">
         <!-- 游戏画布 -->
         <canvas id="game-canvas"></canvas>
@@ -410,6 +442,20 @@
             </ul>
         </div>
     </div>
+
+    <!-- 主模块脚本入口 -->
+    <!-- 横屏提示：用户关闭后本次会话不再弹；旋转到横屏 CSS 已自动隐藏 -->
+    <script>
+      (function () {
+        var hint = document.getElementById('orientation-hint');
+        if (!hint) return;
+        try { if (sessionStorage.getItem('parking_rot_hint') === 'off') hint.classList.add('dismissed'); } catch (_) {}
+        hint.querySelector('.rot-close').addEventListener('click', function () {
+          hint.classList.add('dismissed');
+          try { sessionStorage.setItem('parking_rot_hint', 'off'); } catch (_) {}
+        });
+      })();
+    </script>
 
     <!-- 主模块脚本入口 -->
     <script type="module" src="./src/main.js?v=20260529c"></script>

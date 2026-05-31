@@ -91,9 +91,15 @@ export class CanvasRenderer {
         } else {
             targetX = vehicle.x;
             targetY = vehicle.y;
-            // 采用较大的固定视口缩放 (1.45)，使卡车细节放大，便于观察轮子、转向与挂钩
-            // 竖屏下调小一点点避免越界
-            targetZoom = (canvasHeight > canvasWidth) ? 1.25 : 1.45;
+            // 横屏：较大的固定缩放 (1.45)，放大卡车细节便于观察轮子、转向与挂钩。
+            // 竖屏(手机)：视野窄，按宽高比进一步拉远，保证车位更容易落在可视范围内
+            // (越窄的屏幕拉得越远，夹在 0.85~1.15 之间)。
+            if (canvasHeight > canvasWidth) {
+                const aspect = canvasWidth / canvasHeight; // 越小越窄
+                targetZoom = Math.max(0.85, Math.min(1.15, 1.45 * aspect + 0.2));
+            } else {
+                targetZoom = 1.45;
+            }
         }
 
         // 过渡阶段用减半的 lerp 速度 (2.5/秒)，正常跟随用 5.0/秒
