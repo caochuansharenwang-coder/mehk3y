@@ -40,6 +40,14 @@
       @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
         #orientation-hint:not(.dismissed) { display: flex; }
       }
+
+      /* 自托管单机版：无后端、Google 登录不可用，隐藏所有登录入口。
+         (排行榜/成绩仍以本地 localStorage 形式离线可用，无需登录)
+         顺带解决横屏下登录胶囊与右上计时条重叠的问题。 */
+      #login-pill,
+      #login-modal,
+      #btn-signin-create,
+      .btn-login-prompt { display: none !important; }
     </style>
 </head>
 <body>
