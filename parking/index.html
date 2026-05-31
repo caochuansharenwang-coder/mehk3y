@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta id="meta-description" name="description" content="Practice semi-trailer reverse parking and learn the physics of articulated vehicles.">
+    <title>半挂倒车模拟器 · Semi-Trailer Parking — Mehk3y</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./favicon.svg">
+    <!-- Google Identity Services 由 src/auth.js 在 init 时按当前语言动态加载 (用 ?hl= 控制按钮语言) -->
+
+    <!-- 自托管字体 (Orbitron / Outfit)，无外部请求 -->
+    <link rel="preload" href="./fonts/yMJRMIlzdpvBhQQL_Qq7dy0.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="./fonts.css?v=20260529c">
+    <link rel="stylesheet" href="./style.css?v=20260529c">
+</head>
+<body>
+    <div id="app">
+        <!-- 游戏画布 -->
+        <canvas id="game-canvas"></canvas>
+
+        <!-- 顶部 HUD 工具栏 -->
+        <header class="hud-header">
+            <div class="app-title">Semi-Trailer Parking Simulator</div>
+            <div class="action-buttons">
+                <button id="btn-toggle-prediction" class="hud-btn active">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="2.5,3" d="M3,20 Q10,3 21,5"/></svg>
+                    <span data-i18n="btnTrajectory">轨迹</span>
+                </button>
+                <button id="btn-toggle-sound" class="hud-btn active">
+                    <svg id="sound-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/></svg>
+                    <span data-i18n="btnSound">声音</span>
+                </button>
+                <button id="btn-restart" class="hud-btn">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M17.65,6.35A7.95,7.95,0,0,0,12,4A8,8,0,1,0,20,12H18A6,6,0,1,1,12,6A5.91,5.91,0,0,1,16.24,7.76L13,11H21V3L17.65,6.35Z"/></svg>
+                    <span data-i18n="btnRestart">重来</span>
+                </button>
+                <button id="btn-levels-menu" class="hud-btn">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/></svg>
+                    <span data-i18n="btnMenu">菜单</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 当前训练信息：与 canvas 上的小地图缩略图同一行，上下两行无外框 -->
+        <div class="level-info-bar">
+            <button id="btn-level-switch" class="level-info-trigger" aria-label="Switch level">
+                <span class="level-label" data-i18n="currentTraining">当前训练</span>
+                <span class="level-name-row">
+                    <span id="current-level-name" class="level-value"></span>
+                    <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M7,10L12,15L17,10H7Z"/></svg>
+                </span>
+                <span id="play-timer" class="level-timer">0:00</span>
+            </button>
+            <button id="btn-share-playing" class="share-pill">
+                <svg viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/></svg>
+                <span data-i18n="shareBtn">Share</span>
+            </button>
+        </div>
+
+        <!-- 警报提示区 (例如折头、碰撞) -->
+        <div id="warning-banner" class="hud-banner warning hidden">
+            <span class="warning-blink">⚠</span> <span data-i18n="jackknifeWarning">折头警报 (JACKKNIFE)</span>
+        </div>
+        <div id="message-toast" class="hud-toast hidden"></div>
+
+        <!-- 关卡引导教学浮层 -->
+        <div id="level-tutorial" class="hud-tutorial">
+            <h3 id="tutorial-title"></h3>
+            <p id="tutorial-text"></p>
+            <button id="btn-start-level" class="btn-primary" data-i18n="startPractice">开始练习</button>
+        </div>
+
+        <!-- 移动端虚拟操作手柄 (底层绝对定位覆盖在Canvas之上) -->
+        <div class="mobile-controls">
+            <!-- 左侧动力踏板区 -->
+            <div class="pedal-section">
+                <!-- 挡位拨杆 (D / N / R) -->
+                <div class="gear-selector-wrapper">
+                    <div class="gear-label" data-i18n="gearLabel">挡位</div>
+                    <div class="gear-selector">
+                        <button id="gear-d" class="gear-btn active">D</button>
+                        <button id="gear-r" class="gear-btn">R</button>
+                    </div>
+                </div>
+                <!-- 踏板：刹车与油门 -->
+                <div class="pedals">
+                    <div id="pedal-brake" class="pedal pedal-b active-tap">
+                        <div class="pedal-label" data-i18n="pedalBrake">BRAKE</div>
+                        <div class="pedal-grooves"></div>
+                    </div>
+                    <div id="pedal-gas" class="pedal pedal-g active-tap">
+                        <div class="pedal-label" data-i18n="pedalGas">GAS</div>
+                        <div class="pedal-grooves"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧虚拟方向盘区 -->
+            <div class="steering-section">
+                <!-- 登录按钮 / 已登录指示器 -->
+                <div id="login-pill" class="login-pill">
+                    <button id="btn-login" class="login-btn">
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/></svg>
+                        <span data-i18n="loginBtn">Sign In</span>
+                    </button>
+                    <div id="user-chip" class="user-chip hidden">
+                        <img id="user-avatar" class="user-avatar" alt="">
+                        <span id="user-name" class="user-name"></span>
+                        <button id="btn-logout" class="logout-btn" title="Sign out">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M17,17.25V14H10V10H17V6.75L22.25,12L17,17.25M13,2A2,2 0 0,1 15,4V8H13V4H4V20H13V16H15V20A2,2 0 0,1 13,22H4A2,2 0 0,1 2,20V4A2,2 0 0,1 4,2H13Z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="steering-wheel-container">
+                    <!-- 动态旋转的虚拟方向盘 -->
+                    <div id="steering-wheel" class="steering-wheel">
+                        <div class="wheel-rim"></div>
+                        <div class="wheel-center">
+                            <div class="wheel-logo">TRUCK</div>
+                        </div>
+                        <div class="wheel-spoke spoke-left"></div>
+                        <div class="wheel-spoke spoke-right"></div>
+                        <div class="wheel-spoke spoke-bottom"></div>
+                        <!-- 方向盘中央对齐指示器 -->
+                        <div class="wheel-indicator">▲</div>
+                    </div>
+                    <!-- 精确方向度数指示 -->
+                    <div class="steering-angle-display">
+                        <span data-i18n="steerAngle">前轮角度</span>: <span id="steering-val">0°</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关卡选择面板弹窗 -->
+        <div id="levels-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-topbar">
+                    <h2 class="modal-topbar-title" data-i18n="modalLevelTitle">选择训练关卡</h2>
+                    <button id="btn-close-levels" class="icon-btn" aria-label="Close">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+                    </button>
+                </div>
+                <!-- 当前关卡信息 (玩自制关时显示，含收藏按钮) -->
+                <div id="current-level-info" class="current-level-info hidden">
+                    <div class="cli-text">
+                        <div id="cli-name" class="cli-name"></div>
+                        <div id="cli-author" class="cli-author"></div>
+                    </div>
+                    <button id="btn-fav-toggle" class="fav-btn">
+                        <span id="fav-icon">☆</span> <span id="fav-label" data-i18n="favorite">收藏</span>
+                    </button>
+                </div>
+                <!-- 收藏分类 (有收藏时显示) -->
+                <div id="fav-levels-section" class="my-levels-section hidden">
+                    <div class="my-levels-head"><h3 data-i18n="favoritesTitle">收藏</h3></div>
+                    <div id="fav-levels-list" class="levels-grid"></div>
+                </div>
+                <div id="system-divider" class="levels-divider hidden"></div>
+                <div id="levels-list" class="levels-grid">
+                    <!-- JS动态渲染关卡列表 -->
+                </div>
+                <!-- 浏览所有已发布的自制关卡 -->
+                <button id="btn-browse-gallery" class="btn-secondary signin-create-btn">
+                    <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M4,4H10V10H4V4M14,4H20V10H14V4M4,14H10V20H4V14M14,14H20V20H14V14Z"/></svg>
+                    <span data-i18n="browseMore">浏览社区关卡</span>
+                </button>
+                <!-- 我的关卡 (仅可创作账号显示) -->
+                <div id="my-levels-section" class="my-levels-section hidden">
+                    <div class="my-levels-head">
+                        <h3 data-i18n="myLevelsTitle">我的关卡</h3>
+                        <button id="btn-create-level" class="btn-secondary ed-create-btn">
+                            <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
+                            <span data-i18n="createLevel">新建关卡</span>
+                        </button>
+                    </div>
+                    <div id="my-levels-list" class="levels-grid"></div>
+                </div>
+                <!-- 未登录用户：引导登录后创建关卡 -->
+                <button id="btn-signin-create" class="btn-secondary signin-create-btn hidden">
+                    <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
+                    <span data-i18n="signInToCreate">登录后创建自己的关卡</span>
+                </button>
+                <!-- 历史 (最近玩过的自制关，最多 6 个) -->
+                <div id="history-levels-section" class="my-levels-section hidden">
+                    <div class="my-levels-head"><h3 data-i18n="historyTitle">历史</h3></div>
+                    <div id="history-levels-list" class="levels-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关卡画廊弹窗 (所有已发布关卡，宽) -->
+        <div id="gallery-modal" class="modal hidden">
+            <div class="modal-content gallery-content">
+                <div class="modal-topbar">
+                    <h2 class="modal-topbar-title" data-i18n="galleryTitle">社区关卡</h2>
+                    <button id="btn-close-gallery" class="icon-btn" aria-label="Close">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+                    </button>
+                </div>
+                <div class="gallery-sortbar">
+                    <span data-i18n="sortBy">排序</span>
+                    <select id="gallery-sort" class="lang-select">
+                        <option value="new" data-i18n="sortNewest">按发布时间</option>
+                        <option value="plays" data-i18n="sortPlays">按游戏人数</option>
+                        <option value="favs" data-i18n="sortFavs">按收藏人数</option>
+                    </select>
+                </div>
+                <div id="gallery-list" class="levels-grid"></div>
+            </div>
+        </div>
+
+        <!-- 菜单弹窗 (语言 / 排行榜 / 开发者) -->
+        <div id="menu-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-topbar">
+                    <h2 class="modal-topbar-title" data-i18n="menuTitle">菜单</h2>
+                    <button id="btn-close-menu" class="icon-btn" aria-label="Close">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+                    </button>
+                </div>
+                <div class="menu-row">
+                    <span data-i18n="langLabel">语言</span>
+                    <select id="lang-select" class="lang-select" aria-label="Language"></select>
+                </div>
+                <button id="btn-menu-leaderboard" class="btn-secondary menu-item">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M7,2V13H10V22L17,10H13L17,2H7Z"/></svg>
+                    <span data-i18n="viewFullRanking">排行榜</span>
+                </button>
+                <button id="btn-menu-developer" class="btn-secondary menu-item">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/></svg>
+                    <span data-i18n="developer">开发者</span>
+                </button>
+                <div id="dev-info" class="dev-info hidden">
+                    <strong>Tank Xu</strong><br>
+                    X: <a href="https://x.com/tankxu" target="_blank" rel="noopener">@tankxu</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关卡编辑器覆盖层 (UI 浮层，中间画布保持可见可拖拽) -->
+        <div id="editor-overlay" class="hidden">
+            <div class="ed-toolbar">
+                <input id="ed-name" class="ed-name-input" maxlength="60" placeholder="关卡名称" />
+                <div class="ed-toolbar-actions">
+                    <button id="ed-test" class="btn-secondary" data-i18n="edTest">试玩</button>
+                    <button id="ed-save" class="btn-secondary" data-i18n="edSave">保存草稿</button>
+                    <div class="ed-publish-wrap">
+                        <button id="ed-publish" class="btn-primary">发布</button>
+                        <button id="ed-publish-caret" class="btn-primary ed-caret hidden" aria-label="Publish options">▾</button>
+                        <div id="ed-publish-menu" class="ed-dropdown hidden">
+                            <button id="ed-unpublish" class="btn-secondary" data-i18n="edUnpublish">取消发布</button>
+                        </div>
+                    </div>
+                    <button id="ed-more" class="icon-btn" aria-label="More">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z"/></svg>
+                    </button>
+                    <button id="ed-back" class="icon-btn" aria-label="Back">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+                    </button>
+                </div>
+                <div id="ed-more-menu" class="ed-more-menu hidden">
+                    <button id="ed-delete-level" class="btn-danger" data-i18n="edDeleteLevel">删除关卡</button>
+                </div>
+            </div>
+            <div class="ed-panel">
+                <div class="ed-palette">
+                    <button id="ed-add-wall" class="btn-secondary" data-i18n="edAddWall">＋ 墙</button>
+                    <button id="ed-add-cone" class="btn-secondary" data-i18n="edAddCone">＋ 锥桶</button>
+                    <button id="ed-zoom-in" class="icon-btn" aria-label="Zoom in">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.49L20.49,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14M12,10H10V12H9V10H7V9H9V7H10V9H12V10Z"/></svg>
+                    </button>
+                    <button id="ed-zoom-out" class="icon-btn" aria-label="Zoom out">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.49L20.49,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14M7,9H12V10H7V9Z"/></svg>
+                    </button>
+                </div>
+                <div id="ed-inspector" class="ed-inspector">
+                    <div id="ed-insp-empty" class="ed-hint" data-i18n="edSelectHint">点选起点车 / 车位 / 障碍来编辑；拖动移动，绿点旋转，蓝点缩放。空白处拖动平移。</div>
+                    <div id="ed-insp-title" class="ed-insp-title hidden"></div>
+                    <div id="ed-row-spot" class="ed-row hidden">
+                        <label><span data-i18n="edWidth">宽</span> <span id="ed-val-spot-w"></span></label>
+                        <input type="range" id="ed-slider-spot-w" min="24" max="160" step="1" />
+                        <label><span data-i18n="edLength">长</span> <span id="ed-val-spot-l"></span></label>
+                        <input type="range" id="ed-slider-spot-l" min="60" max="320" step="1" />
+                    </div>
+                    <div id="ed-row-wall" class="ed-row hidden">
+                        <label><span data-i18n="edLength">长</span> <span id="ed-val-wall-l"></span></label>
+                        <input type="range" id="ed-slider-wall-l" min="20" max="800" step="2" />
+                        <label><span data-i18n="edThickness">厚</span> <span id="ed-val-wall-t"></span></label>
+                        <input type="range" id="ed-slider-wall-t" min="4" max="60" step="1" />
+                    </div>
+                    <div id="ed-row-angle" class="ed-row hidden">
+                        <label><span data-i18n="edAngle">角度</span> <span id="ed-val-angle"></span></label>
+                        <input type="range" id="ed-slider-angle" min="-180" max="180" step="1" />
+                    </div>
+                    <button id="ed-delete" class="btn-danger hidden" data-i18n="edDelete">删除</button>
+                </div>
+                <div id="ed-validate" class="ed-validate"></div>
+            </div>
+        </div>
+
+        <!-- 试玩自建关卡时返回编辑器 -->
+        <button id="ed-resume" class="ed-resume-btn hidden" data-i18n="edBackToEditor">← 编辑器</button>
+
+        <!-- Google 登录弹窗 -->
+        <div id="login-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 data-i18n="loginTitle">登录</h2>
+                <p class="modal-subtle" data-i18n="loginPrompt">登录以记录成绩和查看排行榜</p>
+                <!-- Google 渲染的登录按钮挂这里 -->
+                <div id="google-signin-container" class="google-signin-container"></div>
+                <button id="btn-close-login" class="btn-secondary" data-i18n="close">关闭</button>
+            </div>
+        </div>
+
+        <!-- 排行榜弹窗 -->
+        <div id="leaderboard-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-topbar">
+                    <h2 class="modal-topbar-title" data-i18n="leaderboardTitle">排行榜</h2>
+                    <button id="btn-close-leaderboard-x" class="icon-btn" aria-label="Close">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+                    </button>
+                </div>
+                <!-- 关卡切换标签 -->
+                <div id="leaderboard-tabs" class="leaderboard-tabs">
+                    <!-- JS 动态渲染 -->
+                </div>
+                <div id="leaderboard-level-name" class="leaderboard-level-name"></div>
+                <!-- 列表区 -->
+                <div id="leaderboard-list" class="leaderboard-list">
+                    <!-- JS 动态渲染 -->
+                </div>
+                <button id="btn-close-leaderboard" class="btn-secondary" data-i18n="close">关闭</button>
+            </div>
+        </div>
+
+        <!-- 游戏结束/成功挑战弹窗 -->
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content result-content">
+                <div class="result-icon success-icon">🎉</div>
+                <h2 id="result-title" data-i18n="resultSuccess">成功通关！</h2>
+                <p id="result-message" data-i18n="resultSuccessMsg">您已成功将半挂货车停入目标车位，方向及角度对齐完美。</p>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-val" id="stat-time">15s</span>
+                        <span class="stat-lbl" data-i18n="statTime">用时</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val" id="stat-collisions">0</span>
+                        <span class="stat-lbl" data-i18n="statCollisions">碰撞次数</span>
+                    </div>
+                </div>
+                <!-- 排名信息 (动态切换：未登录 = 登录提示按钮；已登录 = 排名 + 查看完整排行) -->
+                <div id="result-rank-section" class="result-rank-section">
+                    <!-- JS 动态渲染 -->
+                </div>
+                <div class="result-actions">
+                    <button id="btn-next-level" class="btn-primary" data-i18n="nextLevel">下一关</button>
+                    <div class="result-secondary-row">
+                        <button id="btn-result-restart" class="btn-secondary">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M17.65,6.35A7.95,7.95,0,0,0,12,4A8,8,0,1,0,20,12H18A6,6,0,1,1,12,6A5.91,5.91,0,0,1,16.24,7.76L13,11H21V3L17.65,6.35Z"/></svg>
+                            <span data-i18n="retry">重新练习</span>
+                        </button>
+                        <button id="btn-share-result" class="btn-secondary">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/></svg>
+                            <span data-i18n="shareBtn">Share</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 会话计时弹窗：玩耍累计达到上限 (默认 60s) 时弹出，二选一：继续 / 重置 -->
+        <!-- 启用方式：在 src/session.js 里把 SESSION_CONFIG.enabled 改为 true -->
+        <div id="session-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 data-i18n="sessionTitle">时间到</h2>
+                <p id="session-message" data-i18n="sessionMessage">你已经练习了 60 秒，选择继续或重置。</p>
+                <div class="result-actions">
+                    <button id="btn-session-reset" class="btn-secondary" data-i18n="sessionReset">重置</button>
+                    <button id="btn-session-continue" class="btn-primary" data-i18n="sessionContinue">继续</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 桌面端操作提示悬浮框 (键盘 / 手柄 tab) -->
+        <div class="desktop-tips">
+            <div class="tips-tabs">
+                <button id="tips-tab-kb" class="tips-tab active" data-i18n="tipsKeyboard">键盘</button>
+                <button id="tips-tab-pad" class="tips-tab" data-i18n="tipsGamepad">手柄</button>
+            </div>
+            <ul id="tips-pane-kb" class="tips-pane">
+                <li><kbd>W</kbd> / <kbd>S</kbd> : <span data-i18n="keyHintsThrottleBrake">油门 / 刹车</span></li>
+                <li><kbd>A</kbd> / <kbd>D</kbd> : <span data-i18n="keyHintsSteer">方向盘左 / 右</span></li>
+                <li><kbd>R</kbd> : <span data-i18n="keyHintsGear">切换前进(D)/倒车(R)挡</span></li>
+                <li><kbd>Space</kbd> : <span data-i18n="keyHintsHandbrake">刹车/手刹</span></li>
+                <li><kbd>ESC</kbd> : <span data-i18n="keyHintsRestart">重来</span></li>
+            </ul>
+            <ul id="tips-pane-pad" class="tips-pane hidden">
+                <li><kbd data-i18n="padLStick">左摇杆</kbd> : <span data-i18n="padSteer">转向</span></li>
+                <li><kbd>RT</kbd> / <kbd>LT</kbd> : <span data-i18n="padThrottleBrake">油门 / 刹车</span></li>
+                <li><kbd>A</kbd> : <span data-i18n="padConfirm">开始 / 切换 D-R 挡</span></li>
+                <li><kbd>X</kbd> : <span data-i18n="padRestart">重来</span></li>
+                <li><kbd>B</kbd> / <kbd>Y</kbd> : <span data-i18n="padTrajSound">轨迹 / 声音</span></li>
+                <li><kbd data-i18n="padStart">Start</kbd> : <span data-i18n="padLevels">选择关卡</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 主模块脚本入口 -->
+    <script type="module" src="./src/main.js?v=20260529c"></script>
+</body>
+</html>
