@@ -1,991 +1,553 @@
 <!DOCTYPE html>
-<html lang="en" class="photo-wall-hidden" style="height: 100%; overflow-x: hidden; overflow-y: auto;">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>拍立得相机 — 一键生成复古拍立得照片</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>照片漫画化 — 一键把照片变成漫画风</title>
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="拍立得相机 — 一键生成复古拍立得照片">
-    <meta property="og:description" content="上传照片或用手机摄像头拍一张，自动套上复古拍立得相框、加日期，生成可保存的怀旧照片。无需注册，浏览器内完成。">
-    <meta property="og:image" content="assets/camera.png">
-    <meta property="og:type" content="website">
-    <meta name="description" content="上传照片或用摄像头拍照，一键生成带复古相框的拍立得照片，自动保存到本地。">
-    <meta name="keywords" content="拍立得,复古照片,相框,polaroid,在线相机,照片滤镜">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/camera.png">
-    <link rel="shortcut icon" type="image/png" href="assets/camera.png">
-    <link rel="apple-touch-icon" href="assets/camera.png">
-    
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    <!-- Photo wall style settings -->
-    <style>
-        /* Photo wall layout adjustments */
-        .photo-wall-section {
-            position: relative !important; /* Ensure no absolute positioning */
-            padding-top: 0 !important; /* Force override all padding-top settings */
-            overflow: hidden !important; /* Ensure content doesn't exceed background image */
-        }
-        
+  <meta name="description" content="上传照片或用摄像头拍一张，浏览器内一键把照片转成漫画风（描边 + 色块 + 海报化），强度可调，可直接下载。无需上传服务器，全程本地完成。">
+  <meta name="keywords" content="漫画化,卡通滤镜,照片转漫画,描边,海报化,在线工具">
 
+  <meta property="og:title" content="照片漫画化 — 一键把照片变成漫画风">
+  <meta property="og:description" content="上传或拍照，浏览器内一键转漫画风，强度可调，可下载。图片不上传服务器，本地处理。">
+  <meta property="og:type" content="website">
 
-        
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23052329' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='18' height='14' rx='2'/%3E%3Ccircle cx='12' cy='13' r='3.2'/%3E%3Cpath d='M8 6l1.2-2h5.6L16 6'/%3E%3C/svg%3E">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
+  <style>
+    :root {
+      --bg: #F5F2E9;
+      --ink: #052329;
+      --ink-2: #0B4A56;
+      --line: #d9d2c4;
+      --dim: #5a6a6e;
+      --surface: #fffdf8;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Playfair Display', Georgia, 'Songti SC', serif;
+      min-height: 100vh;
+      min-height: calc(100vh + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: calc(40px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom));
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 0 0 12px;
+      text-align: center;
+    }
+    .intro {
+      max-width: 520px;
+      text-align: center;
+      color: var(--dim);
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0 0 28px;
+    }
 
-    </style>
-    <style>
-        html {
-            /* 禁用WebView手势缩放功能 */
-            touch-action: manipulation;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            -ms-touch-action: manipulation;
-            -ms-user-select: none;
-        }
-        
-        * {
-            /* 确保所有元素都不允许缩放 */
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* 允许特定元素的文本选择（如输入框） */
-        input, textarea {
-            -webkit-user-select: text;
-            user-select: text;
-        }
-        
-        body {
-            background-color: #F5F2E9;
-            margin: 0;
-            padding: 0;
-            /* Safe Area 适配：使用min-height而不是padding来avoid视觉分隔 */
-            min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden; /* 只防止水平滚动，允许垂直滚动 */
-            overflow-y: auto; /* 允许垂直滚动 */
-            /* 禁用WebView手势缩放功能 */
-            touch-action: manipulation;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 100%; /* Take up the entire screen width */
-            margin: 0 auto;
-            padding: 20px;
-            padding-bottom: 0; /* Remove bottom padding */
-            background-color: #F5F2E9;
-            display: flex;
-            flex-direction: column; /* Default column layout for mobile */
-            align-items: center;
-            min-height: 100%; /* 使用最小高度而不是固定高度 */
-            flex-wrap: nowrap; /* Prevent wrapping */
-            overflow-x: hidden; /* 防止水平滚动 */
-            overflow-y: visible; /* 允许垂直滚动 */
-            /* 移除可能的阴影效果 */
-            box-shadow: none;
-            border: none;
-        }
-        
-        /* 在小屏幕上为container增加底部填充 */
-        @media (max-width: 1000px) {
-            .container {
-                padding-bottom: 100px; /* 增加底部填充，为下载按钮腾出空间 */
-            }
-        }
-        
-        h1 {
-            text-align: center;
-            /* Safe Area 适配：标题顶部距离包含安全区域 */
-            margin-top: calc(20px + env(safe-area-inset-top));
-            margin-bottom: 30px;
-            color: #052329;
-            max-width: 800px;
-            width: 100%;
-            font-weight: 600;
-            font-family: 'Homemade Apple', cursive;
-            letter-spacing: 1px;
-            position: relative;
-            top: 80px;
-        }
-        
-        .intro {
-            text-align: center;
-            max-width: 520px;
-            width: 100%;
-            margin: -10px auto 0;
-            color: #4a5a5e;
-            font-size: 14px;
-            line-height: 1.7;
-            font-family: 'Playfair Display', serif;
-            position: relative;
-            top: 80px;
-            padding: 0 16px;
-            box-sizing: border-box;
-        }
-        @media (max-width: 1000px) {
-            .intro { top: 20px; font-size: 13px; margin-bottom: 10px; }
-        }
+    .stage {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
 
-        /* Core content area - contains camera and output section */
-        .core-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Start layout from the top */
-            width: 100%;
-            position: relative;
-            flex: 1;
-            padding-top: 20px; /* Leave some space at the top */
-            overflow: hidden; /* Prevent scrolling */
-        }
-        
-        /* 固定尺寸相机容器的包装器 */
-        .camera-fixed-wrapper {
-            position: relative;
-            width: 280px; /* 固定宽度 */
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-shrink: 0; /* 防止被压缩 */
-            flex-grow: 0; /* 防止被拉伸 */
-            /* 防止任何形式的自动调整尺寸 */
-            min-width: 280px;
-            max-width: 280px;
-            overflow: visible;
-            transform: scale(1);
-        }
-        
-        .camera-container {
-            position: relative;
-            width: 280px; /* 固定宽度 */
-            margin: 0 auto;
-            overflow: visible;
-            display: flex;
-            justify-content: center;
-            flex-shrink: 0; /* 防止被压缩 */
-            flex-grow: 0; /* 防止被拉伸 */
-        }
-        
-        .camera-img {
-            width: 280px; /* 固定宽度 */
-            height: auto; /* 保持宽高比 */
-            display: block;
-            object-fit: contain; /* 确保图像不会拉伸 */
-        }
-        
-        /* 相机前层固定样式 */
-        .camera-front-wrapper {
-            position: absolute;
-            top: 160px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 260px; /* 固定宽度 */
-            z-index: 500;
-            pointer-events: none;
-        }
-        
-        .camera-front-image {
-            width: 260px; /* 固定宽度 */
-            height: auto; /* 保持宽高比 */
-            display: block;
-            object-fit: contain;
-            border: none;
-        }
-        
-        .polaroid-wrapper {
-            position: relative;
-            height: 200px; /* 固定高度 */
-            margin-top: -50px; /* 调整位置以更好地对齐框架和相机出口 */
-            z-index: 1; 
-            pointer-events: none; /* 允许点击穿透 */
-            width: 280px; /* 固定宽度与相机容器相同 */
-            display: flex;
-            justify-content: center;
-            flex-shrink: 0; /* 防止压缩 */
-            flex-grow: 0; /* 防止被拉伸 */
-        }
-        
-        .polaroid-container {
-            position: absolute;
-            width: 160px; /* Fixed width instead of percentage */
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2); /* Reduce shadow */
-            opacity: 0; /* Hidden by default, restore animation effect */
-            top: 0; /* Initial position */
-            pointer-events: auto; /* Restore click events */
-            z-index: 10; /* Ensure it's on top layer */
-            transition: opacity 0.5s ease, transform 0.5s ease; /* Add transition effects */
-        }
-        
-        /* Define enter animation separately, without affecting exit */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                top: 0;
-            }
-            to {
-                opacity: 1;
-                top: 16px; /* Further reduce sliding distance */
-            }
-        }
-        
-        /* Animation class */
-        .polaroid-container.animated {
-            opacity: 1; /* Show */
-            top: 16px; /* Reduce final position value */
-            animation: slideDown 1.2s forwards; /* Make animation faster */
-            display: block; /* Ensure display */
-        }
-        
-        /* Hide class */
-        .polaroid-container.hidden {
-            opacity: 0 !important;
-            top: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .polaroid-photo {
-            width: 100%;
-            height: auto;
-            display: block;
-            image-rendering: -webkit-optimize-contrast; /* Improve photo display quality in Webkit browsers */
-            image-rendering: crisp-edges; /* Enhance edge clarity */
-        }
-        
-        .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin: 70px 0 20px; /* Increase top margin to move buttons down */
-            width: 100%;
-            max-width: 350px;
-            z-index: 2;
-            position: relative; /* Ensure z-index takes effect */
-        }
-        
-        .upload-button {
-            display: inline-block;
-            flex: 1;
-            min-width: 130px;
-            padding: 8px 15px;
-            background-color: #052329;
-            color: white;
-            text-align: center;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: normal;
-            transition: all 0.3s;
-            z-index: 2;
-            font-size: 14px;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 0.5px;
-        }
-        
-        .upload-button:hover {
-            background-color: #0B4A56;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        
-        /* Camera button styles */
-        .camera-button {
-            display: inline-block;
-            flex: 1;
-            min-width: 130px;
-            padding: 8px 15px;
-            background-color: #052329;
-            color: white;
-            text-align: center;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: normal;
-            transition: all 0.3s;
-            z-index: 2;
-            font-size: 14px;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 0.5px;
-        }
-        
-        .camera-button:hover {
-            background-color: #0B4A56;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        
-        .controls {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        button {
-            background-color: #052329;
-            color: white;
-            border: none;
-            padding: 7px 15px; /* 适中的内边距 */
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            margin: 0 6px; /* 按钮间距 */
-            min-width: 100px;
-            position: relative;
-            overflow: hidden;
-            font-size: 13px;
-        }
-        
-        button:hover {
-            background-color: #6a5a4d;
-            transform: translateY(-2px); /* 轻微上移效果 */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 添加悬浮阴影 */
-        }
-        
-        button:active {
-            transform: translateY(1px); /* 点击时下沉效果 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 减小点击时的阴影 */
-        }
-        
-        button:disabled {
-            background-color: #bbb2aa;
-            color: #e9e5df;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        /* 为保存按钮添加特殊样式 */
-        #saveBtn {
-            background-color: #665a4f; /* 深棕色调 */
-        }
-        
-        #saveBtn:hover {
-            background-color: #544a41;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        /* Main content wrapper - contains left camera area and right photo wall */
-        .main-content-wrapper {
-            display: flex;
-            flex-direction: column; /* Default column layout on small screens */
-            width: 100%;
-            gap: 20px; /* Default spacing between elements */
-        }
-        
-        /* Page layout - main content and photo wall side by side */
-        @media (min-width: 1001px) {
-            .container {
-                flex-direction: column; /* Container in column layout, title on top, content below */
-                align-items: center;
-                padding: 20px;
-                max-width: 100%;
-            }
-            
-            .main-content-wrapper {
-                flex-direction: row; /* Change to row layout on large screens */
-                justify-content: center;
-                gap: 4%; /* Increase spacing between elements */
-                width: 100%;
-                /* 不添加过渡效果，让布局变化立即生效 */
-            }
-            
-            .core-content {
-                width: 47%; /* Reduce width to make room for spacing */
-                min-height: 90vh;
-                padding-right: 150px; /* Changed from left to right, as it's now on the right */
-                padding-left: 0;
-                justify-content: center;
-                z-index: 1;
-                transition: padding-right 1.5s ease-out, width 1.5s ease-out, margin 1.5s ease-out; /* 保留位置和尺寸的过渡 */
-                transform: translateX(0); /* 确保过渡前后位置稳定 */
-            }
-            
-            /* 当照片墙隐藏时，相机模块居中显示 - 但相机本身尺寸不变 */
-            html.photo-wall-hidden .core-content, body.photo-wall-hidden .core-content {
-                width: 80%;
-                padding-right: 0;
-                margin: 0 auto;
-                /* 保留位置和尺寸的过渡 */
-                transition: padding-right 1.5s ease-out, width 1.5s ease-out, margin 1.5s ease-out;
-            }
-            
-            /* 无论照片墙是否显示，相机固定包装器都不会改变尺寸 */
-            html.photo-wall-hidden .camera-fixed-wrapper,
-            body.photo-wall-hidden .camera-fixed-wrapper,
-            .camera-fixed-wrapper {
-                width: 280px;
-                min-width: 280px;
-                max-width: 280px;
-                flex-shrink: 0;
-                flex-grow: 0;
-                transform: scale(1);
-            }
-            
-            .photo-wall-section {
-                width: 47%; /* Reduce width to make room for spacing */
-                z-index: 0;
-                justify-content: center;
-                flex: 1;
-                max-height: 90vh;
-                aspect-ratio: 960/540; /* Maintain background image aspect ratio */
-            }
-        }
-        
-        /* 1000px以下的屏幕上强制隐藏照片墙 */
-        @media (max-width: 1000px) {
-            /* 隐藏photo-wall-section元素 */
-            .photo-wall-section {
-                display: none !important;
-                opacity: 0 !important;
-            }
-            
-            h1 {
-                top: 20px; /* 减小标题的上方距离 */
-                margin-bottom: 60px; /* 增加标题下方的间距 */
-                font-size: 28px; /* 稍微减小字体大小 */
-            }
-            
-            .main-content-wrapper {
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            .core-content {
-                width: 100%;
-                padding-right: 0;
-                padding-left: 0;
-                margin: 0 auto;
-                padding-top: 40px; /* 增加顶部内边距，让相机模块下移 */
-                justify-content: flex-start; /* 从顶部开始布局 */
-            }
-            
-            /* 增加相机固定包装器的上边距 */
-            .camera-fixed-wrapper {
-                margin-top: 30px;
-            }
-            
-            /* 调整按钮样式 */
-            .action-buttons {
-                margin-top: 60px; /* 增加按钮区域的上边距 */
-                max-width: 300px; /* 限制按钮区域的宽度 */
-                gap: 20px; /* 增加按钮之间的间距 */
-            }
-            
-            .upload-button, .camera-button {
-                padding: 10px 15px;
-                min-width: 120px;
-                font-size: 16px;
-            }
-        }
-        
-        /* 无需特定媒体查询，相机尺寸始终固定 */
-        
-        /* Photo wall styles - staggered arrangement */
-        .photo-wall-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            position: relative;
-            flex: 1;
-            padding: 0; /* Remove all padding */
-            padding-left: 150px; /* Left padding since it's now on the left */
-            aspect-ratio: 960/540; /* Set aspect ratio to match background image */
-            max-height: 90vh;
-            /* 只设置opacity过渡，不需要位置和大小的变化 */
-            transition: opacity 1.5s ease-in-out;
-        }
-        
-        .photo-wall {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 80%;
-            height: 100%;
-            position: relative;
-        }
-        
-        .photo-item {
-            /* 照片尺寸由JS动态控制，不在CSS中固定宽度 */
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            transition: all 0.3s;
-            cursor: pointer;
-            position: absolute;
-            overflow: hidden;
-            transform-origin: center;
-        }
-        
-        .photo-item:nth-child(odd) {
-            transform: rotate(-3deg);
-        }
-        
-        .photo-item:nth-child(even) {
-            transform: rotate(2deg);
-        }
-        
-        .photo-item:nth-child(3n) {
-            transform: rotate(-1deg);
-        }
-        
-        .photo-item:hover {
-            transform: scale(1.05) rotate(0deg);
-            z-index: 5;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .photo-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        /* 删除照片操作按钮的悬停样式，移到弹窗中显示 */
-        
-        .no-photos {
-            text-align: center;
-            color: #8a7a6f;
-            font-style: italic;
-            padding: 30px;
-        }
-        
-        /* Camera interface styles */
-        .camera-interface {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Prevent content overflow */
-            overscroll-behavior: none; /* Prevent scroll bleed-through */
-            /* Safe Area 适配：使用背景而不是padding来避免内容区域分隔 */
-            background-color: #000;
-        }
-        
-        /* Media queries to ensure correct layout on small screens */
-        @media screen and (max-height: 700px) {
-            .camera-container {
-                max-width: 220px; /* Further reduce camera image on small screens */
-            }
-            
-            .polaroid-wrapper {
-                height: 180px; /* Reduce height */
-                margin-top: -40px; /* Adjust position */
-            }
-            
-            .action-buttons {
-                margin: 50px 0 10px; /* Maintain sufficient top margin on small screens */
-            }
-            
-            .controls {
-                margin: 10px 0;
-            }
-            
-            .upload-button, .camera-button {
-                padding: 6px 12px;
-                font-size: 13px;
-            }
-        }
-        
-        @media screen and (max-height: 500px) {
-            .camera-container {
-                max-width: 180px; /* Further reduce camera image on even smaller screens */
-            }
-            
-            h1 {
-                margin-bottom: 15px;
-                font-size: 20px;
-            }
-            
-            .polaroid-wrapper {
-                height: 140px; /* Reduce height */
-                margin-top: -30px; /* Adjust position */
-            }
-            
-            .polaroid-container {
-                width: 120px; /* Smaller width */
-            }
-        }
-        
-        /* Device-specific styles */
-        .device-info {
-            position: absolute;
-            bottom: 5px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 10px;
-            padding: 3px;
-        }
-        
-        /* Debug panel styles removed */
-        
-        .camera-interface.active {
-            display: flex;
-        }
-        
-        .camera-preview-container {
-            position: relative;
-            width: min(70vw, 70vh, 300px); /* Use smaller size, but ensure appropriate size on small screen phones */
-            height: min(70vw, 70vh, 300px); /* Maintain square ratio */
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 6px;
-            border: 2px solid #fff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Add shadow to enhance 3D feel */
-            max-width: 80vmin; /* Use percentage of viewport's minimum dimension */
-            max-height: 80vmin;
-        }
-        
-        /* Adjust camera preview container size on small screens */
-        @media screen and (max-height: 500px) {
-            .camera-preview-container {
-                width: min(60vw, 180px);
-                height: min(60vw, 180px);
-                border-width: 1px;
-            }
-        }
-        
-        .camera-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .camera-loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(0, 0, 0, 0.85);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            z-index: 5;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            text-align: center; /* 确保文本居中对齐 */
-            padding: 0 10px; /* 添加水平内边距，避免文本溢出 */
-        }
-        
-        .camera-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            position: relative;
-            width: 100%;
-            max-width: min(70vw, 70vh, 300px); /* 使按钮容器宽度与相机预览区相同 */
-            margin-left: auto;
-            margin-right: auto;
-            /* Safe Area 适配：通过transform调整位置而不是margin */
-            transform: translateY(calc(-1 * env(safe-area-inset-bottom) / 2));
-        }
-        
-        .camera-btn {
-            background-color: transparent;
-            border: 2px solid white;
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: all 0.3s;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            position: relative;
-            flex-shrink: 0;
-        }
-        
-        .camera-btn:hover, .camera-btn:focus {
-            background-color: rgba(255, 255, 255, 0.2);
-            outline: none;
-        }
-        
-        .camera-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .take-photo-btn {
-            width: 60px;
-            height: 60px;
-            background-color: white;
-            color: #000;
-            padding: 0;
-            box-sizing: border-box;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .take-photo-btn:hover, .take-photo-btn:focus {
-            background-color: #f0f0f0;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-        }
-        
-        .take-photo-btn::after {
-            content: '';
-            display: block;
-            width: 44px;
-            height: 44px;
-            background-color: #052329;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-        
-        .take-photo-btn:hover::after {
-            background-color: #0B4A56;
-            width: 40px;
-            height: 40px;
-        }
-        
-        /* 切换相机按钮 */
-        .switch-camera-btn {
-            width: 44px;
-            height: 44px;
-            background-color: transparent;
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            right: 0; /* 改为右侧对齐 */
-        }
-        
-        /* 确保拍照按钮居中 */
-        .take-photo-btn {
-            position: relative;
-            z-index: 5;
-            margin: 0 auto;
-        }
-        
-        .switch-camera-btn img {
-            width: 36px;
-            height: 36px;
-        }
-        
-        /* 移除翻转按钮的悬停效果 */
-        
-        /* 在小屏幕上调整间距和位置，不改变按钮大小 */
-        @media screen and (max-height: 500px), screen and (max-width: 1000px) {
-            .camera-controls {
-                margin: 25px 0 0 0; /* 增加顶部间距，让按钮离预览区域更远 */
-                padding-top: 10px; /* 额外的顶部内边距 */
-            }
-            
-            .switch-camera-btn img {
-                width: 30px; /* 在小屏幕上稍微减小图标尺寸 */
-                height: 30px;
-            }
-        }
-        
-        .camera-close-btn {
-            position: absolute; /* 改为absolute定位，确保在相机界面内相对定位 */
-            /* Safe Area 适配：关闭按钮位置考虑安全区域 */
-            top: calc(20px + env(safe-area-inset-top));
-            left: calc(20px + env(safe-area-inset-left)); /* 改为左侧定位 */
-            width: auto; /* 自动宽度以适应"Back"文字 */
-            height: 44px;
-            min-width: 60px; /* 设置最小宽度 */
-            padding: 0 16px; /* 添加左右内边距 */
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 22px; /* 调整为椭圆形以适应文字 */
-            border: none;
-            cursor: pointer;
-            z-index: 9999;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
-            color: #000;
-            font-size: 16px; /* 调整字体大小 */
-            font-weight: bold;
-            display: flex !important; /* 确保按钮总是显示 */
-            align-items: center;
-            justify-content: center;
-            opacity: 0.9; /* 默认显示一定的不透明度 */
-        }
-        
-        .camera-close-btn:hover {
-            opacity: 1;
-            background-color: #f0f0f0;
-        }
-        
-        /* Flash effect styles */
-        @keyframes flash {
-            0% { opacity: 0; }
-            25% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        
-        .flash-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            opacity: 0;
-            z-index: 10;
-            pointer-events: none;
-            animation: flash 0.4s ease-out;
-        }
-        
-        /* Countdown styles */
-        .countdown-display {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 42px; /* Significantly reduce font size */
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 0 6px rgba(0,0,0,0.7); /* Further reduce shadow */
-            z-index: 9;
-            opacity: 0.8;
-            transition: transform 0.3s, opacity 0.3s;
-        }
-        
-        .countdown-display.pulse {
-            transform: translate(-50%, -50%) scale(1.1); /* Reduce scaling ratio */
-            opacity: 1;
-        }
-    </style>
+    /* Canvas / preview area */
+    .canvas-wrap {
+      width: 100%;
+      min-height: 240px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:
+        repeating-conic-gradient(#efe9dc 0% 25%, #f7f2e7 0% 50%) 50% / 22px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    #outCanvas { max-width: 100%; height: auto; display: none; border-radius: 14px; }
+    .placeholder {
+      color: var(--dim);
+      font-size: 14px;
+      text-align: center;
+      padding: 50px 24px;
+      line-height: 1.8;
+    }
+    .placeholder svg { width: 46px; height: 46px; opacity: 0.4; display: block; margin: 0 auto 14px; }
+    .busy {
+      position: absolute; inset: 0;
+      background: rgba(245,242,233,0.82);
+      display: none;
+      align-items: center; justify-content: center;
+      font-size: 14px; color: var(--ink); letter-spacing: 1px;
+    }
+    .busy.show { display: flex; }
 
+    /* Controls */
+    .controls {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .row .btn { flex: 1; min-width: 130px; }
+
+    .btn {
+      appearance: none;
+      border: none;
+      background: var(--ink);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      padding: 11px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .2s, transform .1s, opacity .2s;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .btn:hover { background: var(--ink-2); }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .btn.ghost:hover { background: #efe9dc; }
+    .btn svg { width: 16px; height: 16px; }
+
+    .slider-block label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--dim);
+      margin-bottom: 8px;
+    }
+    .slider-block label b { color: var(--ink); font-weight: 600; }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--ink);
+      height: 4px;
+      cursor: pointer;
+    }
+    .styles { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      flex: 1;
+      min-width: 90px;
+      font-size: 13px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+    .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    .hint { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.6; }
+    .footer { margin-top: 30px; font-size: 12px; color: var(--dim); }
+    .footer a { color: inherit; }
+
+    /* Camera modal */
+    .cam {
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .cam.active { display: flex; }
+    .cam video { max-width: 100%; max-height: 72vh; }
+    .cam-bar {
+      position: absolute;
+      bottom: calc(28px + env(safe-area-inset-bottom));
+      display: flex; align-items: center; gap: 34px;
+    }
+    .shutter {
+      width: 66px; height: 66px; border-radius: 50%;
+      background: #fff; border: 4px solid rgba(255,255,255,.5);
+      cursor: pointer;
+    }
+    .shutter:active { transform: scale(.94); }
+    .cam-icon-btn {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cam-icon-btn svg { width: 24px; height: 24px; stroke: #fff; }
+    .cam-close {
+      position: absolute;
+      top: calc(18px + env(safe-area-inset-top)); left: 18px;
+      background: rgba(255,255,255,.9);
+      border: none; border-radius: 20px;
+      padding: 9px 18px; font-size: 15px; font-family: inherit;
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 25px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Debug panel removed -->
+  <h1>照片漫画化</h1>
+  <p class="intro">上传一张照片，或用手机摄像头拍一张，浏览器内一键把它转成漫画风格（描黑边 + 色块海报化），强度可调，满意后直接下载。图片不会上传服务器，全程在你本机处理。</p>
 
-    <div class="container">
-        <!-- Title area -->
-        <h1>Polaroid Camera</h1>
-        <p class="intro">上传一张照片，或用手机摄像头拍一张，自动套上复古拍立得相框生成怀旧照片，可直接保存到本地。无需注册，全程在浏览器内完成。</p>
-
-        <!-- Main content area -->
-        <div class="main-content-wrapper">
-            <!-- Left photo wall area -->
-            <div class="photo-wall-section" id="photoWallSection" style="display: none; opacity: 0; transition: opacity 1.5s ease-in-out;">
-                <div id="photoWall" class="photo-wall" style="position: relative; width: 100%; height: 100%; background-image: url('assets/photowall.png'); background-size: contain; background-repeat: no-repeat; background-position: center; overflow: hidden;">
-                    <!-- Photos will be dynamically added here -->
-                </div>
-            </div>
-            
-            <!-- Right camera area -->
-            <div class="core-content">
-                <!-- Camera container -->
-                <!-- 相机三层结构 - 使用固定尺寸的包装容器 -->
-                <div class="camera-fixed-wrapper">
-                    <!-- 底层：相机图片 -->
-                    <div class="camera-container">
-                        <img src="assets/camera.png" id="cameraImage" alt="Polaroid Camera" class="camera-img">
-                    </div>
-    
-                    <!-- 中层：照片 -->
-                    <div class="polaroid-wrapper">
-                        <div class="polaroid-container" id="polaroidContainer">
-                            <canvas id="polaroidCanvas" class="polaroid-photo"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- 顶层：前面遮罩图片 -->
-                    <div class="camera-front-wrapper">
-                        <img src="assets/front.png" alt="相机前层" class="camera-front-image">
-                    </div>
-                </div>
-    
-                <div class="action-buttons">
-                    <label for="imageUpload" class="upload-button">传入照片</label>
-                    <button id="cameraBtn" class="camera-button">打开相机</button>
-                </div>
-                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-    
-            </div>
-        </div>
+  <div class="stage">
+    <div class="canvas-wrap">
+      <div class="placeholder" id="placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.2"/><path d="M8 6l1.2-2h5.6L16 6"/></svg>
+        还没有照片<br>点下面「传入照片」或「打开相机」开始
+      </div>
+      <canvas id="outCanvas"></canvas>
+      <div class="busy" id="busy">处理中…</div>
     </div>
 
+    <div class="controls">
+      <div class="row">
+        <label class="btn" for="fileInput">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>
+          传入照片
+        </label>
+        <button class="btn" id="camBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.2"/><path d="M8 6l1.2-2h5.6L16 6"/></svg>
+          打开相机
+        </button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" hidden>
 
-    
-    <!-- Camera interface -->
-    <div class="camera-interface" id="cameraInterface">
-        <div class="camera-close-btn" id="closeCameraBtn" role="button" tabindex="0">返回</div>
+      <div class="styles" id="styleRow">
+        <button class="chip active" data-style="comic">漫画描边</button>
+        <button class="chip" data-style="poster">海报色块</button>
+        <button class="chip" data-style="ink">黑白线稿</button>
+      </div>
 
-        <div class="camera-preview-container">
-            <div id="cameraLoading" class="camera-loading">正在打开相机…</div>
-            <video id="cameraPreview" class="camera-preview" autoplay playsinline></video>
-        </div>
-        
-        <div class="camera-controls">
-            <div class="camera-btn take-photo-btn" id="takePhotoBtn" role="button" tabindex="0"></div>
-            <div class="camera-btn switch-camera-btn" id="switchCameraBtn" role="button" tabindex="0">
-                <img src="assets/famicons--camera-reverse-outline.svg" alt="Switch Camera">
-            </div>
-        </div>
-        
-        <!-- Countdown display -->
-        <div id="countdownDisplay" class="countdown-display" style="display: none;">3</div>
-        
-        <div class="device-info" id="deviceInfo"></div>
+      <div class="slider-block">
+        <label>漫画强度 <b id="strengthVal">中</b></label>
+        <input type="range" id="strength" min="1" max="5" step="1" value="3">
+      </div>
+
+      <div class="row">
+        <button class="btn ghost" id="resetBtn" disabled>还原原图</button>
+        <button class="btn" id="dlBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          下载漫画图
+        </button>
+      </div>
+      <p class="hint">调风格或强度后会自动重新生成。手机长按生成的图也可保存。</p>
     </div>
-    
-    <!-- Utilities and helper functions -->
-    <script src="js/utils/utils.js"></script>
-    
-    <!-- Core module -->
-    <script src="js/core/polaroid.js"></script>
-    
-    <!-- Photo wall module -->
-    <script src="js/photo-wall/photo-wall.js"></script>
-    
-    <!-- UI controller module -->
-    <script src="js/ui/ui-controller.js"></script>
-    
-    <!-- Main entry module -->
-    <script src="js/main.js"></script>
+  </div>
+
+  <div class="footer">来自 <a href="/">Mehk3y</a> · 图片本地处理，不上传</div>
+
+  <!-- Camera -->
+  <div class="cam" id="cam">
+    <button class="cam-close" id="camClose">返回</button>
+    <video id="video" autoplay playsinline></video>
+    <div class="cam-bar">
+      <button class="cam-icon-btn" id="flipBtn" title="切换摄像头">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l-2-2M21 17H8l2 2"/><path d="M16 7a5 5 0 0 1 5 5M8 17a5 5 0 0 1-5-5"/></svg>
+      </button>
+      <button class="shutter" id="shutter" title="拍照"></button>
+      <span style="width:46px"></span>
+    </div>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+
+  var srcCanvas = document.createElement('canvas'); // holds original image pixels
+  var out = document.getElementById('outCanvas');
+  var octx = out.getContext('2d', { willReadFrequently: true });
+  var placeholder = document.getElementById('placeholder');
+  var busy = document.getElementById('busy');
+  var dlBtn = document.getElementById('dlBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var strengthEl = document.getElementById('strength');
+  var strengthVal = document.getElementById('strengthVal');
+  var styleRow = document.getElementById('styleRow');
+
+  var hasImage = false;
+  var curStyle = 'comic';
+  var strengthLabels = { 1: '很弱', 2: '弱', 3: '中', 4: '强', 5: '很强' };
+
+  var MAXDIM = 1400; // cap processing size for speed
+
+  // ---------- load image into srcCanvas ----------
+  function setImage(img) {
+    var w = img.width, h = img.height;
+    var scale = Math.min(1, MAXDIM / Math.max(w, h));
+    w = Math.round(w * scale); h = Math.round(h * scale);
+    srcCanvas.width = w; srcCanvas.height = h;
+    srcCanvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    hasImage = true;
+    placeholder.style.display = 'none';
+    out.style.display = 'block';
+    dlBtn.disabled = false;
+    resetBtn.disabled = false;
+    render();
+  }
+
+  function loadFromFile(file) {
+    var img = new Image();
+    img.onload = function () { setImage(img); URL.revokeObjectURL(img.src); };
+    img.src = URL.createObjectURL(file);
+  }
+
+  // ---------- comic pipeline ----------
+  function render() {
+    if (!hasImage) return;
+    busy.classList.add('show');
+    // let the browser paint the busy overlay before heavy work
+    setTimeout(function () {
+      try { process(); } finally { busy.classList.remove('show'); }
+    }, 16);
+  }
+
+  function process() {
+    var w = srcCanvas.width, h = srcCanvas.height;
+    out.width = w; out.height = h;
+    var sctx = srcCanvas.getContext('2d', { willReadFrequently: true });
+    var src = sctx.getImageData(0, 0, w, h);
+
+    var s = parseInt(strengthEl.value, 10); // 1..5
+
+    if (curStyle === 'ink') {
+      renderInk(src, w, h, s);
+      return;
+    }
+
+    // 1) smoothing passes (more passes = flatter, more cartoon)
+    var passes = curStyle === 'poster' ? (1 + s) : (1 + Math.round(s * 0.8));
+    var smooth = src;
+    for (var p = 0; p < passes; p++) smooth = boxBlur(smooth, w, h, 1);
+
+    // 2) color quantization (posterize) — fewer levels at higher strength
+    var levels = curStyle === 'poster'
+      ? [6, 5, 4, 3, 2][s - 1]
+      : [8, 6, 5, 4, 3][s - 1];
+    var quant = posterize(smooth, levels);
+
+    // 3) optional saturation boost for punch
+    saturate(quant, curStyle === 'poster' ? 1.35 : 1.18);
+
+    // 4) edge overlay (comic style draws black lines; poster keeps softer)
+    if (curStyle === 'comic') {
+      var edges = sobel(src, w, h);
+      var thr = [60, 48, 38, 30, 24][s - 1];
+      overlayEdges(quant, edges, thr);
+    }
+
+    octx.putImageData(quant, 0, 0);
+  }
+
+  function renderInk(src, w, h, s) {
+    // grayscale + strong edges => line art / manga screentone-ish
+    var edges = sobel(src, w, h);
+    var thr = [70, 55, 42, 32, 24][s - 1];
+    var d = new ImageData(w, h);
+    for (var i = 0; i < edges.length; i++) {
+      var v = edges[i] >= thr ? 0 : 255;
+      var j = i * 4;
+      d.data[j] = d.data[j + 1] = d.data[j + 2] = v;
+      d.data[j + 3] = 255;
+    }
+    octx.putImageData(d, 0, 0);
+  }
+
+  // ---------- pixel ops ----------
+  function boxBlur(img, w, h, r) {
+    // separable 3x3-ish box blur (radius r)
+    var src = img.data;
+    var tmp = new Uint8ClampedArray(src.length);
+    var out = new Uint8ClampedArray(src.length);
+    var x, y, c, k, sum, cnt, idx;
+    // horizontal
+    for (y = 0; y < h; y++) {
+      for (x = 0; x < w; x++) {
+        for (c = 0; c < 3; c++) {
+          sum = 0; cnt = 0;
+          for (k = -r; k <= r; k++) {
+            var xx = x + k;
+            if (xx < 0 || xx >= w) continue;
+            sum += src[(y * w + xx) * 4 + c]; cnt++;
+          }
+          tmp[(y * w + x) * 4 + c] = sum / cnt;
+        }
+        tmp[(y * w + x) * 4 + 3] = 255;
+      }
+    }
+    // vertical
+    for (y = 0; y < h; y++) {
+      for (x = 0; x < w; x++) {
+        for (c = 0; c < 3; c++) {
+          sum = 0; cnt = 0;
+          for (k = -r; k <= r; k++) {
+            var yy = y + k;
+            if (yy < 0 || yy >= h) continue;
+            sum += tmp[(yy * w + x) * 4 + c]; cnt++;
+          }
+          out[(y * w + x) * 4 + c] = sum / cnt;
+        }
+        out[(y * w + x) * 4 + 3] = 255;
+      }
+    }
+    return new ImageData(out, w, h);
+  }
+
+  function posterize(img, levels) {
+    var d = new Uint8ClampedArray(img.data);
+    var step = 255 / (levels - 1);
+    for (var i = 0; i < d.length; i += 4) {
+      d[i]   = Math.round(Math.round(d[i]   / step) * step);
+      d[i+1] = Math.round(Math.round(d[i+1] / step) * step);
+      d[i+2] = Math.round(Math.round(d[i+2] / step) * step);
+    }
+    return new ImageData(d, img.width, img.height);
+  }
+
+  function saturate(img, amt) {
+    var d = img.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var r = d[i], g = d[i+1], b = d[i+2];
+      var gray = 0.299 * r + 0.587 * g + 0.114 * b;
+      d[i]   = gray + (r - gray) * amt;
+      d[i+1] = gray + (g - gray) * amt;
+      d[i+2] = gray + (b - gray) * amt;
+    }
+  }
+
+  function sobel(img, w, h) {
+    var d = img.data;
+    var gray = new Float32Array(w * h);
+    for (var i = 0, j = 0; i < d.length; i += 4, j++) {
+      gray[j] = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+    }
+    var mag = new Float32Array(w * h);
+    for (var y = 1; y < h - 1; y++) {
+      for (var x = 1; x < w - 1; x++) {
+        var o = y * w + x;
+        var tl = gray[o - w - 1], t = gray[o - w], tr = gray[o - w + 1];
+        var l = gray[o - 1],                       rr = gray[o + 1];
+        var bl = gray[o + w - 1], bb = gray[o + w], br = gray[o + w + 1];
+        var gx = (tr + 2 * rr + br) - (tl + 2 * l + bl);
+        var gy = (bl + 2 * bb + br) - (tl + 2 * t + tr);
+        mag[o] = Math.sqrt(gx * gx + gy * gy);
+      }
+    }
+    return mag;
+  }
+
+  function overlayEdges(img, mag, thr) {
+    var d = img.data;
+    for (var i = 0; i < mag.length; i++) {
+      if (mag[i] >= thr) {
+        var j = i * 4;
+        d[j] = d[j+1] = d[j+2] = 0; // black line
+      }
+    }
+  }
+
+  // ---------- download ----------
+  dlBtn.addEventListener('click', function () {
+    if (!hasImage) return;
+    var a = document.createElement('a');
+    a.download = 'comic-' + Date.now() + '.png';
+    a.href = out.toDataURL('image/png');
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  resetBtn.addEventListener('click', function () {
+    if (!hasImage) return;
+    out.width = srcCanvas.width; out.height = srcCanvas.height;
+    octx.drawImage(srcCanvas, 0, 0);
+  });
+
+  // ---------- controls ----------
+  document.getElementById('fileInput').addEventListener('change', function (e) {
+    if (e.target.files && e.target.files[0]) loadFromFile(e.target.files[0]);
+  });
+  strengthEl.addEventListener('input', function () {
+    strengthVal.textContent = strengthLabels[strengthEl.value];
+    render();
+  });
+  styleRow.addEventListener('click', function (e) {
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+    [].forEach.call(styleRow.children, function (c) { c.classList.remove('active'); });
+    chip.classList.add('active');
+    curStyle = chip.dataset.style;
+    render();
+  });
+
+  // ---------- camera ----------
+  var cam = document.getElementById('cam');
+  var video = document.getElementById('video');
+  var stream = null, facing = 'environment';
+
+  function openCam() {
+    cam.classList.add('active');
+    startStream();
+  }
+  function startStream() {
+    stopStream();
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: facing }, audio: false })
+      .then(function (s) { stream = s; video.srcObject = s; })
+      .catch(function () { alert('无法访问摄像头，请检查浏览器权限。'); closeCam(); });
+  }
+  function stopStream() {
+    if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+  }
+  function closeCam() { stopStream(); cam.classList.remove('active'); }
+
+  document.getElementById('camBtn').addEventListener('click', function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert('当前浏览器不支持调用摄像头，请改用「传入照片」。');
+      return;
+    }
+    openCam();
+  });
+  document.getElementById('camClose').addEventListener('click', closeCam);
+  document.getElementById('flipBtn').addEventListener('click', function () {
+    facing = facing === 'environment' ? 'user' : 'environment';
+    startStream();
+  });
+  document.getElementById('shutter').addEventListener('click', function () {
+    if (!video.videoWidth) return;
+    var c = document.createElement('canvas');
+    c.width = video.videoWidth; c.height = video.videoHeight;
+    c.getContext('2d').drawImage(video, 0, 0);
+    var img = new Image();
+    img.onload = function () { setImage(img); };
+    img.src = c.toDataURL('image/png');
+    closeCam();
+  });
+})();
+</script>
 </body>
 </html>
