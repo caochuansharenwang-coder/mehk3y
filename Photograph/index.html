@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Polaroid Camera</title>
-    
+    <title>拍立得相机 — 一键生成复古拍立得照片</title>
+
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Polaroid Camera - Create Vintage Photos | Vibe Coding">
-    <meta property="og:description" content="Create and share vintage-style Polaroid photos with this online tool. Upload images or use your device camera. A Vibe Coding project.">
+    <meta property="og:title" content="拍立得相机 — 一键生成复古拍立得照片">
+    <meta property="og:description" content="上传照片或用手机摄像头拍一张，自动套上复古拍立得相框、加日期，生成可保存的怀旧照片。无需注册，浏览器内完成。">
     <meta property="og:image" content="assets/camera.png">
     <meta property="og:type" content="website">
-    <meta name="keywords" content="claude, sonnet 3.7, claude code, polaroid, camera, vintage photos, vibe coding, photo filter">
+    <meta name="description" content="上传照片或用摄像头拍照，一键生成带复古相框的拍立得照片，自动保存到本地。">
+    <meta name="keywords" content="拍立得,复古照片,相框,polaroid,在线相机,照片滤镜">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/camera.png">
@@ -120,6 +121,24 @@
             top: 80px;
         }
         
+        .intro {
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            margin: -10px auto 0;
+            color: #4a5a5e;
+            font-size: 14px;
+            line-height: 1.7;
+            font-family: 'Playfair Display', serif;
+            position: relative;
+            top: 80px;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+        @media (max-width: 1000px) {
+            .intro { top: 20px; font-size: 13px; margin-bottom: 10px; }
+        }
+
         /* Core content area - contains camera and output section */
         .core-content {
             display: flex;
@@ -886,7 +905,8 @@
     <div class="container">
         <!-- Title area -->
         <h1>Polaroid Camera</h1>
-        
+        <p class="intro">上传一张照片，或用手机摄像头拍一张，自动套上复古拍立得相框生成怀旧照片，可直接保存到本地。无需注册，全程在浏览器内完成。</p>
+
         <!-- Main content area -->
         <div class="main-content-wrapper">
             <!-- Left photo wall area -->
@@ -920,8 +940,8 @@
                 </div>
     
                 <div class="action-buttons">
-                    <label for="imageUpload" class="upload-button">Use Photo</label>
-                    <button id="cameraBtn" class="camera-button">Use Camera</button>
+                    <label for="imageUpload" class="upload-button">传入照片</label>
+                    <button id="cameraBtn" class="camera-button">打开相机</button>
                 </div>
                 <input type="file" id="imageUpload" accept="image/*" style="display: none;">
     
@@ -933,10 +953,10 @@
     
     <!-- Camera interface -->
     <div class="camera-interface" id="cameraInterface">
-        <div class="camera-close-btn" id="closeCameraBtn" role="button" tabindex="0">Back</div>
-        
+        <div class="camera-close-btn" id="closeCameraBtn" role="button" tabindex="0">返回</div>
+
         <div class="camera-preview-container">
-            <div id="cameraLoading" class="camera-loading">Getting camera ready...</div>
+            <div id="cameraLoading" class="camera-loading">正在打开相机…</div>
             <video id="cameraPreview" class="camera-preview" autoplay playsinline></video>
         </div>
         
