@@ -43,7 +43,7 @@ main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
 #themes .grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 #repos .grid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
 .mini-grid{grid-template-columns:repeat(auto-fit,minmax(132px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:6px;min-height:82px;box-shadow:0 1px 1px rgba(16,24,40,.02)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:6px;min-height:82px;box-shadow:0 1px 1px rgba(16,24,40,.02);content-visibility:auto;contain-intrinsic-size:auto 84px}
 .card:hover{border-color:var(--line2);box-shadow:var(--shadow)}
 .ch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .nm{font-weight:700;font-size:13px;line-height:1.25}
@@ -57,7 +57,7 @@ main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
 .btn:active{opacity:.7}
 .btn.ghost,.btn.copy{background:transparent;border-color:var(--line2);color:var(--muted)}
 .btn.sm{padding:3px 7px;font-size:10.5px}
-.card.mini{padding:7px;gap:5px;min-height:58px}
+.card.mini{padding:7px;gap:5px;min-height:58px;contain-intrinsic-size:auto 60px}
 .card.mini .nm{font-size:11px;line-height:1.2}
 .card.theme .ch{align-items:center}
 .chip{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit}
@@ -76,6 +76,20 @@ main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--accent);color:var(--accent-fg);padding:9px 18px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .hide{display:none!important}
+.searchwrap{position:relative}
+.searchwrap .clr{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--faint);font-size:18px;line-height:1;cursor:pointer;padding:2px 6px;display:none}
+.searchwrap.has .clr{display:block}
+.searchwrap .clr:hover{color:var(--fg)}
+.search input{padding-right:34px}
+.srcfilter{grid-column:2 / span 2;grid-row:3;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0}
+.srcfilter .chip{font-size:11px}
+.srcfilter .chip .cnt{font-size:9px;padding:0 5px;margin-left:2px}
+.srcfilter .chip.on .cnt{color:var(--accent-fg);border-color:transparent}
+.cntinfo{font-size:11px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+nav a.active{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.totop{position:fixed;right:18px;bottom:24px;width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--accent-fg);border:1px solid var(--accent);font-size:16px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;transform:translateY(10px);z-index:40;box-shadow:var(--shadow)}
+.totop.show{opacity:.92;pointer-events:auto;transform:translateY(0)}
+.totop:hover{opacity:1}
 @media (max-width:900px){
   header{width:calc(100% - 28px);margin-top:14px;padding:12px;display:block}
   .topbar{position:absolute;right:12px;top:12px}
@@ -86,6 +100,7 @@ main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
   .tagline{font-size:13px}
   nav{gap:5px}
   nav a{min-height:26px;padding:4px 9px}
+  .srcfilter{margin-top:9px}
   .grid{grid-template-columns:1fr;gap:7px}
   #config .grid,#tools .grid,#featured .grid,#themes .grid,#repos .grid{grid-template-columns:1fr}
   .mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -111,8 +126,16 @@ main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
       <span class="pill">30 套配色</span>
     </div>
   </div>
-  <div class="search"><input id="q" type="search" placeholder="搜索全部资源（模块名 / 应用 / 关键词）" autocomplete="off"></div>
+  <div class="search"><div class="searchwrap" id="sw"><input id="q" type="search" placeholder="搜索全部资源（模块名 / 应用 / 关键词），按 / 聚焦" autocomplete="off"><button class="clr" id="clr" type="button" aria-label="清除搜索">×</button></div></div>
   <nav aria-label="资源分类"><a href="#config">配置</a><a href="#tools">工具</a><a href="#featured">模块</a><a href="#rules">规则集</a><a href="#repos">仓库</a><a href="#themes">配色</a><a href="#yf">App大全</a><a href="#adv">跳转</a></nav>
+  <div class="srcfilter" id="srcfilter" aria-label="按来源筛选">
+    <button class="chip on" data-sf="all">全部 <span class="cnt">548</span></button>
+    <button class="chip" data-sf="first">First</button>
+    <button class="chip" data-sf="iab">ProxyRules</button>
+    <button class="chip" data-sf="yf">yfamilys</button>
+    <button class="chip" data-sf="theme">配色</button>
+    <span class="cntinfo" id="cntinfo"></span>
+  </div>
 </header>
 <main>
 <section id="config" class="sec"><h2>配置文件 <span class="cnt">3</span></h2><p class="sub">导入后作为分流基础。懒人配置(First) / 基础·轻量(yfamilys)</p><div class="grid"><div class="card" data-k="懒人配置 lazy_group lowertop：开箱即用、以规则集形式分流、注释详尽，除默认配置外首推 first"><div class="ch"><span class="nm">懒人配置 lazy_group</span><span class="src s-first">First</span></div><div class="ds">LOWERTOP：开箱即用、以规则集形式分流、注释详尽，除默认配置外首推</div><div class="bar"><a class="btn" href="shadowrocket://config/add/https://lowertop.github.io/Shadowrocket/lazy_group.conf">安装配置</a><button class="btn copy" data-copy="shadowrocket://config/add/https://lowertop.github.io/Shadowrocket/lazy_group.conf">复制</button></div></div><div class="card" data-k="基础配置 basic yfamilys：基础分流配置文件 yfamilys"><div class="ch"><span class="nm">基础配置 basic</span><span class="src s-yf">yfamilys</span></div><div class="ds">yfamilys：基础分流配置文件</div><div class="bar"><a class="btn" href="shadowrocket://config/add/https://yfamilys.com/config/shadowrocket_basic.conf">安装配置</a><button class="btn copy" data-copy="shadowrocket://config/add/https://yfamilys.com/config/shadowrocket_basic.conf">复制</button></div></div><div class="card" data-k="轻量配置 lite yfamilys：轻量版分流配置文件 yfamilys"><div class="ch"><span class="nm">轻量配置 lite</span><span class="src s-yf">yfamilys</span></div><div class="ds">yfamilys：轻量版分流配置文件</div><div class="bar"><a class="btn" href="shadowrocket://config/add/https://yfamilys.com/config/shadowrocket_lite.conf">安装配置</a><button class="btn copy" data-copy="shadowrocket://config/add/https://yfamilys.com/config/shadowrocket_lite.conf">复制</button></div></div></div></section>
@@ -130,6 +153,7 @@ main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
 <b>声明</b>　以上资源仅供个人学习、研究与测试；请通过合法信道访问并遵守当地法律法规。原始仓库声明禁止商用与转载，相关权利归各自作者所有；如为权利人且不希望被引用，请联系对应来源仓库处理。
 </div>
 </main>
+<button class="totop" id="totop" type="button" aria-label="回到顶部">↑</button>
 <div class="toast" id="toast">已复制</div>
 <script>
 var savedTheme=localStorage.getItem('theme');
@@ -142,16 +166,58 @@ themeToggle.addEventListener('click',function(){
   localStorage.setItem('theme',next);
 });
 var q=document.getElementById('q'),empty=document.getElementById('empty'),toast=document.getElementById('toast');
+var sw=document.getElementById('sw'),clr=document.getElementById('clr'),cntinfo=document.getElementById('cntinfo');
 var cards=[].slice.call(document.querySelectorAll('.card'));
 var secs=[].slice.call(document.querySelectorAll('.sec'));
+function srcOf(c){
+  if(c.querySelector('.s-first'))return'first';
+  if(c.querySelector('.s-iab'))return'iab';
+  if(c.querySelector('.s-theme'))return'theme';
+  if(c.querySelector('.s-yf'))return'yf';
+  return c.closest('#yf')?'yf':'first';
+}
+cards.forEach(function(c){c.dataset.src=srcOf(c);});
+var activeSrc='all';
 function norm(s){return (s||'').toLowerCase().trim();}
-function filter(){
-  var v=norm(q.value),any=false;
-  for(var i=0;i<cards.length;i++){var c=cards[i],m=!v||c.dataset.k.indexOf(v)>=0;c.classList.toggle('hide',!m);if(m)any=true;}
-  for(var j=0;j<secs.length;j++){var s=secs[j];var vis=s.querySelectorAll('.card:not(.hide)').length;s.classList.toggle('hide', !!v&&vis===0);}
-  empty.style.display=(v&&!any)?'block':'none';
+var raf;
+function filter(){cancelAnimationFrame(raf);raf=requestAnimationFrame(doFilter);}
+function doFilter(){
+  var v=norm(q.value),any=0;
+  sw.classList.toggle('has',!!q.value);
+  for(var i=0;i<cards.length;i++){
+    var c=cards[i];
+    var m=(activeSrc==='all'||c.dataset.src===activeSrc)&&(!v||c.dataset.k.indexOf(v)>=0);
+    c.classList.toggle('hide',!m);
+    if(m)any++;
+  }
+  for(var j=0;j<secs.length;j++){
+    var s=secs[j];
+    if(s.id==='adv'){s.classList.toggle('hide',activeSrc!=='all'||!!v);continue;}
+    s.classList.toggle('hide',!s.querySelector('.card:not(.hide)'));
+  }
+  empty.style.display=any?'none':'block';
+  cntinfo.textContent=(v||activeSrc!=='all')?any+' 项匹配':'';
 }
 q.addEventListener('input',filter);
+clr.addEventListener('click',function(){q.value='';q.focus();filter();});
+var sfchips=[].slice.call(document.querySelectorAll('[data-sf]'));
+sfchips.forEach(function(ch){ch.addEventListener('click',function(){
+  sfchips.forEach(function(x){x.classList.remove('on')});ch.classList.add('on');
+  activeSrc=ch.dataset.sf;filter();
+});});
+document.addEventListener('keydown',function(e){
+  if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus();q.select();}
+  else if(e.key==='Escape'&&document.activeElement===q){q.value='';filter();q.blur();}
+});
+var totop=document.getElementById('totop'),navlinks=[].slice.call(document.querySelectorAll('nav a'));
+window.addEventListener('scroll',function(){totop.classList.toggle('show',window.scrollY>500);},{passive:true});
+totop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+if('IntersectionObserver'in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting){var id=en.target.id;navlinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+id);});}
+  });},{rootMargin:'-12% 0px -78% 0px'});
+  secs.forEach(function(s){io.observe(s);});
+}
 var tchips=[].slice.call(document.querySelectorAll('[data-tf]'));
 tchips.forEach(function(ch){ch.addEventListener('click',function(){
   tchips.forEach(function(x){x.classList.remove('on')});ch.classList.add('on');
