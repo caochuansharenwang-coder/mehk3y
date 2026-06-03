@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>照片漫画化 — 一键把照片变成漫画风</title>
 
-  <meta name="description" content="上传照片或用摄像头拍一张，浏览器内一键把照片转成漫画风（描边 + 色块 + 海报化），强度可调，可直接下载。无需上传服务器，全程本地完成。">
-  <meta name="keywords" content="漫画化,卡通滤镜,照片转漫画,描边,海报化,在线工具">
+  <meta name="description" content="上传照片或用摄像头拍一张，浏览器内一键把照片转成漫画风：漫画描边 / 像素风 / 黑白线稿，强度可调，可直接下载。无需上传服务器，全程本地完成。">
+  <meta name="keywords" content="漫画化,卡通滤镜,照片转漫画,描边,像素风,像素化,在线工具">
 
   <meta property="og:title" content="照片漫画化 — 一键把照片变成漫画风">
   <meta property="og:description" content="上传或拍照，浏览器内一键转漫画风，强度可调，可下载。图片不上传服务器，本地处理。">
@@ -215,7 +215,7 @@
 </head>
 <body>
   <h1>照片漫画化</h1>
-  <p class="intro">上传一张照片，或用手机摄像头拍一张，浏览器内一键把它转成漫画风格（描黑边 + 色块海报化），强度可调，满意后直接下载。图片不会上传服务器，全程在你本机处理。</p>
+  <p class="intro">上传一张照片，或用手机摄像头拍一张，浏览器内一键转成漫画描边、像素风或黑白线稿，强度可调，满意后直接下载。图片不会上传服务器，全程在你本机处理。</p>
 
   <div class="stage">
     <div class="canvas-wrap">
@@ -242,7 +242,7 @@
 
       <div class="styles" id="styleRow">
         <button class="chip active" data-style="comic">漫画描边</button>
-        <button class="chip" data-style="poster">海报色块</button>
+        <button class="chip" data-style="pixel">像素风</button>
         <button class="chip" data-style="ink">黑白线稿</button>
       </div>
 
@@ -337,47 +337,105 @@
 
     var s = parseInt(strengthEl.value, 10); // 1..5
 
+    if (curStyle === 'pixel') {
+      renderPixel(src, w, h, s);
+      return;
+    }
     if (curStyle === 'ink') {
       renderInk(src, w, h, s);
       return;
     }
 
+    // ---- comic: flat color regions + clean black outlines ----
     // 1) smoothing passes (more passes = flatter, more cartoon)
-    var passes = curStyle === 'poster' ? (1 + s) : (1 + Math.round(s * 0.8));
+    var passes = 1 + Math.round(s * 0.8);
     var smooth = src;
     for (var p = 0; p < passes; p++) smooth = boxBlur(smooth, w, h, 1);
 
     // 2) color quantization (posterize) — fewer levels at higher strength
-    var levels = curStyle === 'poster'
-      ? [6, 5, 4, 3, 2][s - 1]
-      : [8, 6, 5, 4, 3][s - 1];
+    var levels = [8, 6, 5, 4, 3][s - 1];
     var quant = posterize(smooth, levels);
 
-    // 3) optional saturation boost for punch
-    saturate(quant, curStyle === 'poster' ? 1.35 : 1.18);
+    // 3) saturation boost for punch
+    saturate(quant, 1.18);
 
-    // 4) edge overlay (comic style draws black lines; poster keeps softer)
-    if (curStyle === 'comic') {
-      var edges = sobel(src, w, h);
-      var thr = [60, 48, 38, 30, 24][s - 1];
-      overlayEdges(quant, edges, thr);
-    }
+    // 4) clean edge overlay: detect on denoised gray, high threshold, then despeckle
+    var edges = cleanEdges(src, w, h, [70, 58, 48, 40, 34][s - 1]);
+    overlayEdges(quant, edges);
 
     octx.putImageData(quant, 0, 0);
   }
 
   function renderInk(src, w, h, s) {
-    // grayscale + strong edges => line art / manga screentone-ish
-    var edges = sobel(src, w, h);
-    var thr = [70, 55, 42, 32, 24][s - 1];
+    // grayscale + clean strong edges => tidy line art
+    var edges = cleanEdges(src, w, h, [82, 68, 56, 46, 38][s - 1]);
     var d = new ImageData(w, h);
     for (var i = 0; i < edges.length; i++) {
-      var v = edges[i] >= thr ? 0 : 255;
+      var v = edges[i] ? 0 : 255;
       var j = i * 4;
       d.data[j] = d.data[j + 1] = d.data[j + 2] = v;
       d.data[j + 3] = 255;
     }
     octx.putImageData(d, 0, 0);
+  }
+
+  function renderPixel(src, w, h, s) {
+    // downscale to a small grid, quantize colors, upscale with nearest-neighbor => blocky 8-bit look
+    var block = [6, 9, 13, 18, 26][s - 1];           // pixel size (bigger = chunkier)
+    var levels = [6, 5, 4, 4, 3][s - 1];             // colors per channel
+    var gw = Math.max(1, Math.round(w / block));
+    var gh = Math.max(1, Math.round(h / block));
+
+    // average each block -> small grid
+    var small = new ImageData(gw, gh);
+    var sd = src.data, dd = small.data;
+    for (var gy = 0; gy < gh; gy++) {
+      for (var gx = 0; gx < gw; gx++) {
+        var x0 = Math.floor(gx * w / gw), x1 = Math.floor((gx + 1) * w / gw);
+        var y0 = Math.floor(gy * h / gh), y1 = Math.floor((gy + 1) * h / gh);
+        var r = 0, g = 0, b = 0, n = 0;
+        for (var yy = y0; yy < y1; yy++) {
+          for (var xx = x0; xx < x1; xx++) {
+            var o = (yy * w + xx) * 4;
+            r += sd[o]; g += sd[o + 1]; b += sd[o + 2]; n++;
+          }
+        }
+        var di = (gy * gw + gx) * 4;
+        dd[di] = r / n; dd[di + 1] = g / n; dd[di + 2] = b / n; dd[di + 3] = 255;
+      }
+    }
+    // quantize for a retro palette + slight saturation
+    var q = posterize(small, levels);
+    saturate(q, 1.25);
+
+    // upscale nearest-neighbor onto output
+    out.width = w; out.height = h;
+    var tmp = document.createElement('canvas');
+    tmp.width = gw; tmp.height = gh;
+    tmp.getContext('2d').putImageData(q, 0, 0);
+    octx.imageSmoothingEnabled = false;
+    octx.clearRect(0, 0, w, h);
+    octx.drawImage(tmp, 0, 0, gw, gh, 0, 0, w, h);
+  }
+
+  // Edge detection that suppresses speckle: blur -> sobel -> threshold -> remove isolated pixels.
+  // Returns Uint8Array (1 = edge, 0 = not).
+  function cleanEdges(src, w, h, thr) {
+    var blurred = boxBlur(src, w, h, 1);       // denoise first
+    var mag = sobel(blurred, w, h);
+    var bin = new Uint8Array(w * h);
+    for (var i = 0; i < mag.length; i++) bin[i] = mag[i] >= thr ? 1 : 0;
+    // despeckle: drop edge pixels with <2 edge neighbours (kills lone dots/grain)
+    var out = new Uint8Array(w * h);
+    for (var y = 1; y < h - 1; y++) {
+      for (var x = 1; x < w - 1; x++) {
+        var o = y * w + x;
+        if (!bin[o]) continue;
+        var n = bin[o-w-1]+bin[o-w]+bin[o-w+1]+bin[o-1]+bin[o+1]+bin[o+w-1]+bin[o+w]+bin[o+w+1];
+        out[o] = n >= 2 ? 1 : 0;
+      }
+    }
+    return out;
   }
 
   // ---------- pixel ops ----------
@@ -463,10 +521,10 @@
     return mag;
   }
 
-  function overlayEdges(img, mag, thr) {
+  function overlayEdges(img, edges) {
     var d = img.data;
-    for (var i = 0; i < mag.length; i++) {
-      if (mag[i] >= thr) {
+    for (var i = 0; i < edges.length; i++) {
+      if (edges[i]) {
         var j = i * 4;
         d[j] = d[j+1] = d[j+2] = 0; // black line
       }
