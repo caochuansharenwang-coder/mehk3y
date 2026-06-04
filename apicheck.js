@@ -10,8 +10,18 @@
   var presetsEl = document.getElementById('presets');
   var $ = function (id) { return document.getElementById(id); };
 
-  // 常用模型快捷填入。
-  var PRESETS = ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'o3', 'claude-3-5-sonnet-20241022', 'claude-sonnet-4-5', 'deepseek-chat', 'gemini-2.0-flash'];
+  // 常用模型快捷填入（可直接在输入框敲任意模型名，预设只是省事）。
+  // 中转站对 Claude 的模型名写法可能略有差异（如带日期后缀），测不通可微调。
+  var PRESETS = [
+    // Claude 4.x —— 当前主流，中转造假/降级重灾区
+    'claude-opus-4-8', 'claude-opus-4-7', 'claude-opus-4-6',
+    'claude-sonnet-4-6', 'claude-haiku-4-5', 'claude-3-5-sonnet-20241022',
+    // OpenAI
+    'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'o3',
+    // 其他厂商
+    'deepseek-chat', 'deepseek-reasoner', 'gemini-2.5-pro', 'gemini-2.0-flash',
+    'grok-2', 'qwen-max', 'kimi-k2',
+  ];
   PRESETS.forEach(function (m) {
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'preset'; b.textContent = m;
