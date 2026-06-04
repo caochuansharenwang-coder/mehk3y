@@ -10,17 +10,14 @@
   var presetsEl = document.getElementById('presets');
   var $ = function (id) { return document.getElementById(id); };
 
-  // 常用模型快捷填入（可直接在输入框敲任意模型名，预设只是省事）。
+  // 常用模型快捷填入（本页只做 GPT / Claude 中转纯度检测）。
   // 中转站对 Claude 的模型名写法可能略有差异（如带日期后缀），测不通可微调。
   var PRESETS = [
     // Claude 4.x —— 当前主流，中转造假/降级重灾区
     'claude-opus-4-8', 'claude-opus-4-7', 'claude-opus-4-6',
     'claude-sonnet-4-6', 'claude-haiku-4-5', 'claude-3-5-sonnet-20241022',
     // OpenAI
-    'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'o3',
-    // 其他厂商
-    'deepseek-chat', 'deepseek-reasoner', 'gemini-2.5-pro', 'gemini-2.0-flash',
-    'grok-2', 'qwen-max', 'kimi-k2',
+    'gpt-4o', 'gpt-4o-mini', 'gpt-4.1',
   ];
   PRESETS.forEach(function (m) {
     var b = document.createElement('button');
@@ -61,6 +58,10 @@
     return "'" + String(s == null ? '' : s).replace(/'/g, "'\"'\"'") + "'";
   }
 
+  function supportedModel(model) {
+    return /^(gpt|claude)[\w.-]*/i.test(model || '');
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     run();
@@ -72,6 +73,10 @@
     var model = $('model').value.trim();
     var format = $('format').value;
     if (!baseUrl || !apiKey || !model) return;
+    if (!supportedModel(model)) {
+      renderError('当前页面只检测 GPT / Claude 中转站。请填写 gpt-* 或 claude-* 模型名。');
+      return;
+    }
     persist();
 
     goBtn.disabled = true;
