@@ -104,6 +104,7 @@
     clean:       { cls: 'v-clean',   title: '看起来真实', color: 'var(--green)', desc: '各项指纹与请求模型相符，未发现明显的偷换 / 降级迹象。' },
     caution:     { cls: 'v-caution', title: '基本可用 · 有存疑点', color: '#d97706', desc: '能正常调用，但部分指纹不完整或存在小差异，建议留意下方信号。' },
     suspect:     { cls: 'v-suspect', title: '高度可疑', color: 'var(--red)', desc: '出现模型字段被偷换 / 厂商不符等强信号，疑似挂羊头卖狗肉或降级。' },
+    gated:       { cls: 'v-caution', title: '渠道有门禁', color: '#d97706', desc: '该渠道拒绝常规 API 调用，疑似「Claude Code / CLI 专用」中转。无法用本工具测纯度，需用对应客户端实跑。' },
     unreachable: { cls: 'v-suspect', title: '无法检测', color: 'var(--red)', desc: '基础对话请求就失败了，可能是地址 / Key / 模型名有误，或渠道不可用。' },
   };
 
@@ -140,6 +141,7 @@
     var chat = d.probes && d.probes.chat || {};
     var stream = d.probes && d.probes.stream || {};
     var models = d.probes && d.probes.models || {};
+    var behavior = d.probes && d.probes.behavior || {};
     var mg = '';
     mg += meta('请求模型', d.model);
     mg += meta('返回 model', chat.returnedModel || '（未返回）', true);
@@ -170,6 +172,9 @@
     // —— 模型自报正文（身份探针原文）——
     if (chat.content) {
       html += '<details class="raw"><summary>身份探针返回的原文</summary><pre>' + esc(chat.content) + '</pre></details>';
+    }
+    if (behavior.content) {
+      html += '<details class="raw"><summary>行为指纹题返回的原文（正确答案为 5 分）</summary><pre>' + esc(behavior.content) + '</pre></details>';
     }
 
     // —— 完整原始 JSON ——

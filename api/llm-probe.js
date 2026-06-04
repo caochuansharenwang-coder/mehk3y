@@ -257,9 +257,18 @@ export default async function handler(request) {
 
     // —— 4. 流式 ——
     result.probes.stream = await probeStream(base, headers, format, model);
+
+    // —— 5. 行为指纹：一道有唯一正确答案、弱模型易答错的题，作为「是否真高端模型」的辅助信号。
+    //    仅作参考 (现代模型大多能答对)，主要价值是把答案原文摆给用户自己判断。
+    const fp = await probeChat(base, headers, format, model, [
+      { role: 'user', content: 'Solve and reply with ONLY the final number, no explanation. A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How many cents does the ball cost?' },
+    ], { temperature: 0, maxTokens: 40 });
+    result.probes.behavior = fp.ok
+      ? { ok: true, ms: fp.ms, content: (fp.content || '').slice(0, 200) }
+      : { ok: false, error: fp.error };
   }
 
-  // —— 5. 综合分析 (在后端给出 signals，前端负责展示判定) ——
+  // —— 6. 综合分析 (在后端给出 signals，前端负责展示判定) ——
   result.analysis = analyze(result, model);
 
   return json(result);
@@ -278,6 +287,26 @@ function analyze(r, requested) {
   const signals = [];
   const chat = r.probes.chat || {};
   let score = 0; // 越高越「干净」，满分 100
+
+  // 门禁/拒绝识别：有些渠道 (尤其「Claude Code 专用」中转) 会拒绝常规 API 调用，
+  // 表现为 3xx 跳转、纯文本 Service Unavailable，或返回一句固定文案 (如 "Please use Claude Code CLI")。
+  // 这类情况无法测纯度，但要明确告诉用户「是被门禁挡了」，而不是笼统报无法连接。
+  const GATE_RE = /(please use|only.*(via|through|use)).{0,30}(claude\s*code|cli)|claude\s*code\s*cli|仅(限|供).*(cli|claude\s*code|客户端)|use\s+claude\s+code/i;
+  const gateText = (chat.content || '') + ' ' + (chat.error || '');
+  const looksGated =
+    GATE_RE.test(gateText) ||
+    (!chat.ok && (String(chat.status || '').startsWith('3') || /service unavailable|forbidden|use proxy/i.test(chat.error || '')));
+
+  if (looksGated) {
+    return {
+      verdict: 'gated', score: 0,
+      signals: [
+        { level: 'bad', text: '该渠道拒绝常规 API 调用，疑似「Claude Code / CLI 专用」中转' +
+          (chat.status ? `（HTTP ${chat.status}）` : '') + '：' + ((chat.content || chat.error || '').slice(0, 120)) },
+        { level: 'info', text: '此类渠道只放行特定客户端（如真实 Claude Code CLI），无法通过本工具检测纯度。要测只能把对应客户端指向它实跑一轮。' },
+      ],
+    };
+  }
 
   if (!chat.ok) {
     return { verdict: 'unreachable', score: 0, signals: [{ level: 'bad', text: '基础对话请求失败，无法检测：' + (chat.error || '未知错误') }] };
@@ -355,6 +384,22 @@ function analyze(r, requested) {
   if (/\b56\b/.test(content) || /\byes\b/i.test(content)) {
     signals.push({ level: 'good', text: '基础推理题 (7*8=56) 回答正确' });
     score += 3;
+  }
+
+  // 行为指纹：bat-and-ball 经典陷阱题，正确答案 5 分 (常见错答 10 分)。
+  // 仅作辅助信号 —— 现代主流模型基本都能答对，但能筛掉部分被降级到的弱模型。
+  const beh = r.probes.behavior;
+  if (beh?.ok) {
+    const txt = beh.content || '';
+    if (/\b0?5\b\s*(cents|分|￠)?/.test(txt) && !/\b10\b/.test(txt)) {
+      signals.push({ level: 'good', text: '行为指纹：陷阱推理题 (bat & ball) 答对 5 分' });
+      score += 4;
+    } else if (/\b10\b/.test(txt)) {
+      signals.push({ level: 'warn', text: `行为指纹：陷阱题答错（答了含 10 的结果，弱模型典型错误）— 原文「${txt.slice(0, 40)}」` });
+      score -= 6;
+    } else {
+      signals.push({ level: 'info', text: `行为指纹：陷阱题回答「${txt.slice(0, 40)}」（需自行判断对错，正确为 5）` });
+    }
   }
 
   // temp=0 一致性
