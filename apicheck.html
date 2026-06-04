@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Mehk3y — API 中转站检测</title>
+  <meta name="description" content="检测 OpenAI / Claude API 中转站的模型纯度：识别偷换模型、降级、虚假渠道，测试延迟、流式与一致性。Key 不落库。">
+  <meta property="og:title" content="Mehk3y — API 中转站检测">
+  <meta property="og:description" content="模型纯度检测 · 偷换/降级识别 · 延迟 · 流式 · 一致性 · 在线调试">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mehk3y.com/apicheck">
+  <meta property="og:image" content="https://mehk3y.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Mehk3y">
+  <meta name="twitter:image" content="https://mehk3y.com/og-image.png">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://mehk3y.com/apicheck">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="stylesheet" href="/common.css">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/theme.js"></script>
+  <link rel="preload" as="script" href="/apicheck.js">
+  <style>
+    .wrap { max-width: 760px; }
+    .divider { margin-bottom: 22px; }
+    code, .mono { font-family: "SF Mono", "Fira Code", ui-monospace, monospace; }
+
+    /* —— 表单 —— */
+    .form { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: -.01em; }
+    .field label .opt { color: var(--faint); font-weight: 400; }
+    .field input, .field select {
+      width: 100%; box-sizing: border-box;
+      padding: 11px 13px; font-size: 14px;
+      border: 1px solid var(--border); border-radius: var(--r-md);
+      background: var(--surface-2); color: var(--text);
+      font-family: inherit; transition: border-color .2s;
+    }
+    .field input:focus, .field select:focus { outline: none; border-color: var(--dim); }
+    .field .hint { font-size: 11px; color: var(--faint); line-height: 1.5; }
+    .row2 { display: grid; grid-template-columns: 1fr 160px; gap: 14px; }
+    @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset {
+      font-size: 11px; padding: 5px 11px; border-radius: 99px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--dim);
+      cursor: pointer; transition: all .15s; font-family: inherit;
+    }
+    .preset:hover { border-color: var(--dim); color: var(--text); }
+
+    .actions { display: flex; gap: 10px; align-items: center; }
+    .btn-go {
+      flex: 1; padding: 12px; font-size: 14px; font-weight: 600;
+      border: none; border-radius: var(--r-md);
+      background: var(--accent); color: var(--accent-fg);
+      cursor: pointer; transition: opacity .2s, transform .1s; font-family: inherit;
+    }
+    .btn-go:hover:not(:disabled) { opacity: .88; }
+    .btn-go:active:not(:disabled) { transform: scale(.99); }
+    .btn-go:disabled { opacity: .5; cursor: not-allowed; }
+
+    .privacy { font-size: 11px; color: var(--faint); margin-top: 2px; line-height: 1.6; }
+    .privacy b { color: var(--dim); font-weight: 600; }
+
+    /* —— 结果 —— */
+    #result { margin-top: 8px; }
+    .verdict {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 20px; border-radius: var(--r-lg);
+      border: 1px solid var(--border); background: var(--surface);
+      margin-bottom: 18px;
+    }
+    .gauge { flex-shrink: 0; width: 64px; height: 64px; position: relative; }
+    .gauge svg { transform: rotate(-90deg); }
+    .gauge .num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .verdict-text { min-width: 0; }
+    .verdict-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 3px; }
+    .verdict-desc { font-size: 12px; color: var(--dim); line-height: 1.5; }
+
+    .v-clean   { color: var(--green); }
+    .v-caution { color: #d97706; }
+    .v-suspect { color: var(--red); }
+
+    .sig-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .sig {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 11px 13px; border-radius: var(--r-md);
+      border: 1px solid var(--border); background: var(--surface-2);
+      font-size: 13px; line-height: 1.5;
+    }
+    .sig .dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; }
+    .sig.good .dot { background: var(--green); }
+    .sig.bad  .dot { background: var(--red); }
+    .sig.warn .dot { background: #d97706; }
+    .sig.info .dot, .sig.neutral .dot { background: var(--faint); }
+
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .meta { padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-2); }
+    .meta .k { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); margin-bottom: 5px; }
+    .meta .v { font-size: 14px; font-weight: 700; color: var(--text); word-break: break-all; font-variant-numeric: tabular-nums; }
+    .meta .v.mono { font-size: 12px; font-weight: 500; }
+
+    details.raw { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-2); margin-bottom: 16px; }
+    details.raw summary { cursor: pointer; padding: 11px 14px; font-size: 12px; font-weight: 600; color: var(--dim); user-select: none; }
+    details.raw pre { margin: 0; padding: 0 14px 14px; font-size: 11px; line-height: 1.5; overflow-x: auto; color: var(--text-2); white-space: pre-wrap; word-break: break-all; }
+
+    .err-box { padding: 14px 16px; border: 1px solid var(--red); border-radius: var(--r-md); background: color-mix(in srgb, var(--red) 8%, transparent); color: var(--red); font-size: 13px; line-height: 1.5; margin-top: 8px; }
+
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .note { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 4px 0 20px; }
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">跳到内容</a>
+<div class="site-top"><button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题"><svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button></div>
+<main class="wrap" id="main">
+  <header class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="hdr-back">←</a>
+      <a href="/" class="hdr-name">Mehk3y</a>
+      <span class="hdr-sub">API 中转站检测</span>
+    </div>
+  </header>
+  <div class="divider"></div>
+
+  <form class="form" id="probe-form" autocomplete="off">
+    <div class="field">
+      <label for="baseUrl">中转站地址 Base URL</label>
+      <input id="baseUrl" name="baseUrl" type="text" placeholder="https://api.example.com  或  https://api.example.com/v1" required>
+      <span class="hint">填到根域或 <code>/v1</code> 都行，会自动补全 <code>/chat/completions</code>。</span>
+    </div>
+
+    <div class="field">
+      <label for="apiKey">API Key</label>
+      <input id="apiKey" name="apiKey" type="password" placeholder="sk-..." required>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label for="model">模型名</label>
+        <input id="model" name="model" type="text" placeholder="gpt-4o" required>
+        <div class="presets" id="presets"></div>
+      </div>
+      <div class="field">
+        <label for="format">接口格式</label>
+        <select id="format" name="format">
+          <option value="openai">OpenAI 兼容</option>
+          <option value="anthropic">Anthropic 原生</option>
+        </select>
+        <span class="hint">绝大多数中转站选 OpenAI。</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn-go" id="go">开始检测</button>
+    </div>
+    <p class="privacy"><b>隐私：</b>检测请求由本站后端代发到你填的地址（绕开浏览器跨域限制）。<b>API Key 全程不落库、不记录</b>，请求结束即丢弃。源码公开，介意可自建。</p>
+  </form>
+
+  <div id="result"></div>
+
+  <p class="note">说明：纯度判定为启发式分析（对比返回的 model 字段、响应 id 指纹、身份探针自报厂商、temp=0 一致性等），<b>是参考而非铁证</b>。中转站若刻意伪造响应可能绕过部分检测。多发几次、换不同探针更可靠。</p>
+
+  <div class="footer"><a href="/">← 返回首页</a></div>
+</main>
+<script src="/apicheck.js" defer></script>
+<script src="/analytics.js" defer></script>
+</body>
+</html>
