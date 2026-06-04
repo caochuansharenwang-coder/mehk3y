@@ -89,6 +89,13 @@ export default function middleware(request, context) {
   const ua = request.headers.get('user-agent') || '';
   const ip = clientIp(request);
 
+  if (url.pathname === '/eth' || url.pathname === '/eth.html') {
+    return new Response('Gone', {
+      status: 410,
+      headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
+    });
+  }
+
   // 对外付费 API: 由自身的 key 计费/限额把关 (lib/api-keys.js), 不走爬虫拦截
   // 与 IP 限流 —— 付费客户端本就用 curl/python/axios 等脚本调用。
   if (url.pathname.startsWith('/api/v1/')) return undefined;

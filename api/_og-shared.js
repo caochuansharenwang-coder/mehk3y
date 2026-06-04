@@ -1,5 +1,5 @@
 // /api/_og-shared.js — Helpers for dynamic OG image generation (Vercel Edge + @vercel/og + Satori)
-// Used by /api/og-btc and /api/og-eth.
+// Used by /api/og-btc.
 
 // Tiny createElement helper so we don't need a JSX transpiler.
 // Satori requires every <div> to have explicit `display: flex` (or none) when

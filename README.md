@@ -7,7 +7,6 @@
 | 路径 | 用途 |
 |---|---|
 | `/btc` | 比特币实时仪表盘：价格 · 200WMA · 均衡价 · MVRV · 减半 · 恐惧贪婪 · ahr999 · MSTR 储备 |
-| `/eth` | 以太坊实时仪表盘：价格 · ETH/BTC · Gas · 200WMA · 质押 · BMNR 储备 |
 | `/ip` | IP / 浏览器指纹 / Claude 可用性 检测 |
 | `/esim` | eSIM 激活码解析 + OpenEUICC / EasyEUICC 教程 |
 | `/giffgaff` | giffgaff 英国电话卡使用速查 |
