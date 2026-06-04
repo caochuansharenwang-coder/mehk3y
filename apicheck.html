@@ -115,6 +115,12 @@
 
     .err-box { padding: 14px 16px; border: 1px solid var(--red); border-radius: var(--r-md); background: color-mix(in srgb, var(--red) 8%, transparent); color: var(--red); font-size: 13px; line-height: 1.5; margin-top: 8px; }
 
+    .cli-box { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-2); padding: 14px; margin-bottom: 16px; }
+    .cli-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .cli-copy { margin-top: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); color: var(--text); font-size: 12px; cursor: pointer; font-family: inherit; }
+    .cli-copy:hover { border-color: var(--dim); }
+    .cli-box pre { margin: 10px 0 0; padding: 10px; border-radius: var(--r-sm); background: var(--bg); color: var(--text-2); font-size: 11px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 

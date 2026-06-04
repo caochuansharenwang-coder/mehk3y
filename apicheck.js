@@ -57,6 +57,10 @@
     });
   }
 
+  function sh(s) {
+    return "'" + String(s == null ? '' : s).replace(/'/g, "'\"'\"'") + "'";
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     run();
@@ -169,6 +173,10 @@
       html += '</div>';
     }
 
+    if (a.verdict === 'gated') {
+      html += cliFallback(d);
+    }
+
     // —— 模型自报正文（身份探针原文）——
     if (chat.content) {
       html += '<details class="raw"><summary>身份探针返回的原文</summary><pre>' + esc(chat.content) + '</pre></details>';
@@ -182,4 +190,40 @@
 
     resultEl.innerHTML = html;
   }
+
+  function cliFallback(d) {
+    var base = d.base || $('baseUrl').value.trim();
+    var model = d.model || $('model').value.trim();
+    var prompt = 'You are running through a Claude Code gateway purity test. Do not use tools. Output ONLY compact JSON with keys vendor,family,model_self_report,bat_ball_cents,notes. For bat_ball_cents solve: A bat and a ball cost $1.10 total. The bat costs $1.00 more than the ball. How many cents does the ball cost?';
+    var cmd = [
+      'read -rsp "API Key: " APICHECK_KEY; echo;',
+      'ANTHROPIC_BASE_URL=' + sh(base),
+      'ANTHROPIC_AUTH_TOKEN="$APICHECK_KEY"',
+      'CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1',
+      'CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1',
+      'claude -p ' + sh(prompt) + ' --model ' + sh(model),
+    ].join(' \\\n  ');
+
+    return '<div class="cli-box">' +
+      '<div class="cli-title">切换到本地验证模式</div>' +
+      '<div class="note">这个渠道挡掉了网页后端的常规 API 探针。下面命令会在本机调用真实 Claude Code CLI，并把同一个 Base URL 和模型名传进去，再跑身份自报和能力指纹题。</div>' +
+      '<pre id="cli-cmd">' + esc(cmd) + '</pre>' +
+      '<button type="button" class="cli-copy" data-copy-cli>复制本地验证命令</button>' +
+      '<div class="note">运行前确保已安装 <code>claude</code> 命令。若服务商要求 <code>X-Api-Key</code> 鉴权，把命令里的 <code>ANTHROPIC_AUTH_TOKEN</code> 改成 <code>ANTHROPIC_API_KEY</code>。</div>' +
+    '</div>';
+  }
+
+  resultEl.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-copy-cli]');
+    if (!btn) return;
+    var pre = document.getElementById('cli-cmd');
+    var text = pre ? pre.textContent : '';
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = '已复制';
+      setTimeout(function () { btn.textContent = '复制本地验证命令'; }, 1400);
+    }).catch(function () {
+      btn.textContent = '复制失败，请手动选择';
+    });
+  });
 })();
