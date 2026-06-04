@@ -89,7 +89,8 @@ export default function middleware(request, context) {
   const ua = request.headers.get('user-agent') || '';
   const ip = clientIp(request);
 
-  if (url.pathname === '/eth' || url.pathname === '/eth.html') {
+  if (url.pathname === '/btc' || url.pathname === '/btc.html' ||
+      url.pathname === '/eth' || url.pathname === '/eth.html') {
     return new Response('Gone', {
       status: 410,
       headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },

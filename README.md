@@ -6,12 +6,17 @@
 
 | 路径 | 用途 |
 |---|---|
-| `/btc` | 比特币实时仪表盘：价格 · 200WMA · 均衡价 · MVRV · 减半 · 恐惧贪婪 · ahr999 · MSTR 储备 |
+| `/crypto` | BTC + ETH 实时链上指标合一：MVRV · ahr999 · Gas · MSTR / BMNR 储备 |
 | `/ip` | IP / 浏览器指纹 / Claude 可用性 检测 |
-| `/esim` | eSIM 激活码解析 + OpenEUICC / EasyEUICC 教程 |
-| `/giffgaff` | giffgaff 英国电话卡使用速查 |
+| `/apicheck` | API 中转站检测 |
 | `/apple` | Apple 礼品卡购买渠道（支付宝/微信） |
-| `/podcast` | (Phase 1 实验) 文章 / 粘贴文本 → 中文双人对谈播客 |
+| `/BasicEnglish` | Basic English 850 核心词 |
+| `/shadowrocket` | Shadowrocket 配置工具 |
+| `/perler` | 照片转拼豆像素图 |
+| `/Photograph/` | 拍立得照片工具 |
+| `/yuepaomoniqi` | 约炮模拟器 |
+| `/parking/` | 停车工具 |
+| `/admin` | 非首页入口：访问统计管理页 |
 
 ## 技术栈
 
@@ -56,7 +61,7 @@ npx vercel dev
 ```
 .
 ├── index.html               # 导航首页（v2 - SVG 图标 · JSON-LD）
-├── *.html                   # 6 个工具页面
+├── *.html                   # 首页可达工具页面 + admin
 ├── common.css common.js     # 共享样式 + helpers
 ├── theme.js                 # 三态主题控制
 ├── fonts/                   # Geist 字体（Apache 2.0）
@@ -74,7 +79,7 @@ npx vercel dev
 
 ## 路由
 
-`vercel.json` 启用 `cleanUrls`，所以 `/btc.html` 自动重定向到 `/btc`。
+`vercel.json` 启用 `cleanUrls`，所以 `*.html` 页面可用无后缀路径访问。独立 `/btc`、`/eth` 已下线并返回 410，数据集中到 `/crypto`。
 
 ## License
 
