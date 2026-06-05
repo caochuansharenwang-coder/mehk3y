@@ -33,10 +33,12 @@ nav a{display:inline-flex;align-items:center;justify-content:center;min-height:2
 nav a:after{content:none}
 nav a:hover{background:var(--panel);border-color:var(--line2)}
 main{width:min(1480px,calc(100% - 40px));margin:0 auto 56px}
-.sec{margin:16px 0;scroll-margin-top:16px}
-.sec h2{font-size:12px;line-height:1.2;margin:0 0 7px;color:var(--muted);font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:6px}
+.sec{margin:26px 0 6px;scroll-margin-top:16px}
+.sec:first-of-type{margin-top:10px}
+.sec h2{font-size:13.5px;line-height:1.2;margin:0 0 2px;color:var(--fg);font-weight:700;letter-spacing:0;display:flex;align-items:center;gap:8px}
+.sec h2::before{content:"";flex:0 0 auto;width:3px;height:14px;border-radius:2px;background:var(--accent);opacity:.5}
 .cnt{font-size:10px;color:var(--muted);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:1px 7px;font-weight:600}
-.sub{color:var(--muted);font-size:12px;margin:-3px 0 8px}
+.sub{color:var(--muted);font-size:12px;margin:0 0 9px;padding-left:11px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px}
 #config .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 #tools .grid,#featured .grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
@@ -130,10 +132,10 @@ nav a.active{background:var(--accent);color:var(--accent-fg);border-color:var(--
   <nav aria-label="资源分类"><a href="#config">配置</a><a href="#tools">工具</a><a href="#featured">模块</a><a href="#rules">规则集</a><a href="#repos">仓库</a><a href="#themes">配色</a><a href="#yf">App大全</a><a href="#adv">跳转</a></nav>
   <div class="srcfilter" id="srcfilter" aria-label="按来源筛选">
     <button class="chip on" data-sf="all">全部 <span class="cnt">548</span></button>
-    <button class="chip" data-sf="first">First</button>
-    <button class="chip" data-sf="iab">ProxyRules</button>
-    <button class="chip" data-sf="yf">yfamilys</button>
-    <button class="chip" data-sf="theme">配色</button>
+    <button class="chip" data-sf="first">First <span class="cnt">41</span></button>
+    <button class="chip" data-sf="iab">ProxyRules <span class="cnt">18</span></button>
+    <button class="chip" data-sf="yf">yfamilys <span class="cnt">459</span></button>
+    <button class="chip" data-sf="theme">配色 <span class="cnt">30</span></button>
     <span class="cntinfo" id="cntinfo"></span>
   </div>
 </header>
@@ -177,6 +179,8 @@ function srcOf(c){
   return c.closest('#yf')?'yf':'first';
 }
 cards.forEach(function(c){c.dataset.src=srcOf(c);});
+(function(){var cnt={all:cards.length};cards.forEach(function(c){cnt[c.dataset.src]=(cnt[c.dataset.src]||0)+1;});
+document.querySelectorAll('[data-sf]').forEach(function(ch){var s=ch.querySelector('.cnt');if(s)s.textContent=cnt[ch.dataset.sf]||0;});})();
 var activeSrc='all';
 function norm(s){return (s||'').toLowerCase().trim();}
 var raf;
