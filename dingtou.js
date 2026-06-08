@@ -1,30 +1,47 @@
 /* dingtou.js — 定投复利计算器
- * Pure client-side projection. No inline handlers (CSP script-src 'self').
+ * Pure client-side. No inline handlers (CSP script-src 'self').
  *
- * Convention (matches common DCA calculators): monthly compounding at
- * annual/12, contributions made at the START of each month (annuity-due).
- *   value_{m} = (value_{m-1} + monthly) * (1 + annual/12)
+ * Modes:
+ *   forward — given monthly contribution, project future value.
+ *   goal    — given a target amount, solve the required monthly contribution.
+ *
+ * Convention: monthly compounding at annual/12, contributions at the START
+ * of each month (annuity-due) — matches common DCA calculators.
+ * Optional: two-stage return (forward only) and inflation adjustment.
  */
 'use strict';
 
 (function () {
   var $ = function (id) { return document.getElementById(id); };
+  var main = $('main');
 
   var initialEl = $('initial');
   var monthlyEl = $('monthly');
+  var targetEl  = $('target');
   var rateEl    = $('rate');
   var yearsEl   = $('years');
   var monthlyRange = $('monthly-range');
+  var targetRange  = $('target-range');
   var rateRange    = $('rate-range');
   var yearsRange   = $('years-range');
 
+  var inflOn   = $('infl-on');
+  var inflRate = $('infl-rate');
+  var stageOn  = $('stage-on');
+  var splitEl  = $('split');
+  var rate2El  = $('rate2');
+
   var multEl     = $('mult');
+  var needEl     = $('need');
+  var needSubEl  = $('need-sub');
   var fvEl       = $('fv');
-  var fvWanEl    = $('fv-wan');
+  var fvSubEl    = $('fv-sub');
   var investedEl = $('invested');
   var gainsEl    = $('gains');
   var canvas     = $('chart');
   var ctx        = canvas.getContext('2d');
+
+  var mode = 'forward';
 
   // —— helpers ——
   function clampNum(el, dflt) {
@@ -37,21 +54,27 @@
   function money(n) { return '¥' + Math.round(n).toLocaleString('en-US'); }
   function wan(n) {
     n = Math.round(n);
-    if (n >= 1e8) return '约 ' + (n / 1e8).toFixed(2) + ' 亿';
-    if (n >= 1e4) return '约 ' + (n / 1e4).toFixed(1) + ' 万';
+    var neg = n < 0 ? '-' : ''; n = Math.abs(n);
+    if (n >= 1e8) return '约 ' + neg + (n / 1e8).toFixed(2) + ' 亿';
+    if (n >= 1e4) return '约 ' + neg + (n / 1e4).toFixed(1) + ' 万';
     return '';
   }
   function cssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
+  function monthlyRate(annualPct) { return (annualPct / 100) / 12; }
 
-  // —— core projection (month-by-month, builds yearly series) ——
-  function project(initial, monthly, annualPct, years) {
-    var n = Math.round(years * 12);
-    var rm = (annualPct / 100) / 12;
+  // monthly rate for month m (1-based), honoring optional two-stage split
+  function rateForMonth(m, rm1, rm2, splitMonth, twoStage) {
+    return (twoStage && m > splitMonth) ? rm2 : rm1;
+  }
+
+  // project month-by-month, build yearly series
+  function project(initial, monthly, n, rm1, rm2, splitMonth, twoStage) {
     var value = initial;
     var series = [{ y: 0, value: initial, invested: initial }];
     for (var m = 1; m <= n; m++) {
+      var rm = rateForMonth(m, rm1, rm2, splitMonth, twoStage);
       value = (value + monthly) * (1 + rm);
       if (m % 12 === 0 || m === n) {
         series.push({ y: m / 12, value: value, invested: initial + monthly * m });
@@ -59,6 +82,20 @@
     }
     var invested = initial + monthly * n;
     return { value: value, invested: invested, gains: value - invested, series: series };
+  }
+
+  // solve required monthly (annuity-due, single rate) so FV == target
+  function solveMonthly(initial, target, n, rm) {
+    var fvInitial, dueFactor;
+    if (rm === 0) { fvInitial = initial; dueFactor = n; }
+    else {
+      var g = Math.pow(1 + rm, n);
+      fvInitial = initial * g;
+      dueFactor = ((g - 1) / rm) * (1 + rm);
+    }
+    if (dueFactor <= 0) return 0;
+    var need = (target - fvInitial) / dueFactor;
+    return need > 0 ? need : 0;
   }
 
   // —— chart ——
@@ -85,7 +122,6 @@
     var X = function (yr) { return padL + (maxY ? (yr / maxY) * w : 0); };
     var Y = function (v) { return padT + h - (v / maxV) * h; };
 
-    // horizontal gridlines + y labels (0, mid, max)
     ctx.font = '10px ui-monospace, monospace';
     ctx.textBaseline = 'middle';
     ctx.strokeStyle = gridC;
@@ -101,7 +137,6 @@
       ctx.fillText(label.replace('约 ', ''), padL + 2, yy - 7);
     });
 
-    // x labels (start / mid / end years)
     ctx.textBaseline = 'alphabetic';
     [0, Math.round(maxY / 2), Math.round(maxY)].forEach(function (yr, i) {
       var xx = X(yr);
@@ -109,7 +144,7 @@
       ctx.fillText(yr + '年', xx, cssH - 6);
     });
 
-    // invested area (baseline)
+    // invested baseline area
     ctx.beginPath();
     ctx.moveTo(X(series[0].y), Y(series[0].invested));
     series.forEach(function (p) { ctx.lineTo(X(p.y), Y(p.invested)); });
@@ -138,7 +173,6 @@
     });
     ctx.strokeStyle = fvC; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
 
-    // end dot
     var last = series[series.length - 1];
     ctx.beginPath();
     ctx.arc(X(last.y), Y(last.value), 3.5, 0, Math.PI * 2);
@@ -149,24 +183,50 @@
   // —— render ——
   function recompute() {
     var initial = clampNum(initialEl, 0);
-    var monthly = clampNum(monthlyEl, 0);
     var rate    = clampNum(rateEl, 0);
     var years   = clampNum(yearsEl, 1);
+    var n       = Math.round(years * 12);
+    var rm1     = monthlyRate(rate);
 
-    var r = project(initial, monthly, rate, years);
-    var mult = r.invested > 0 ? r.value / r.invested : 0;
+    var twoStage = stageOn.checked && mode === 'forward';
+    var rm2 = monthlyRate(clampNum(rate2El, 0));
+    var splitMonth = Math.round(clampNum(splitEl, 0) * 12);
 
-    multEl.textContent = (mult || 0).toFixed(2);
+    var monthly, r;
+    if (mode === 'goal') {
+      var target = clampNum(targetEl, 0);
+      monthly = solveMonthly(initial, target, n, rm1);
+      r = project(initial, monthly, n, rm1, rm1, 0, false);
+      needEl.textContent = money(monthly);
+      needSubEl.textContent = '坚持 ' + years + ' 年即可攒到 ' + money(target)
+        + (wan(target) ? '（' + wan(target) + '）' : '');
+    } else {
+      monthly = clampNum(monthlyEl, 0);
+      r = project(initial, monthly, n, rm1, rm2, splitMonth, twoStage);
+      var mult = r.invested > 0 ? r.value / r.invested : 0;
+      multEl.textContent = (mult || 0).toFixed(2);
+    }
+
+    // shared cards
     fvEl.textContent = money(r.value);
-    fvWanEl.textContent = wan(r.value) || '';
     investedEl.textContent = money(r.invested);
     gainsEl.textContent = money(r.gains);
+
+    // future-value sub-line: inflation-adjusted real value, else 万/亿 hint
+    if (inflOn.checked) {
+      var real = r.value / Math.pow(1 + clampNum(inflRate, 0) / 100, years);
+      fvSubEl.textContent = '今天购买力 ≈ ' + money(real);
+      fvSubEl.className = 'stat-sub real';
+    } else {
+      fvSubEl.textContent = wan(r.value) || '';
+      fvSubEl.className = 'stat-sub';
+    }
 
     drawChart(r.series);
   }
 
-  // —— sync a number input with its slider ——
-  function pair(numEl, rangeEl) {
+  // —— sync number input with its slider ——
+  function pair(numEl, rangeEl, isRate) {
     if (!rangeEl) { numEl.addEventListener('input', recompute); return; }
     numEl.addEventListener('input', function () {
       var v = parseFloat(numEl.value);
@@ -174,12 +234,12 @@
         var rmin = parseFloat(rangeEl.min), rmax = parseFloat(rangeEl.max);
         rangeEl.value = Math.min(Math.max(v, rmin), rmax);
       }
-      clearActiveAssets();
+      if (isRate) clearActiveAssets();
       recompute();
     });
     rangeEl.addEventListener('input', function () {
       numEl.value = rangeEl.value;
-      if (numEl === rateEl) clearActiveAssets();
+      if (isRate) clearActiveAssets();
       recompute();
     });
   }
@@ -201,12 +261,37 @@
     });
   });
 
-  pair(initialEl, null);
-  pair(monthlyEl, monthlyRange);
-  pair(rateEl, rateRange);
-  pair(yearsEl, yearsRange);
+  // —— mode switch ——
+  Array.prototype.slice.call(document.querySelectorAll('#mode-switch button')).forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      mode = btn.getAttribute('data-mode');
+      main.setAttribute('data-mode', mode);
+      document.querySelectorAll('#mode-switch button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      recompute();
+    });
+  });
 
-  // redraw on resize (debounced) and on theme change (colors come from CSS vars)
+  // —— advanced toggles (checkbox drives row visibility) ——
+  function bindAdv(checkbox, rowId) {
+    var row = $(rowId);
+    function sync() { row.classList.toggle('on', checkbox.checked); recompute(); }
+    checkbox.addEventListener('change', sync);
+    row.classList.toggle('on', checkbox.checked);
+  }
+  bindAdv(inflOn, 'adv-infl');
+  bindAdv(stageOn, 'adv-stage');
+  inflRate.addEventListener('input', recompute);
+  splitEl.addEventListener('input', recompute);
+  rate2El.addEventListener('input', recompute);
+
+  pair(initialEl, null);
+  pair(monthlyEl, monthlyRange, false);
+  pair(targetEl, targetRange, false);
+  pair(rateEl, rateRange, true);
+  pair(yearsEl, yearsRange, false);
+
   var rt;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(recompute, 120); });
   new MutationObserver(recompute).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
