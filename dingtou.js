@@ -7,7 +7,8 @@
  *
  * Convention: monthly compounding at annual/12, contributions at the START
  * of each month (annuity-due) — matches common DCA calculators.
- * Optional: two-stage return (forward only) and inflation adjustment.
+ * Optional: two-stage return (forward only), inflation adjustment, FIRE target,
+ * and shareable URL params.
  */
 'use strict';
 
@@ -30,6 +31,9 @@
   var stageOn  = $('stage-on');
   var splitEl  = $('split');
   var rate2El  = $('rate2');
+  var fireOn   = $('fire-on');
+  var fireSpendEl = $('fire-spend');
+  var fireMultipleEl = $('fire-multiple');
 
   var multEl     = $('mult');
   var needEl     = $('need');
@@ -38,10 +42,17 @@
   var fvSubEl    = $('fv-sub');
   var investedEl = $('invested');
   var gainsEl    = $('gains');
+  var fireCard   = $('fire-card');
+  var fireMainEl = $('fire-main');
+  var fireSubEl  = $('fire-sub');
+  var shareBtn   = $('share-link');
+  var shareStatusEl = $('share-status');
   var canvas     = $('chart');
   var ctx        = canvas.getContext('2d');
 
   var mode = 'forward';
+  var booting = true;
+  var urlTimer = null;
 
   // —— helpers ——
   function clampNum(el, dflt) {
@@ -63,6 +74,12 @@
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
   function monthlyRate(annualPct) { return (annualPct / 100) / 12; }
+  function setChecked(el, on) {
+    if (el) el.checked = on === true || on === '1' || on === 'true';
+  }
+  function setIfParam(params, key, el) {
+    if (params.has(key)) el.value = params.get(key);
+  }
 
   // monthly rate for month m (1-based), honoring optional two-stage split
   function rateForMonth(m, rm1, rm2, splitMonth, twoStage) {
@@ -84,6 +101,17 @@
     return { value: value, invested: invested, gains: value - invested, series: series };
   }
 
+  function monthsToReach(initial, monthly, target, maxMonths, rm1, rm2, splitMonth, twoStage) {
+    if (target <= initial) return 0;
+    var value = initial;
+    for (var m = 1; m <= maxMonths; m++) {
+      var rm = rateForMonth(m, rm1, rm2, splitMonth, twoStage);
+      value = (value + monthly) * (1 + rm);
+      if (value >= target) return m;
+    }
+    return null;
+  }
+
   // solve required monthly (annuity-due, single rate) so FV == target
   function solveMonthly(initial, target, n, rm) {
     var fvInitial, dueFactor;
@@ -96,6 +124,82 @@
     if (dueFactor <= 0) return 0;
     var need = (target - fvInitial) / dueFactor;
     return need > 0 ? need : 0;
+  }
+
+  function applyMode(nextMode) {
+    mode = nextMode === 'goal' ? 'goal' : 'forward';
+    main.setAttribute('data-mode', mode);
+    document.querySelectorAll('#mode-switch button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === mode));
+    });
+  }
+
+  function currentParams() {
+    var params = new URLSearchParams();
+    params.set('mode', mode);
+    params.set('initial', String(clampNum(initialEl, 0)));
+    params.set('rate', String(clampNum(rateEl, 0)));
+    params.set('years', String(clampNum(yearsEl, 1)));
+    if (mode === 'goal') params.set('target', String(clampNum(targetEl, 0)));
+    else params.set('monthly', String(clampNum(monthlyEl, 0)));
+    if (inflOn.checked) {
+      params.set('infl', '1');
+      params.set('inflRate', String(clampNum(inflRate, 0)));
+    }
+    if (stageOn.checked && mode === 'forward') {
+      params.set('stage', '1');
+      params.set('split', String(clampNum(splitEl, 0)));
+      params.set('rate2', String(clampNum(rate2El, 0)));
+    }
+    if (fireOn.checked && mode === 'forward') {
+      params.set('fire', '1');
+      params.set('spend', String(clampNum(fireSpendEl, 0)));
+      params.set('fireMultiple', String(clampNum(fireMultipleEl, 25)));
+    }
+    return params;
+  }
+
+  function updateUrl() {
+    if (booting || !window.history || !window.URLSearchParams) return;
+    clearTimeout(urlTimer);
+    urlTimer = setTimeout(function () {
+      var qs = currentParams().toString();
+      var next = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+      window.history.replaceState(null, '', next);
+    }, 120);
+  }
+
+  function applyUrlParams() {
+    var params = new URLSearchParams(window.location.search);
+    if (!params.toString()) return;
+    applyMode(params.get('mode'));
+    setIfParam(params, 'initial', initialEl);
+    setIfParam(params, 'monthly', monthlyEl);
+    setIfParam(params, 'target', targetEl);
+    setIfParam(params, 'rate', rateEl);
+    setIfParam(params, 'years', yearsEl);
+    setIfParam(params, 'inflRate', inflRate);
+    setIfParam(params, 'split', splitEl);
+    setIfParam(params, 'rate2', rate2El);
+    setIfParam(params, 'spend', fireSpendEl);
+    setIfParam(params, 'fireMultiple', fireMultipleEl);
+    setChecked(inflOn, params.get('infl'));
+    setChecked(stageOn, params.get('stage'));
+    setChecked(fireOn, params.get('fire'));
+  }
+
+  function syncSliders() {
+    [
+      [monthlyEl, monthlyRange],
+      [targetEl, targetRange],
+      [rateEl, rateRange],
+      [yearsEl, yearsRange]
+    ].forEach(function (pairEls) {
+      var numEl = pairEls[0], rangeEl = pairEls[1];
+      var v = parseFloat(numEl.value);
+      if (!rangeEl || !isFinite(v)) return;
+      rangeEl.value = Math.min(Math.max(v, parseFloat(rangeEl.min)), parseFloat(rangeEl.max));
+    });
   }
 
   // —— chart ——
@@ -191,6 +295,7 @@
     var twoStage = stageOn.checked && mode === 'forward';
     var rm2 = monthlyRate(clampNum(rate2El, 0));
     var splitMonth = Math.round(clampNum(splitEl, 0) * 12);
+    if (splitMonth >= n) splitMonth = Math.max(0, n - 1);
 
     var monthly, r;
     if (mode === 'goal') {
@@ -205,6 +310,23 @@
       r = project(initial, monthly, n, rm1, rm2, splitMonth, twoStage);
       var mult = r.invested > 0 ? r.value / r.invested : 0;
       multEl.textContent = (mult || 0).toFixed(2);
+    }
+
+    if (mode === 'forward' && fireOn.checked) {
+      var fireTarget = clampNum(fireSpendEl, 0) * clampNum(fireMultipleEl, 25);
+      var reach = monthsToReach(initial, monthly, fireTarget, n, rm1, rm2, splitMonth, twoStage);
+      fireCard.hidden = false;
+      fireMainEl.textContent = '目标 ' + money(fireTarget);
+      if (reach === 0) {
+        fireSubEl.textContent = '现在已达到，当前资产已覆盖这个目标。';
+      } else if (reach === null) {
+        fireSubEl.textContent = '按当前 ' + years + ' 年计划还未达到，期末差 ' + money(Math.max(0, fireTarget - r.value)) + '。';
+      } else {
+        var reachYears = reach / 12;
+        fireSubEl.textContent = '预计第 ' + reachYears.toFixed(reach % 12 === 0 ? 0 : 1) + ' 年达到；期末超出目标 ' + money(Math.max(0, r.value - fireTarget)) + '。';
+      }
+    } else {
+      fireCard.hidden = true;
     }
 
     // shared cards
@@ -223,6 +345,7 @@
     }
 
     drawChart(r.series);
+    updateUrl();
   }
 
   // —— sync number input with its slider ——
@@ -264,11 +387,7 @@
   // —— mode switch ——
   Array.prototype.slice.call(document.querySelectorAll('#mode-switch button')).forEach(function (btn) {
     btn.addEventListener('click', function () {
-      mode = btn.getAttribute('data-mode');
-      main.setAttribute('data-mode', mode);
-      document.querySelectorAll('#mode-switch button').forEach(function (b) {
-        b.setAttribute('aria-pressed', String(b === btn));
-      });
+      applyMode(btn.getAttribute('data-mode'));
       recompute();
     });
   });
@@ -282,15 +401,55 @@
   }
   bindAdv(inflOn, 'adv-infl');
   bindAdv(stageOn, 'adv-stage');
+  bindAdv(fireOn, 'adv-fire');
   inflRate.addEventListener('input', recompute);
   splitEl.addEventListener('input', recompute);
   rate2El.addEventListener('input', recompute);
+  fireSpendEl.addEventListener('input', recompute);
+  fireMultipleEl.addEventListener('input', recompute);
+
+  shareBtn.addEventListener('click', function () {
+    var qs = currentParams().toString();
+    var url = window.location.origin + window.location.pathname + (qs ? '?' + qs : '');
+    function done(ok) {
+      shareStatusEl.textContent = ok ? '已复制' : '复制失败';
+      setTimeout(function () { shareStatusEl.textContent = ''; }, 1800);
+    }
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = url;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (!ok) window.prompt('复制这个链接', url);
+      done(true);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(url).then(function () { done(true); }, fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  });
 
   pair(initialEl, null);
   pair(monthlyEl, monthlyRange, false);
   pair(targetEl, targetRange, false);
   pair(rateEl, rateRange, true);
   pair(yearsEl, yearsRange, false);
+
+  applyUrlParams();
+  syncSliders();
+  ['adv-infl', 'adv-stage', 'adv-fire'].forEach(function (rowId) {
+    var row = $(rowId);
+    var checkbox = row && row.querySelector('input[type="checkbox"]');
+    if (row && checkbox) row.classList.toggle('on', checkbox.checked);
+  });
+  booting = false;
 
   var rt;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(recompute, 120); });
