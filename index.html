@@ -33,34 +33,9 @@
 
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/common.css">
-  <script>
-  /* Inlined theme controller (was /theme.js) — runs before paint to avoid FOUC
-     and removes a render-blocking request on the homepage. */
-  (function () {
-    'use strict';
-    var KEY = 'theme';
-    var html = document.documentElement;
-    function read() { try { return localStorage.getItem(KEY) || 'auto'; } catch (_) { return 'auto'; } }
-    function write(v) { try { localStorage.setItem(KEY, v); } catch (_) {} }
-    function apply(v) {
-      if (v === 'auto') html.removeAttribute('data-theme');
-      else html.setAttribute('data-theme', v);
-      if (v === 'auto') html.setAttribute('data-theme', 'auto');
-    }
-    apply(read());
-    function next(v) { return v === 'auto' ? 'light' : v === 'light' ? 'dark' : 'auto'; }
-    function bind() {
-      document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var n = next(read()); write(n); apply(n);
-          btn.setAttribute('aria-label', '主题：' + n);
-        });
-      });
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
-    else bind();
-  })();
-  </script>
+  <!-- Theme controller: external + 'self' so the homepage CSP needs no 'unsafe-inline'.
+       Synchronous in <head> so it still applies before first paint (no FOUC). -->
+  <script src="/theme.js"></script>
 
   <script type="application/ld+json">
   {
