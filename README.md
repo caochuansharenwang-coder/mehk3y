@@ -9,6 +9,7 @@
 | `/crypto` | BTC + ETH 实时链上指标合一：MVRV · ahr999 · Gas · MSTR / BMNR 储备 |
 | `/ip` | IP / 浏览器指纹 / Claude 可用性 检测 |
 | `/apicheck` | API 中转站检测 |
+| `/dingtou` | 定投复利计算器：主流资产长期定投收益推演 |
 | `/apple` | Apple 礼品卡购买渠道（支付宝/微信） |
 | `/BasicEnglish` | Basic English 850 核心词 |
 | `/shadowrocket` | Shadowrocket 配置工具 |
