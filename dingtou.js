@@ -42,6 +42,7 @@
   var fvSubEl    = $('fv-sub');
   var investedEl = $('invested');
   var gainsEl    = $('gains');
+  var humanSummaryEl = $('human-summary');
   var fireCard   = $('fire-card');
   var fireMainEl = $('fire-main');
   var fireSubEl  = $('fire-sub');
@@ -124,6 +125,23 @@
     if (dueFactor <= 0) return 0;
     var need = (target - fvInitial) / dueFactor;
     return need > 0 ? need : 0;
+  }
+
+  function buildHumanSummary(data) {
+    var bits = [];
+    if (mode === 'goal') {
+      bits.push('想攒到 <strong>' + money(data.target) + '</strong>，如果先有 <strong>' + money(data.initial) + '</strong>，按年化 <strong>' + data.rate + '%</strong> 算，坚持 <strong>' + data.years + ' 年</strong>，每月大概要投 <strong>' + money(data.monthly) + '</strong>。');
+    } else {
+      bits.push('每月存 <strong>' + money(data.monthly) + '</strong>，坚持 <strong>' + data.years + ' 年</strong>，最后大约有 <strong>' + money(data.value) + '</strong>。');
+      bits.push('其中你自己一共投了 <strong>' + money(data.invested) + '</strong>，利滚利多出来 <strong>' + money(data.gains) + '</strong>。');
+    }
+    if (data.realValue !== null) {
+      bits.push('按通胀折回今天，大概相当于现在的 <strong>' + money(data.realValue) + '</strong>。');
+    }
+    if (data.twoStage) {
+      bits.push('这里按前 <strong>' + data.splitYears + ' 年</strong>年化 <strong>' + data.rate + '%</strong>，后面改成 <strong>' + data.rate2 + '%</strong> 来算。');
+    }
+    return bits.join(' ');
   }
 
   function applyMode(nextMode) {
@@ -297,9 +315,9 @@
     var splitMonth = Math.round(clampNum(splitEl, 0) * 12);
     if (splitMonth >= n) splitMonth = Math.max(0, n - 1);
 
-    var monthly, r;
+    var monthly, r, target;
     if (mode === 'goal') {
-      var target = clampNum(targetEl, 0);
+      target = clampNum(targetEl, 0);
       monthly = solveMonthly(initial, target, n, rm1);
       r = project(initial, monthly, n, rm1, rm1, 0, false);
       needEl.textContent = money(monthly);
@@ -343,6 +361,21 @@
       fvSubEl.textContent = wan(r.value) || '';
       fvSubEl.className = 'stat-sub';
     }
+
+    humanSummaryEl.innerHTML = buildHumanSummary({
+      initial: initial,
+      monthly: monthly,
+      target: target || r.value,
+      rate: rate,
+      years: years,
+      value: r.value,
+      invested: r.invested,
+      gains: r.gains,
+      realValue: inflOn.checked ? r.value / Math.pow(1 + clampNum(inflRate, 0) / 100, years) : null,
+      twoStage: twoStage,
+      splitYears: clampNum(splitEl, 0),
+      rate2: clampNum(rate2El, 0)
+    });
 
     drawChart(r.series);
     updateUrl();
@@ -426,8 +459,10 @@
       var ok = false;
       try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
       document.body.removeChild(ta);
-      if (!ok) window.prompt('复制这个链接', url);
-      done(true);
+      if (!ok) {
+        try { window.prompt('复制这个链接', url); ok = true; } catch (e) { ok = false; }
+      }
+      done(ok);
     }
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(url).then(function () { done(true); }, fallbackCopy);
