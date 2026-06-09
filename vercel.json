@@ -1,5 +1,8 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/og-image.png", "destination": "/og-image.jpg", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*\\.(?:js|css))",
