@@ -218,6 +218,27 @@
     .legend .l-fv { background: #f59e0b; }
     canvas#chart { display: block; width: 100%; height: 220px; }
 
+    /* —— Multi-asset comparison —— */
+    .compare-list { margin-top: 12px; background: var(--surface); border: 1px solid var(--border);
+                    border-radius: var(--r-xl); padding: 15px 16px; }
+    .cmp-title { font-size: 12.5px; font-weight: 600; color: var(--text-2); margin-bottom: 12px; }
+    .cmp-rows { display: flex; flex-direction: column; gap: 9px; }
+    .cmp-row { display: flex; align-items: center; gap: 9px; }
+    .cmp-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .cmp-name { font-size: 13px; color: var(--text); font-weight: 600; white-space: nowrap; }
+    .cmp-name .cmp-rate { font-size: 11px; color: var(--faint); font-weight: 400; margin-left: 3px; }
+    .cmp-bar { flex: 1; height: 7px; border-radius: 4px; background: var(--bg);
+               border: 1px solid var(--border); overflow: hidden; min-width: 30px; }
+    .cmp-bar i { display: block; height: 100%; border-radius: 4px; transition: width .4s var(--ease); }
+    .cmp-val { font-size: 13px; font-weight: 700; color: var(--text);
+               font-variant-numeric: tabular-nums; min-width: 96px; text-align: right; }
+    .cmp-foot { font-size: 11px; color: var(--faint); margin-top: 12px; line-height: 1.65; }
+    .compare-list .c-sp { background: #3b82f6; }
+    .compare-list .c-nq { background: #8b5cf6; }
+    .compare-list .c-cs { background: #ef4444; }
+    .compare-list .c-au { background: #eab308; }
+    .compare-list .c-mf { background: #10b981; }
+
     .disclaimer { margin-top: 18px; font-size: 11.5px; color: var(--faint); line-height: 1.7;
                   border-left: 2px solid var(--border-2); padding-left: 12px; }
 
@@ -227,6 +248,7 @@
     /* stage advanced row is forward-only */
     [data-mode="goal"] #adv-stage { display: none; }
     [data-mode="goal"] #adv-fire { display: none; }
+    [data-mode="goal"] #adv-compare { display: none; }
   </style>
 </head>
 <body>
@@ -375,6 +397,17 @@
           </div>
         </div>
       </div>
+
+      <div class="adv-row" id="adv-compare">
+        <label class="adv-head">
+          <input type="checkbox" id="compare-on">
+          <span class="switch" aria-hidden="true"></span>
+          <span class="adv-title">多资产对比<span class="tip">同样的钱，投不同资产差多少</span></span>
+        </label>
+        <div class="plain-note adv-note">
+          <strong>给长辈解释：</strong>同样每月存这些钱、坚持这么多年，分别买标普500、纳指、沪深300、黄金、货币基金，几十年后差多少？打开它，下面会出一张对比图和一个排行榜，一眼看明白。
+        </div>
+      </div>
     </div>
   </div>
 
@@ -446,6 +479,12 @@
       </div>
     </div>
     <canvas id="chart" aria-label="资产增长曲线图"></canvas>
+  </div>
+
+  <div class="compare-list" id="compare-list" hidden>
+    <div class="cmp-title">📊 同样的投入，投不同资产几十年后对比</div>
+    <div class="cmp-rows" id="cmp-rows"></div>
+    <div class="cmp-foot">用你当前的本金与每月定投，按各资产的长期历史年化测算并排名；比特币波动极大、不可持续，未纳入对比。</div>
   </div>
 
   <p class="disclaimer">

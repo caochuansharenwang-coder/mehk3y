@@ -34,6 +34,19 @@
   var fireOn   = $('fire-on');
   var fireSpendEl = $('fire-spend');
   var fireMultipleEl = $('fire-multiple');
+  var compareOn   = $('compare-on');
+  var compareListEl = $('compare-list');
+  var cmpRowsEl = $('cmp-rows');
+
+  // Assets overlaid in 多资产对比 (long-run reference annual returns; BTC omitted
+  // — its volatility would dwarf the others and flatten the chart).
+  var COMPARE_ASSETS = [
+    { name: '纳指100',  rate: 13, color: '#8b5cf6', cls: 'c-nq' },
+    { name: '标普500',  rate: 10, color: '#3b82f6', cls: 'c-sp' },
+    { name: '沪深300',  rate: 8,  color: '#ef4444', cls: 'c-cs' },
+    { name: '黄金',     rate: 7,  color: '#eab308', cls: 'c-au' },
+    { name: '货币基金', rate: 3,  color: '#10b981', cls: 'c-mf' }
+  ];
 
   var multEl     = $('mult');
   var needEl     = $('need');
@@ -174,6 +187,7 @@
       params.set('spend', String(clampNum(fireSpendEl, 0)));
       params.set('fireMultiple', String(clampNum(fireMultipleEl, 25)));
     }
+    if (compareOn.checked && mode === 'forward') params.set('compare', '1');
     return params;
   }
 
@@ -204,6 +218,7 @@
     setChecked(inflOn, params.get('infl'));
     setChecked(stageOn, params.get('stage'));
     setChecked(fireOn, params.get('fire'));
+    setChecked(compareOn, params.get('compare'));
   }
 
   function syncSliders() {
@@ -221,7 +236,8 @@
   }
 
   // —— chart ——
-  function drawChart(series) {
+  function drawChart(series, compares) {
+    var hasCompare = compares && compares.length;
     var dpr = window.devicePixelRatio || 1;
     var cssW = canvas.clientWidth || canvas.parentElement.clientWidth;
     var cssH = 220;
@@ -234,6 +250,9 @@
     var w = cssW - padL - padR, h = cssH - padT - padB;
     var maxV = 0, maxY = series[series.length - 1].y || 1;
     series.forEach(function (p) { if (p.value > maxV) maxV = p.value; });
+    if (hasCompare) {
+      compares.forEach(function (c) { c.series.forEach(function (p) { if (p.value > maxV) maxV = p.value; }); });
+    }
     if (maxV <= 0) maxV = 1;
 
     var gridC = cssVar('--border') || '#e5e5e5';
@@ -275,31 +294,63 @@
     ctx.closePath();
     ctx.fillStyle = inC; ctx.globalAlpha = 0.55; ctx.fill(); ctx.globalAlpha = 1;
 
-    // total-value gradient area
-    var grad = ctx.createLinearGradient(0, padT, 0, padT + h);
-    grad.addColorStop(0, 'rgba(245,158,11,0.30)');
-    grad.addColorStop(1, 'rgba(245,158,11,0.02)');
-    ctx.beginPath();
-    ctx.moveTo(X(series[0].y), Y(series[0].value));
-    series.forEach(function (p) { ctx.lineTo(X(p.y), Y(p.value)); });
-    ctx.lineTo(X(series[series.length - 1].y), Y(0));
-    ctx.lineTo(X(series[0].y), Y(0));
-    ctx.closePath();
-    ctx.fillStyle = grad; ctx.fill();
+    // total-value gradient area (single-asset view only; omitted when overlaying)
+    if (!hasCompare) {
+      var grad = ctx.createLinearGradient(0, padT, 0, padT + h);
+      grad.addColorStop(0, 'rgba(245,158,11,0.30)');
+      grad.addColorStop(1, 'rgba(245,158,11,0.02)');
+      ctx.beginPath();
+      ctx.moveTo(X(series[0].y), Y(series[0].value));
+      series.forEach(function (p) { ctx.lineTo(X(p.y), Y(p.value)); });
+      ctx.lineTo(X(series[series.length - 1].y), Y(0));
+      ctx.lineTo(X(series[0].y), Y(0));
+      ctx.closePath();
+      ctx.fillStyle = grad; ctx.fill();
+    }
 
-    // total-value line
+    // comparison overlays — thin colored line per asset
+    if (hasCompare) {
+      ctx.lineJoin = 'round';
+      compares.forEach(function (c) {
+        ctx.beginPath();
+        c.series.forEach(function (p, i) {
+          var xx = X(p.y), yy = Y(p.value);
+          if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+        });
+        ctx.strokeStyle = c.color; ctx.lineWidth = 1.7; ctx.globalAlpha = 0.92; ctx.stroke();
+        ctx.globalAlpha = 1;
+      });
+    }
+
+    // total-value line (the user's own rate — emphasized on top)
     ctx.beginPath();
     series.forEach(function (p, i) {
       var xx = X(p.y), yy = Y(p.value);
       if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
     });
-    ctx.strokeStyle = fvC; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+    ctx.strokeStyle = fvC; ctx.lineWidth = hasCompare ? 2.6 : 2; ctx.lineJoin = 'round'; ctx.stroke();
 
     var last = series[series.length - 1];
     ctx.beginPath();
     ctx.arc(X(last.y), Y(last.value), 3.5, 0, Math.PI * 2);
     ctx.fillStyle = fvC; ctx.fill();
     ctx.strokeStyle = cssVar('--surface') || '#fff'; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  function renderCompareList(compares) {
+    var sorted = compares.slice().sort(function (a, b) { return b.value - a.value; });
+    var maxVal = sorted.length ? sorted[0].value : 1;
+    var html = '';
+    sorted.forEach(function (c) {
+      var pct = maxVal > 0 ? Math.max(2, (c.value / maxVal) * 100) : 0;
+      html += '<div class="cmp-row">'
+        + '<span class="cmp-dot ' + c.cls + '"></span>'
+        + '<span class="cmp-name">' + c.name + '<span class="cmp-rate">' + c.rate + '%</span></span>'
+        + '<span class="cmp-bar"><i class="' + c.cls + '" style="width:' + pct.toFixed(1) + '%"></i></span>'
+        + '<span class="cmp-val">' + money(c.value) + '</span>'
+        + '</div>';
+    });
+    cmpRowsEl.innerHTML = html;
   }
 
   // —— render ——
@@ -377,7 +428,19 @@
       rate2: clampNum(rate2El, 0)
     });
 
-    drawChart(r.series);
+    var compares = null;
+    if (compareOn.checked && mode === 'forward') {
+      compares = COMPARE_ASSETS.map(function (a) {
+        var s = project(initial, monthly, n, monthlyRate(a.rate), 0, 0, false).series;
+        return { name: a.name, rate: a.rate, color: a.color, cls: a.cls, series: s, value: s[s.length - 1].value };
+      });
+      renderCompareList(compares);
+      compareListEl.hidden = false;
+    } else {
+      compareListEl.hidden = true;
+    }
+
+    drawChart(r.series, compares);
     updateUrl();
   }
 
@@ -435,6 +498,7 @@
   bindAdv(inflOn, 'adv-infl');
   bindAdv(stageOn, 'adv-stage');
   bindAdv(fireOn, 'adv-fire');
+  bindAdv(compareOn, 'adv-compare');
   inflRate.addEventListener('input', recompute);
   splitEl.addEventListener('input', recompute);
   rate2El.addEventListener('input', recompute);
