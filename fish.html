@@ -11,10 +11,17 @@
     color:rgba(255,255,255,.78);font:13px/1.6 "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
     letter-spacing:.14em;background:rgba(0,22,26,.38);padding:8px 20px;border-radius:99px;
     backdrop-filter:blur(6px);pointer-events:none;transition:opacity 1.6s;white-space:nowrap;}
+  #home{position:fixed;left:18px;top:18px;z-index:2;
+    color:rgba(255,255,255,.86);font:13px/1 "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    text-decoration:none;background:rgba(0,22,26,.38);border:1px solid rgba(255,255,255,.16);
+    padding:10px 13px;border-radius:99px;backdrop-filter:blur(8px);
+    transition:background .2s,color .2s,border-color .2s,transform .2s;}
+  #home:hover{color:#fff;background:rgba(0,22,26,.56);border-color:rgba(255,255,255,.3);transform:translateY(-1px);}
 </style>
 </head>
 <body>
 <canvas id="gl"></canvas>
+<a id="home" href="/" aria-label="返回主页">返回主页</a>
 <div id="hint">点击水面 - 波纹和投喂</div>
 <script src="/fish.js" defer></script>
 </body>
