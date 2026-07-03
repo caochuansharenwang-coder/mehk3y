@@ -31,9 +31,13 @@
     scoreRing: document.getElementById('score-ring'),
     scoreValue: document.getElementById('score-value'),
     scoreLabel: document.getElementById('score-label'),
+    networkSummary: document.getElementById('network-summary'),
+    networkNote: document.getElementById('network-note'),
     signals: document.getElementById('signals'),
     mainlandToggle: document.getElementById('mainland-toggle'),
     strictToggle: document.getElementById('strict-toggle'),
+    mainlandLabel: document.getElementById('mainland-label'),
+    strictLabel: document.getElementById('strict-label'),
     networkBtn: document.getElementById('network-btn'),
   };
 
@@ -280,14 +284,44 @@
     el.scoreLabel.textContent = state.mainland ? '大陆模式' : '大中华模式';
     el.mainlandToggle.setAttribute('aria-pressed', String(state.mainland));
     el.strictToggle.setAttribute('aria-pressed', String(state.strict));
+    el.mainlandLabel.textContent = state.mainland ? '仅大陆：开' : '仅大陆：关';
+    el.strictLabel.textContent = state.strict ? '严格：开' : '严格：关';
     el.networkBtn.disabled = state.networkRunning;
     el.networkBtn.textContent = state.networkRunning ? '检测中...' : state.network ? '重新检测网络出口' : '检测网络出口';
+    renderNetworkSummary();
     el.signals.innerHTML = signals.map((signal) => (
       '<article class="card signal-card">' +
       '<div class="signal-head"><h2 class="signal-title">' + escapeHtml(signal.title) + '</h2>' + formatPill(signal.value) + '</div>' +
       '<div class="signal-detail">' + escapeHtml(signal.detail) + '</div>' +
       '</article>'
     )).join('') + renderNetworkCard();
+  }
+
+  function renderNetworkSummary() {
+    let text = '未检测';
+    let note = '不参与同步判断';
+    let stateClass = 'is-pending';
+    if (state.networkRunning) {
+      text = '检测中';
+      note = '正在加载图片探针';
+    } else if (state.network) {
+      if (state.network.result === true) {
+        text = '大陆出口';
+        note = '对照可达，境外探针不可达';
+        stateClass = 'is-mainland';
+      } else if (state.network.result === false) {
+        text = '非大陆/代理';
+        note = '境外探针可达';
+        stateClass = 'is-global';
+      } else {
+        text = '无法判断';
+        note = '探针和对照都不可达';
+        stateClass = 'is-unknown';
+      }
+    }
+    el.networkSummary.textContent = text;
+    el.networkSummary.className = 'strip-val ' + stateClass;
+    el.networkNote.textContent = note;
   }
 
   function bind() {

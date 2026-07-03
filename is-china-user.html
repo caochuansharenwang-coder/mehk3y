@@ -27,7 +27,7 @@
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <script src="/theme.js"></script>
   <link rel="preload" as="script" href="/common.js">
-  <link rel="preload" as="script" href="/is-china-user.js">
+  <link rel="preload" as="script" href="/is-china-user.js?v=20260703-controls">
   <link rel="dns-prefetch" href="https://www.baidu.com">
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://chatgpt.com">
@@ -37,6 +37,10 @@
     .divider { margin-bottom: 20px; }
     .strip { margin-bottom: 18px; }
     .strip-item { min-width: 0; }
+    .strip-val.is-pending { color: var(--dim); }
+    .strip-val.is-mainland { color: var(--red); }
+    .strip-val.is-global { color: var(--green); }
+    .strip-val.is-unknown { color: #d97706; }
     .result-main.is-yes { color: var(--red); }
     .result-main.is-no { color: var(--green); }
     .result-note { margin-top: 7px; font-size: 12px; color: var(--dim); line-height: 1.55; }
@@ -135,6 +139,11 @@
     }
     .note a { color: var(--text); font-weight: 650; text-decoration: none; }
     @media (max-width: 700px) {
+      .strip { display: grid; grid-template-columns: 1fr; }
+      .strip-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .strip-item:last-child { border-bottom: none; }
+    }
+    @media (max-width: 700px) {
       .network-btn { width: 100%; margin-left: 0; }
       .controls .toggle { flex: 1 1 calc(50% - 4px); }
     }
@@ -167,15 +176,20 @@
       <div class="strip-val" id="score-value">0/4</div>
       <p class="result-note">网络出口检测需手动触发</p>
     </div>
+    <div class="strip-item">
+      <div class="strip-label">网络出口</div>
+      <div class="strip-val is-pending" id="network-summary">未检测</div>
+      <p class="result-note" id="network-note">不参与同步判断</p>
+    </div>
   </section>
 
   <section class="controls" aria-label="检测选项">
     <button class="toggle" id="mainland-toggle" type="button" aria-pressed="false">
-      <span>仅判断中国大陆</span>
+      <span id="mainland-label">仅大陆：关</span>
       <span class="switch" aria-hidden="true"></span>
     </button>
     <button class="toggle" id="strict-toggle" type="button" aria-pressed="false">
-      <span>严格模式</span>
+      <span id="strict-label">严格：关</span>
       <span class="switch" aria-hidden="true"></span>
     </button>
     <button class="btn-pill network-btn" id="network-btn" type="button">检测网络出口</button>
@@ -191,7 +205,7 @@
   <div class="footer"><a href="/">← 返回首页</a></div>
 </main>
 <script src="/common.js" defer></script>
-<script src="/is-china-user.js" defer></script>
+<script src="/is-china-user.js?v=20260703-controls" defer></script>
 <script src="/analytics.js" defer></script>
 </body>
 </html>
