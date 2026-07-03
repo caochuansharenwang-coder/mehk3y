@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Giffgaff 保号助手 — Mehk3y</title>
+  <meta name="description" content="一个轻量的 Giffgaff 保号流量消耗工具，点击后下载约 125 KB payload，并在本机浏览器记录最近使用时间。">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Giffgaff 保号助手">
+  <meta property="og:description" content="关闭 Wi-Fi 后用移动数据下载小 payload，辅助 Giffgaff SIM 保号。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mehk3y.com/gg-keeper/">
+  <meta property="og:image" content="https://mehk3y.com/og-image.jpg">
+  <link rel="canonical" href="https://mehk3y.com/gg-keeper/">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/common.css">
+  <script src="/theme.js"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(22, 163, 74, .10), transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(247, 147, 26, .12), transparent 30%),
+        var(--bg);
+    }
+
+    .page {
+      width: min(100%, 460px);
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      color: var(--dim);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    .keeper {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-lg);
+      padding: 28px;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #ffcc00;
+      color: #111;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .mark svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    h1 {
+      font-size: 25px;
+      line-height: 1.15;
+      letter-spacing: 0;
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      color: var(--dim);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .info {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 13px;
+    }
+
+    .metric-label {
+      color: var(--dim);
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .metric-value {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .action {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #111;
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      cursor: pointer;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      transition: transform .2s var(--ease), opacity .2s ease, box-shadow .2s ease;
+    }
+
+    :root[data-theme="dark"] .action {
+      background: #f5f5f5;
+      color: #0a0a0a;
+      box-shadow: 0 10px 26px rgba(0,0,0,.45);
+    }
+
+    .action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(0,0,0,.22);
+    }
+
+    .action:active { transform: translateY(0); }
+    .action:disabled { cursor: wait; opacity: .62; transform: none; }
+
+    .action svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+    }
+
+    .status {
+      min-height: 74px;
+      margin-top: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .status strong {
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .status.success {
+      background: rgba(22, 163, 74, .10);
+      border-color: rgba(22, 163, 74, .28);
+      color: var(--green);
+    }
+
+    .status.loading {
+      background: rgba(247, 147, 26, .12);
+      border-color: rgba(247, 147, 26, .30);
+      color: var(--orange);
+    }
+
+    .status.error {
+      background: rgba(220, 38, 38, .10);
+      border-color: rgba(220, 38, 38, .28);
+      color: var(--red);
+    }
+
+    .panel {
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+
+    .panel-title {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--dim);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .history-size {
+      color: var(--text-2);
+      font-family: 'Geist Mono', monospace;
+      white-space: nowrap;
+    }
+
+    .warning {
+      margin-top: 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(220, 38, 38, .22);
+      background: rgba(220, 38, 38, .07);
+      color: var(--text-2);
+      padding: 13px;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .warning strong {
+      display: block;
+      color: var(--red);
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 440px) {
+      body { align-items: flex-start; padding: 18px 12px 28px; }
+      .keeper { padding: 22px 18px; border-radius: 14px; }
+      .info { grid-template-columns: 1fr; }
+      .brand { grid-template-columns: 42px 1fr; }
+      .mark { width: 42px; height: 42px; border-radius: 12px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="top-row">
+      <a class="back-link" href="/">返回 Mehk3y</a>
+      <button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题">
+        <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <section class="keeper" aria-labelledby="title">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/><path d="M7 7.5c2.4 2.3 7.6 2.3 10 0"/><path d="M7 16.5c2.4-2.3 7.6-2.3 10 0"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <div>
+          <h1 id="title">Giffgaff 保号助手</h1>
+          <p class="subtitle">用移动数据下载一个小文件，给 SIM 卡留一条近期使用记录。</p>
+        </div>
+      </div>
+
+      <div class="info" aria-label="本次请求信息">
+        <div class="metric">
+          <div class="metric-label">本次消耗</div>
+          <div class="metric-value">约 125 KB</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">预计费用</div>
+          <div class="metric-value">£0.02-0.03</div>
+        </div>
+      </div>
+
+      <button class="action" id="consumeButton" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        开始保号
+      </button>
+
+      <div class="status" id="status" role="status" aria-live="polite">
+        <strong>等待开始</strong>
+        <span>请先关闭 Wi-Fi，确认浏览器走 Giffgaff 移动数据。</span>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">最近使用记录</div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <div class="warning">
+        <strong>使用前确认</strong>
+        关闭 Wi-Fi；禁止其他应用联网；只允许浏览器使用移动数据；完成后立即关闭移动数据。
+      </div>
+    </section>
+  </main>
+
+  <script src="/gg-keeper/app.js" defer></script>
+  <script src="/analytics.js" defer></script>
+</body>
+</html>
