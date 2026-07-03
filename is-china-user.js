@@ -277,8 +277,7 @@
       ? '同步判断中至少一个设备侧信号命中。这个结果不包含 IP，也不等同于身份或法律意义上的地区归类。'
       : '同步判断未命中语言、时区、Emoji、字体信号。可以再手动运行网络出口检测。';
     el.scoreValue.textContent = hitCount + '/4';
-    el.scoreRing.style.setProperty('--score-angle', (hitCount / 4 * 360) + 'deg');
-    el.scoreLabel.textContent = state.mainland ? '大陆模式下的同步信号命中数量' : '大中华模式下的同步信号命中数量';
+    el.scoreLabel.textContent = state.mainland ? '大陆模式' : '大中华模式';
     el.mainlandToggle.setAttribute('aria-pressed', String(state.mainland));
     el.strictToggle.setAttribute('aria-pressed', String(state.strict));
     el.networkBtn.disabled = state.networkRunning;

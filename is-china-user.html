@@ -32,110 +32,36 @@
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://chatgpt.com">
   <style>
-    .wrap { max-width: 760px; }
+    .wrap { max-width: 680px; }
     .hdr { align-items: baseline; margin-bottom: 16px; }
-    .hero-panel {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(190px, .85fr);
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .result-card {
-      padding: 20px;
-      min-height: 166px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .result-kicker {
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .result-main {
-      margin: 14px 0 8px;
-      font-size: 34px;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      font-weight: 800;
-    }
-    .result-main.is-yes { color: var(--tint-red-fg); }
-    .result-main.is-no { color: var(--tint-green-fg); }
-    .result-sub {
-      color: var(--dim);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    .score-card {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 12px;
-    }
-    .score-ring {
-      width: 116px;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      margin: 0 auto;
-      background: conic-gradient(var(--accent) var(--score-angle, 0deg), var(--border) 0);
-      position: relative;
-    }
-    .score-ring::after {
-      content: "";
-      position: absolute;
-      inset: 9px;
-      border-radius: 50%;
-      background: var(--surface);
-    }
-    .score-ring strong {
-      position: relative;
-      z-index: 1;
-      font-size: 28px;
-      letter-spacing: -0.04em;
-    }
-    .score-label {
-      text-align: center;
-      font-size: 12px;
-      color: var(--dim);
-      line-height: 1.5;
-    }
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 18px;
-    }
+    .divider { margin-bottom: 20px; }
+    .strip { margin-bottom: 18px; }
+    .strip-item { min-width: 0; }
+    .result-main.is-yes { color: var(--red); }
+    .result-main.is-no { color: var(--green); }
+    .result-note { margin-top: 7px; font-size: 12px; color: var(--dim); line-height: 1.55; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 20px; }
     .toggle {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 10px;
-      min-height: 54px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
-      background: var(--surface);
+      min-height: 34px;
+      padding: 8px 13px;
+      border: 1px solid var(--border-2);
+      border-radius: 99px;
+      background: var(--bg);
       color: var(--text);
-      font: inherit;
-      text-align: left;
+      font: 600 12px 'Geist', inherit;
       cursor: pointer;
-      transition: border-color .2s, background-color .2s, transform .2s;
+      transition: background-color .2s, border-color .2s, transform .2s;
     }
-    .toggle:hover { border-color: var(--border-2); background: var(--surface-2); }
-    .toggle:active { transform: scale(.99); }
-    .toggle span:first-child {
-      font-size: 12px;
-      font-weight: 650;
-      line-height: 1.25;
-    }
+    .toggle:hover { background: var(--surface); border-color: var(--dim); }
+    .toggle:active { transform: scale(.98); }
+    .toggle[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
     .switch {
-      width: 34px;
-      height: 20px;
+      width: 28px;
+      height: 16px;
       border-radius: 999px;
       background: var(--border-2);
       position: relative;
@@ -144,61 +70,32 @@
     .switch::after {
       content: "";
       position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 14px;
-      height: 14px;
+      top: 2px;
+      left: 2px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: var(--bg);
       box-shadow: var(--shadow-sm);
       transition: transform .2s var(--ease), background-color .2s;
     }
-    .toggle[aria-pressed="true"] .switch { background: var(--accent); }
+    .toggle[aria-pressed="true"] .switch { background: color-mix(in srgb, var(--accent-fg) 35%, transparent); }
     .toggle[aria-pressed="true"] .switch::after {
-      transform: translateX(14px);
+      transform: translateX(12px);
       background: var(--accent-fg);
     }
-    .network-btn {
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
-      background: var(--accent);
-      color: var(--accent-fg);
-      font: 700 12px 'Geist', inherit;
-      cursor: pointer;
-      min-height: 54px;
-      padding: 0 14px;
-      transition: transform .2s, opacity .2s;
-    }
-    .network-btn:active { transform: scale(.99); }
-    .network-btn:disabled { opacity: .55; cursor: not-allowed; }
-    .signals {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .signal-card {
-      padding: 15px;
-      min-height: 124px;
-    }
-    .signal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 11px;
-    }
-    .signal-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
+    .network-btn { margin-left: auto; }
+    .signals { margin-bottom: 16px; }
+    .signal-card { padding: 14px 16px; min-height: 118px; }
+    .signal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+    .signal-title { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
     .pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 58px;
-      padding: 4px 8px;
-      border-radius: 999px;
+      min-width: 52px;
+      padding: 3px 7px;
+      border-radius: 4px;
       font-size: 11px;
       font-weight: 700;
       line-height: 1;
@@ -216,7 +113,8 @@
     .probe-list {
       margin-top: 8px;
       display: grid;
-      gap: 6px;
+      gap: 0;
+      border-top: 1px solid var(--border);
     }
     .probe-item {
       display: flex;
@@ -225,25 +123,23 @@
       gap: 10px;
       font-size: 11px;
       color: var(--dim);
-      border-top: 1px solid var(--border);
-      padding-top: 6px;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 0;
       overflow-wrap: anywhere;
     }
     .note {
-      margin-top: 14px;
-      padding: 13px 15px;
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
       color: var(--dim);
-      font-size: 12px;
-      line-height: 1.7;
-      background: var(--bg);
+      font-size: 11px;
+      line-height: 1.65;
+      margin: 4px 0 20px;
     }
     .note a { color: var(--text); font-weight: 650; text-decoration: none; }
     @media (max-width: 700px) {
-      .hero-panel, .signals, .controls { grid-template-columns: 1fr; }
-      .result-main { font-size: 30px; }
-      .score-ring { width: 104px; }
+      .network-btn { width: 100%; margin-left: 0; }
+      .controls .toggle { flex: 1 1 calc(50% - 4px); }
+    }
+    @media (max-width: 420px) {
+      .controls .toggle { flex-basis: 100%; }
     }
   </style>
 </head>
@@ -260,17 +156,16 @@
   </header>
   <div class="divider"></div>
 
-  <section class="hero-panel" aria-label="检测结论">
-    <div class="card result-card">
-      <div>
-        <div class="result-kicker">isChinaUser()</div>
-        <h1 class="result-main" id="result-title">检测中</h1>
-        <p class="result-sub" id="result-sub">正在读取浏览器语言、时区、Emoji 和字体信号。</p>
-      </div>
+  <section class="strip" aria-label="检测结论">
+    <div class="strip-item">
+      <div class="strip-label">isChinaUser()</div>
+      <div class="strip-val result-main" id="result-title">检测中</div>
+      <p class="result-note" id="result-sub">正在读取浏览器语言、时区、Emoji 和字体信号。</p>
     </div>
-    <div class="card score-card">
-      <div class="score-ring" id="score-ring"><strong id="score-value">0/4</strong></div>
-      <div class="score-label" id="score-label">同步信号命中数量</div>
+    <div class="strip-item">
+      <div class="strip-label" id="score-label">同步信号</div>
+      <div class="strip-val" id="score-value">0/4</div>
+      <p class="result-note">网络出口检测需手动触发</p>
     </div>
   </section>
 
@@ -283,14 +178,15 @@
       <span>严格模式</span>
       <span class="switch" aria-hidden="true"></span>
     </button>
-    <button class="network-btn" id="network-btn" type="button">检测网络出口</button>
+    <button class="btn-pill network-btn" id="network-btn" type="button">检测网络出口</button>
   </section>
 
-  <section class="signals" id="signals" aria-label="信号明细"></section>
+  <div class="section-title">信号明细</div>
+  <section class="grid2 signals" id="signals" aria-label="信号明细"></section>
 
-  <div class="note">
+  <p class="note">
     这个页面移植自 <a href="https://github.com/yArna/isChinaUser" target="_blank" rel="noopener">yArna/isChinaUser</a> 的浏览器判断逻辑。同步判断不读取 IP；网络出口检测需要手动触发，会加载百度、gstatic 和 ChatGPT 的 favicon 探针，结果会受代理、VPN、浏览器扩展和 CSP 影响。
-  </div>
+  </p>
 
   <div class="footer"><a href="/">← 返回首页</a></div>
 </main>
