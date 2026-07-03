@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Aliens Eye — Mehk3y</title>
-  <meta name="description" content="Aliens Eye AI-OSINT 用户名扫描器的站内介绍页：安装命令、功能矩阵、检测流程和数据预览。">
+  <title>Aliens Eye 用户名搜索 — Mehk3y</title>
+  <meta name="description" content="输入一个用户名，在 840 个平台模板中快速生成可核验的公开主页候选链接，支持平台筛选、复制、批量打开和导出。">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="Aliens Eye — AI-OSINT Username Scanner">
-  <meta property="og:description" content="扫描 800+ 平台的 AI-OSINT 用户名工具，支持 ML + 启发式检测、报告导出和 MCP server。">
+  <meta property="og:title" content="Aliens Eye 用户名搜索">
+  <meta property="og:description" content="输入用户名，生成 840 个平台的公开主页候选链接。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mehk3y.com/aliens-eye">
   <meta property="og:image" content="https://mehk3y.com/aliens-eye/logo.png">
@@ -25,15 +25,15 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at 12% 8%, rgba(52, 211, 153, .13), transparent 26%),
-        radial-gradient(circle at 90% 12%, rgba(96, 165, 250, .10), transparent 30%),
+        radial-gradient(circle at 12% 8%, rgba(52, 211, 153, .12), transparent 26%),
+        radial-gradient(circle at 88% 10%, rgba(96, 165, 250, .10), transparent 30%),
         var(--bg);
     }
 
     .page {
-      width: min(100%, 1160px);
+      width: min(100%, 1180px);
       margin: 0 auto;
-      padding: 24px 20px 56px;
+      padding: 22px 20px 48px;
       position: relative;
       z-index: 1;
     }
@@ -43,13 +43,20 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
-    .back {
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .link-button {
       min-height: 32px;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       border: 1px solid var(--border);
       border-radius: 999px;
       background: var(--bg);
@@ -58,22 +65,17 @@
       text-decoration: none;
       font-size: 13px;
       font-weight: 700;
+      white-space: nowrap;
     }
 
-    .back:hover { color: var(--text); border-color: var(--border-2); }
-
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .link-button:hover { color: var(--text); border-color: var(--border-2); }
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
-      gap: 28px;
+      grid-template-columns: minmax(0, 1fr) 170px;
+      gap: 20px;
       align-items: center;
-      margin-bottom: 26px;
+      margin-bottom: 14px;
     }
 
     .eyebrow {
@@ -82,65 +84,158 @@
       font-weight: 800;
       letter-spacing: .1em;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     h1 {
-      font-size: clamp(42px, 7vw, 86px);
-      line-height: .88;
+      font-size: clamp(36px, 6vw, 74px);
+      line-height: .9;
       letter-spacing: 0;
       margin: 0;
     }
 
     .lead {
       color: var(--text-2);
-      max-width: 720px;
-      margin-top: 18px;
-      font-size: 17px;
-      line-height: 1.7;
+      max-width: 760px;
+      margin-top: 14px;
+      font-size: 16px;
+      line-height: 1.68;
     }
 
-    .hero-card {
+    .logo-card {
       border: 1px solid var(--border);
       border-radius: 8px;
       background: var(--surface-2);
-      box-shadow: var(--shadow-lg);
       overflow: hidden;
     }
 
-    .hero-card img {
+    .logo-card img {
       width: 100%;
       display: block;
       background: var(--bg);
     }
 
-    .hero-card .caption {
-      border-top: 1px solid var(--border);
+    .search-panel,
+    .results-panel,
+    .side-panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+    }
+
+    .search-panel {
+      padding: 14px;
+      margin: 16px 0 12px;
+    }
+
+    .search-grid {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.1fr) minmax(180px, .75fr) 170px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label,
+    .label {
       color: var(--dim);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      padding: 0 12px;
+      font: inherit;
+      font-size: 15px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--text-2);
+      box-shadow: var(--ring);
+    }
+
+    .primary {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      cursor: pointer;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 0 16px;
+    }
+
+    .primary:active { transform: translateY(1px); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .secondary {
+      min-height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--text-2);
+      cursor: pointer;
+      font: inherit;
       font-size: 12px;
-      line-height: 1.6;
-      padding: 12px 14px;
+      font-weight: 800;
+      padding: 0 12px;
+    }
+
+    .secondary:hover { color: var(--text); border-color: var(--border-2); }
+
+    .secondary.active {
+      border-color: rgba(22, 163, 74, .38);
+      background: rgba(22, 163, 74, .12);
+      color: var(--green);
     }
 
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .metric,
-    .panel,
-    .feature,
-    .flow-step {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface-2);
+      margin: 12px 0;
     }
 
     .metric {
-      padding: 15px;
-      min-height: 84px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      min-height: 78px;
+      padding: 13px;
     }
 
     .metric-label {
@@ -154,250 +249,195 @@
 
     .metric-value {
       color: var(--text);
-      font-size: 27px;
+      font-size: 24px;
       font-weight: 900;
-      font-variant-numeric: tabular-nums;
       line-height: 1;
+      font-variant-numeric: tabular-nums;
     }
 
-    .grid {
+    .workspace {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
-      gap: 14px;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 12px;
       align-items: start;
-      margin-top: 14px;
     }
 
-    .panel {
-      padding: 18px;
-      min-width: 0;
+    .results-panel {
+      overflow: hidden;
     }
 
-    .panel h2 {
-      color: var(--text);
-      font-size: 18px;
-      letter-spacing: 0;
-      margin: 0 0 12px;
-    }
-
-    .panel p {
-      color: var(--dim);
-      font-size: 14px;
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .command-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .cmd {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
+    .results-head {
+      min-height: 54px;
+      display: flex;
       align-items: center;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg);
-      padding: 10px 10px 10px 12px;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px;
     }
 
-    code {
+    .result-title {
       color: var(--text);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .hint {
+      color: var(--dim);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .result-list {
+      display: grid;
+      max-height: 720px;
+      overflow: auto;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 82px;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px;
+    }
+
+    .site-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(22, 163, 74, .22);
+      border-radius: 50%;
+      background: rgba(22, 163, 74, .12);
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .site-name {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      text-transform: capitalize;
+    }
+
+    .site-url {
+      color: var(--dim);
       font-family: 'Geist Mono', monospace;
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.45;
       overflow-wrap: anywhere;
     }
 
-    .copy {
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .icon-btn {
+      min-width: 36px;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: var(--surface);
-      color: var(--dim);
+      background: var(--bg);
+      color: var(--text-2);
       cursor: pointer;
       font: inherit;
       font-size: 12px;
       font-weight: 800;
-      padding: 7px 10px;
-      white-space: nowrap;
+      text-decoration: none;
+      padding: 0 10px;
     }
 
-    .copy:hover { color: var(--text); border-color: var(--border-2); }
-    .copy.copied { color: var(--green); border-color: rgba(22, 163, 74, .38); }
+    .icon-btn:hover { color: var(--text); border-color: var(--border-2); }
 
-    .features {
+    .empty {
+      min-height: 340px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 14px;
+      place-items: center;
+      color: var(--dim);
+      text-align: center;
+      line-height: 1.7;
+      padding: 26px;
     }
 
-    .feature {
-      padding: 15px;
-      min-height: 142px;
+    .side-panel {
+      position: sticky;
+      top: 14px;
+      padding: 16px;
     }
 
-    .feature h3 {
+    .side-panel h2 {
       color: var(--text);
-      font-size: 15px;
-      margin: 0 0 8px;
+      font-size: 16px;
+      margin: 0 0 10px;
       letter-spacing: 0;
     }
 
-    .feature p {
+    .side-panel p,
+    .side-panel li {
       color: var(--dim);
       font-size: 13px;
       line-height: 1.65;
-      margin: 0;
     }
 
-    .flow {
+    .side-panel ul {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 8px;
-      margin-top: 12px;
+      margin: 10px 0 0;
+      padding-left: 18px;
     }
 
-    .flow-step {
-      padding: 13px;
-      min-height: 116px;
-    }
-
-    .flow-num {
-      width: 26px;
-      height: 26px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: rgba(22, 163, 74, .12);
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 900;
-      margin-bottom: 9px;
-    }
-
-    .flow-step strong {
-      display: block;
-      color: var(--text);
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-
-    .flow-step span {
-      display: block;
+    .status {
       color: var(--dim);
       font-size: 12px;
       line-height: 1.55;
+      margin-top: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
     }
 
-    .table-wrap {
-      margin-top: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: auto;
-      background: var(--bg);
-      max-height: 318px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 580px;
-      font-size: 12px;
-    }
-
-    th,
-    td {
-      border-bottom: 1px solid var(--border);
-      padding: 9px 10px;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: var(--surface);
-      color: var(--dim);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-    }
-
-    td { color: var(--text-2); font-family: 'Geist Mono', monospace; }
-
-    .site-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 12px;
-    }
-
-    .site-pill {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--bg);
-      color: var(--text-2);
-      padding: 6px 9px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .warning {
-      margin-top: 14px;
-      border: 1px solid rgba(220, 38, 38, .25);
-      border-radius: 8px;
-      background: rgba(220, 38, 38, .07);
-      color: var(--text-2);
-      padding: 14px;
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .warning strong { color: var(--red); }
-
-    .link {
-      color: var(--text);
-      font-weight: 800;
-      text-decoration: none;
-      border-bottom: 1px solid var(--border-2);
-    }
-
-    .link:hover { border-bottom-color: var(--text); }
+    .status strong { color: var(--text); }
 
     @media (max-width: 900px) {
       .hero,
-      .grid {
+      .workspace {
         grid-template-columns: 1fr;
       }
-      .hero-card {
-        max-width: 360px;
+      .logo-card { display: none; }
+      .search-grid {
+        grid-template-columns: 1fr;
       }
-      .metrics,
-      .features,
-      .flow {
+      .metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .side-panel {
+        position: static;
       }
     }
 
     @media (max-width: 560px) {
-      .page { padding: 18px 12px 38px; }
+      .page { padding: 18px 12px 34px; }
       .top { align-items: flex-start; }
-      .metrics,
-      .features,
-      .flow {
-        grid-template-columns: 1fr;
+      .top-actions { flex-wrap: wrap; justify-content: flex-end; }
+      .metrics { grid-template-columns: 1fr; }
+      .result-card {
+        grid-template-columns: 36px minmax(0, 1fr);
       }
-      .cmd {
-        grid-template-columns: 1fr;
-      }
-      .copy {
-        justify-self: start;
+      .card-actions {
+        grid-column: 2;
+        justify-content: flex-start;
       }
     }
   </style>
@@ -405,9 +445,9 @@
 <body>
   <main class="page">
     <div class="top">
-      <a class="back" href="/">返回 Mehk3y</a>
-      <div class="actions">
-        <a class="back" href="https://github.com/arxhr007/Aliens_eye" target="_blank" rel="noopener">GitHub</a>
+      <a class="link-button" href="/">返回 Mehk3y</a>
+      <div class="top-actions">
+        <a class="link-button" href="https://github.com/arxhr007/Aliens_eye" target="_blank" rel="noopener">数据来源</a>
         <button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题">
           <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -418,109 +458,85 @@
 
     <section class="hero">
       <div>
-        <div class="eyebrow">AI-OSINT Username Scanner</div>
+        <div class="eyebrow">Username Search</div>
         <h1>Aliens Eye</h1>
-        <p class="lead">一个 Python 命令行 OSINT 工具，用 ML + 启发式规则在 800+ 平台上检查用户名，支持代理/Tor、结果导出、关联分析、域名检查、Watch 模式和 MCP server。</p>
+        <p class="lead">输入一个用户名，立刻在 840 个平台模板里生成候选主页链接。你可以筛选平台、复制结果、打开当前结果，或导出 CSV 继续核验。</p>
       </div>
-      <figure class="hero-card">
+      <figure class="logo-card">
         <img src="/aliens-eye/logo.png" alt="Aliens Eye logo">
-        <figcaption class="caption">MIT License · PyPI 包名 <strong>aliens-eye</strong> · 此页面为站内静态集成，不在浏览器里执行扫描。</figcaption>
       </figure>
     </section>
 
-    <section class="metrics" aria-label="项目指标">
-      <div class="metric">
-        <div class="metric-label">版本</div>
-        <div class="metric-value">2.2.0</div>
+    <section class="search-panel" aria-label="用户名搜索">
+      <div class="search-grid">
+        <div class="field">
+          <label for="usernameInput">用户名</label>
+          <input id="usernameInput" type="search" autocomplete="off" placeholder="例如 mehk3y">
+        </div>
+        <div class="field">
+          <label for="platformInput">筛选平台 / 域名</label>
+          <input id="platformInput" type="search" autocomplete="off" placeholder="github、reddit、dev...">
+        </div>
+        <button class="primary" id="searchButton" type="button">生成搜索结果</button>
       </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left" aria-label="分类筛选">
+          <button class="secondary active" type="button" data-category="all">全部</button>
+          <button class="secondary" type="button" data-category="code">开发</button>
+          <button class="secondary" type="button" data-category="social">社交</button>
+          <button class="secondary" type="button" data-category="forum">社区</button>
+          <button class="secondary" type="button" data-category="media">内容</button>
+          <button class="secondary" type="button" data-category="other">其他</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="secondary" id="openTopButton" type="button">打开前 20 个</button>
+          <button class="secondary" id="copyAllButton" type="button">复制当前链接</button>
+          <button class="secondary" id="exportButton" type="button">导出 CSV</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="搜索统计">
       <div class="metric">
-        <div class="metric-label">平台映射</div>
+        <div class="metric-label">平台模板</div>
         <div class="metric-value" id="siteCount">--</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Python</div>
-        <div class="metric-value">3.10+</div>
+        <div class="metric-label">当前结果</div>
+        <div class="metric-value" id="resultCountMetric">--</div>
       </div>
       <div class="metric">
-        <div class="metric-label">License</div>
-        <div class="metric-value">MIT</div>
+        <div class="metric-label">用户名</div>
+        <div class="metric-value" id="usernameMetric">--</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">模式</div>
+        <div class="metric-value">静态</div>
       </div>
     </section>
 
-    <section class="grid">
-      <div class="panel">
-        <h2>快速使用</h2>
-        <p>这些命令来自原仓库 README。扫描第三方站点前，先确认你有合法用途，并遵守目标站点条款。</p>
-        <div class="command-list">
-          <div class="cmd"><code>pip install aliens-eye</code><button class="copy" type="button" data-copy="pip install aliens-eye">复制</button></div>
-          <div class="cmd"><code>aliens_eye username --profile quick --no-nsfw</code><button class="copy" type="button" data-copy="aliens_eye username --profile quick --no-nsfw">复制</button></div>
-          <div class="cmd"><code>aliens_eye username --site github,reddit,gitlab --format all --output results</code><button class="copy" type="button" data-copy="aliens_eye username --site github,reddit,gitlab --format all --output results">复制</button></div>
-          <div class="cmd"><code>aliens_eye username --correlate --domains</code><button class="copy" type="button" data-copy="aliens_eye username --correlate --domains">复制</button></div>
-          <div class="cmd"><code>aliens_eye serve</code><button class="copy" type="button" data-copy="aliens_eye serve">复制</button></div>
+    <section class="workspace">
+      <section class="results-panel" aria-label="搜索结果">
+        <div class="results-head">
+          <div class="result-title" id="resultTitle">等待输入用户名</div>
+          <div class="hint">这里生成公开主页候选链接，不会在浏览器里批量请求第三方站点。</div>
         </div>
-      </div>
-
-      <div class="panel">
-        <h2>本页包含</h2>
-        <p>已本地化 logo、示例图、站点映射 JSON 和示例训练 CSV。Python 包源码不在静态页运行；真正扫描仍应在本机或服务器 CLI 中执行。</p>
-        <div class="site-cloud" id="siteCloud"></div>
-      </div>
-    </section>
-
-    <section class="features" aria-label="功能">
-      <article class="feature">
-        <h3>ML + 启发式检测</h3>
-        <p>把 HTTP 状态、DOM 结构、关键词、OpenGraph、JSON-LD、响应时长等信号混合评分，减少只看状态码的误判。</p>
-      </article>
-      <article class="feature">
-        <h3>调查报告导出</h3>
-        <p>支持 JSON、CSV、HTML、Markdown、PDF、GEXF、Mermaid、Maltego CSV 等输出，方便归档或继续分析。</p>
-      </article>
-      <article class="feature">
-        <h3>高级扫描模式</h3>
-        <p>支持用户名变体、站点过滤、排除 NSFW、代理/Tor、断点续扫、定时 Watch 和 webhook 通知。</p>
-      </article>
-      <article class="feature">
-        <h3>关联分析</h3>
-        <p>可按头像哈希、简介、共享链接和显示名，把多个站点命中聚成“可能同一人”的线索组。</p>
-      </article>
-      <article class="feature">
-        <h3>MCP Server</h3>
-        <p>通过 <code>aliens_eye serve</code> 暴露扫描能力给支持 MCP 的 LLM agent，适合自动化调查工作流。</p>
-      </article>
-      <article class="feature">
-        <h3>可训练模型</h3>
-        <p>可以采集正负样本、人工标注不确定结果，并重新训练/导出模型 JSON。</p>
-      </article>
-    </section>
-
-    <section class="panel" style="margin-top:14px">
-      <h2>检测流程</h2>
-      <div class="flow">
-        <div class="flow-step"><div class="flow-num">1</div><strong>加载站点</strong><span>读取 sites.json，合并 sites.d 自定义平台。</span></div>
-        <div class="flow-step"><div class="flow-num">2</div><strong>请求页面</strong><span>并发访问平台 URL，支持代理、Tor、重试和限速。</span></div>
-        <div class="flow-step"><div class="flow-num">3</div><strong>提取特征</strong><span>解析 HTML、meta、DOM、结构化数据和页面指纹。</span></div>
-        <div class="flow-step"><div class="flow-num">4</div><strong>混合判断</strong><span>ML 模型与启发式规则共同给出 Found / Maybe / Not Found。</span></div>
-        <div class="flow-step"><div class="flow-num">5</div><strong>导出报告</strong><span>生成 JSON、CSV、HTML、Markdown 或图谱文件。</span></div>
-      </div>
-    </section>
-
-    <section class="grid">
-      <div class="panel">
-        <h2>示例训练数据预览</h2>
-        <p>下面是仓库附带 CSV 的前几行，只展示字段形态，不代表实时扫描结果。</p>
-        <div class="table-wrap">
-          <table id="csvPreview">
-            <thead><tr><th>加载中</th></tr></thead>
-            <tbody></tbody>
-          </table>
+        <div class="result-list" id="resultList">
+          <div class="empty">输入用户名后开始生成结果。</div>
         </div>
-      </div>
-      <div class="panel">
-        <h2>来源和边界</h2>
-        <p>来源仓库：<a class="link" href="https://github.com/arxhr007/Aliens_eye" target="_blank" rel="noopener">arxhr007/Aliens_eye</a>。此集成页只是把项目介绍、资源和命令整理到你的站点中。</p>
-        <div class="warning"><strong>注意：</strong>OSINT 工具只能用于合法、授权、教育或自我资产检查。不要用它骚扰、跟踪、撞库或违反第三方服务条款。</div>
-      </div>
+      </section>
+
+      <aside class="side-panel">
+        <h2>怎么用</h2>
+        <p>输入用户名后，结果会按平台模板生成。例如 GitHub 会变成对应的用户主页 URL。点击“打开”后在新标签核验是否真实存在。</p>
+        <ul>
+          <li>平台筛选支持站点名和域名关键词。</li>
+          <li>批量打开只打开当前结果前 20 个，避免浏览器拦截或打扰目标站点。</li>
+          <li>此页不保存输入，也不把用户名发给第三方 API。</li>
+        </ul>
+        <div class="status" id="statusBox"><strong>数据：</strong>正在加载站点模板...</div>
+      </aside>
     </section>
   </main>
 

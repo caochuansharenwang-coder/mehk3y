@@ -1,113 +1,265 @@
 (function () {
   'use strict';
 
-  const siteCount = document.getElementById('siteCount');
-  const siteCloud = document.getElementById('siteCloud');
-  const csvPreview = document.getElementById('csvPreview');
+  const els = {
+    username: document.getElementById('usernameInput'),
+    platform: document.getElementById('platformInput'),
+    search: document.getElementById('searchButton'),
+    openTop: document.getElementById('openTopButton'),
+    copyAll: document.getElementById('copyAllButton'),
+    exportCsv: document.getElementById('exportButton'),
+    siteCount: document.getElementById('siteCount'),
+    resultCount: document.getElementById('resultCountMetric'),
+    usernameMetric: document.getElementById('usernameMetric'),
+    resultTitle: document.getElementById('resultTitle'),
+    resultList: document.getElementById('resultList'),
+    status: document.getElementById('statusBox')
+  };
 
-  function csvRows(text, maxRows) {
-    const rows = [];
-    let row = [];
-    let cell = '';
-    let quoted = false;
+  const state = {
+    sites: [],
+    filtered: [],
+    username: '',
+    category: 'all'
+  };
 
-    for (let i = 0; i < text.length; i += 1) {
-      const char = text[i];
-      const next = text[i + 1];
+  const categoryKeywords = {
+    code: ['github', 'gitlab', 'bitbucket', 'code', 'dev', 'npm', 'pypi', 'stackoverflow', 'stackexchange', 'docker', 'replit', 'codeberg', 'sourceforge'],
+    social: ['twitter', 'x.com', 'facebook', 'instagram', 'linkedin', 'tiktok', 'snapchat', 'threads', 'mastodon', 'bsky', 'bluesky', 'vk.com'],
+    forum: ['reddit', 'forum', 'discuss', 'community', 'hackernews', 'news.ycombinator', 'linux.org', 'lobste.rs', 'medium.com/@'],
+    media: ['youtube', 'twitch', 'soundcloud', 'spotify', 'vimeo', 'behance', 'dribbble', 'pinterest', 'deviantart', 'artstation', 'flickr']
+  };
 
-      if (char === '"' && quoted && next === '"') {
-        cell += '"';
-        i += 1;
-      } else if (char === '"') {
-        quoted = !quoted;
-      } else if (char === ',' && !quoted) {
-        row.push(cell);
-        cell = '';
-      } else if ((char === '\n' || char === '\r') && !quoted) {
-        if (char === '\r' && next === '\n') i += 1;
-        row.push(cell);
-        if (row.some(Boolean)) rows.push(row);
-        row = [];
-        cell = '';
-        if (rows.length >= maxRows) break;
-      } else {
-        cell += char;
-      }
+  function normalizeUsername(value) {
+    return String(value || '').trim().replace(/^@+/, '');
+  }
+
+  function hostFromTemplate(template) {
+    try {
+      return new URL(template.replace('{}', 'example')).hostname.replace(/^www\./, '');
+    } catch {
+      return '';
+    }
+  }
+
+  function classify(site) {
+    const haystack = `${site.name} ${site.template} ${site.host}`.toLowerCase();
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some(keyword => haystack.includes(keyword))) return category;
+    }
+    return 'other';
+  }
+
+  function buildUrl(template, username) {
+    const encoded = encodeURIComponent(username);
+    return template.includes('{}') ? template.replaceAll('{}', encoded) : template + encoded;
+  }
+
+  function prepareSites(raw) {
+    return Object.entries(raw).map(([name, template]) => {
+      const site = {
+        name,
+        template,
+        host: hostFromTemplate(template)
+      };
+      site.category = classify(site);
+      site.search = `${site.name} ${site.host} ${site.template} ${site.category}`.toLowerCase();
+      return site;
+    }).sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  function filteredSites() {
+    const keyword = els.platform.value.trim().toLowerCase();
+    return state.sites.filter(site => {
+      if (state.category !== 'all' && site.category !== state.category) return false;
+      if (keyword && !site.search.includes(keyword)) return false;
+      return true;
+    });
+  }
+
+  function render() {
+    const username = normalizeUsername(els.username.value);
+    state.username = username;
+    state.filtered = filteredSites();
+
+    els.resultCount.textContent = state.filtered.length.toLocaleString();
+    els.usernameMetric.textContent = username || '--';
+
+    document.querySelectorAll('[data-category]').forEach(button => {
+      button.classList.toggle('active', button.dataset.category === state.category);
+    });
+
+    if (!username) {
+      els.resultTitle.textContent = '等待输入用户名';
+      els.resultList.innerHTML = '<div class="empty">输入用户名后开始生成结果。</div>';
+      return;
     }
 
-    return rows;
+    if (state.filtered.length === 0) {
+      els.resultTitle.textContent = `没有匹配平台：${username}`;
+      els.resultList.innerHTML = '<div class="empty">当前平台筛选没有结果，换一个关键词或切回“全部”。</div>';
+      return;
+    }
+
+    els.resultTitle.textContent = `${username} 的候选链接`;
+    els.resultList.replaceChildren(...state.filtered.map(site => renderCard(site, username)));
+    updateShareUrl(username);
   }
 
-  function renderCsv(rows) {
-    if (!rows.length) return;
-    const headers = rows[0].slice(0, 8);
-    const bodyRows = rows.slice(1, 7);
+  function renderCard(site, username) {
+    const url = buildUrl(site.template, username);
+    const card = document.createElement('article');
+    card.className = 'result-card';
 
-    const thead = document.createElement('thead');
-    const headRow = document.createElement('tr');
-    headers.forEach(header => {
-      const th = document.createElement('th');
-      th.textContent = header;
-      headRow.appendChild(th);
-    });
-    thead.appendChild(headRow);
+    const mark = document.createElement('div');
+    mark.className = 'site-mark';
+    mark.textContent = site.name.slice(0, 2);
 
-    const tbody = document.createElement('tbody');
-    bodyRows.forEach(row => {
-      const tr = document.createElement('tr');
-      headers.forEach((_, index) => {
-        const td = document.createElement('td');
-        td.textContent = row[index] || '';
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
+    const body = document.createElement('div');
+    const title = document.createElement('div');
+    title.className = 'site-name';
+    title.textContent = site.name;
+    const link = document.createElement('div');
+    link.className = 'site-url';
+    link.textContent = url;
+    body.append(title, link);
 
-    csvPreview.replaceChildren(thead, tbody);
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+
+    const open = document.createElement('a');
+    open.className = 'icon-btn';
+    open.href = url;
+    open.target = '_blank';
+    open.rel = 'noopener noreferrer';
+    open.textContent = '打开';
+
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'icon-btn';
+    copy.textContent = '复制';
+    copy.addEventListener('click', () => copyText(url, copy));
+
+    actions.append(open, copy);
+    card.append(mark, body, actions);
+    return card;
   }
 
-  async function loadSites() {
-    const response = await fetch('/data/aliens-eye/sites.json', { cache: 'force-cache' });
-    if (!response.ok) throw new Error(`sites.json ${response.status}`);
-    const sites = await response.json();
-    const names = Object.keys(sites).sort();
-    siteCount.textContent = names.length.toLocaleString();
-
-    siteCloud.replaceChildren(...names.slice(0, 24).map(name => {
-      const pill = document.createElement('span');
-      pill.className = 'site-pill';
-      pill.textContent = name;
-      return pill;
+  function resultUrls() {
+    if (!state.username) return [];
+    return state.filtered.map(site => ({
+      site: site.name,
+      host: site.host,
+      category: site.category,
+      url: buildUrl(site.template, state.username)
     }));
   }
 
-  async function loadCsv() {
-    const response = await fetch('/data/aliens-eye/fresh_dataset.csv', { cache: 'force-cache' });
-    if (!response.ok) throw new Error(`fresh_dataset.csv ${response.status}`);
-    renderCsv(csvRows(await response.text(), 8));
+  function copyText(text, button) {
+    navigator.clipboard.writeText(text).then(() => {
+      const old = button.textContent;
+      button.textContent = '已复制';
+      button.classList.add('active');
+      setTimeout(() => {
+        button.textContent = old;
+        button.classList.remove('active');
+      }, 1100);
+    }).catch(() => {
+      button.textContent = '失败';
+    });
   }
 
-  document.addEventListener('click', event => {
-    const button = event.target.closest('[data-copy]');
-    if (!button) return;
-    const value = button.dataset.copy;
-    navigator.clipboard.writeText(value).then(() => {
-      button.textContent = '已复制';
-      button.classList.add('copied');
-      setTimeout(() => {
-        button.textContent = '复制';
-        button.classList.remove('copied');
-      }, 1200);
-    }).catch(() => {
-      button.textContent = '复制失败';
-    });
-  });
+  function copyCurrentLinks() {
+    const rows = resultUrls();
+    if (!rows.length) return;
+    copyText(rows.map(row => row.url).join('\n'), els.copyAll);
+  }
 
-  Promise.allSettled([loadSites(), loadCsv()]).then(results => {
-    const failed = results.find(result => result.status === 'rejected');
-    if (failed) {
-      siteCount.textContent = '--';
-      console.error(failed.reason);
+  function exportCurrentCsv() {
+    const rows = resultUrls();
+    if (!rows.length) return;
+    const header = ['site', 'host', 'category', 'url'];
+    const csv = [header, ...rows.map(row => header.map(key => row[key]))]
+      .map(row => row.map(csvCell).join(','))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `aliens-eye-${state.username || 'results'}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function csvCell(value) {
+    const text = String(value || '');
+    return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  }
+
+  function openTopResults() {
+    const rows = resultUrls().slice(0, 20);
+    rows.forEach((row, index) => {
+      setTimeout(() => window.open(row.url, '_blank', 'noopener,noreferrer'), index * 80);
+    });
+  }
+
+  function updateShareUrl(username) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('u', username);
+    const platform = els.platform.value.trim();
+    if (platform) url.searchParams.set('q', platform);
+    else url.searchParams.delete('q');
+    if (state.category !== 'all') url.searchParams.set('cat', state.category);
+    else url.searchParams.delete('cat');
+    history.replaceState(null, '', url);
+  }
+
+  function readInitialParams() {
+    const params = new URLSearchParams(window.location.search);
+    els.username.value = params.get('u') || '';
+    els.platform.value = params.get('q') || '';
+    state.category = params.get('cat') || 'all';
+  }
+
+  function wireEvents() {
+    let timer = null;
+    const schedule = () => {
+      clearTimeout(timer);
+      timer = setTimeout(render, 80);
+    };
+
+    els.username.addEventListener('input', schedule);
+    els.platform.addEventListener('input', schedule);
+    els.search.addEventListener('click', render);
+    els.copyAll.addEventListener('click', copyCurrentLinks);
+    els.exportCsv.addEventListener('click', exportCurrentCsv);
+    els.openTop.addEventListener('click', openTopResults);
+
+    document.addEventListener('click', event => {
+      const category = event.target.closest('[data-category]');
+      if (!category) return;
+      state.category = category.dataset.category;
+      render();
+    });
+  }
+
+  async function boot() {
+    wireEvents();
+    readInitialParams();
+    try {
+      const response = await fetch('/data/aliens-eye/sites.json', { cache: 'force-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      state.sites = prepareSites(await response.json());
+      els.siteCount.textContent = state.sites.length.toLocaleString();
+      els.status.innerHTML = `<strong>数据：</strong>已加载 ${state.sites.length.toLocaleString()} 个平台模板。`;
+      render();
+    } catch (error) {
+      els.siteCount.textContent = '--';
+      els.resultTitle.textContent = '站点模板加载失败';
+      els.resultList.innerHTML = '<div class="empty">无法加载 /data/aliens-eye/sites.json，请刷新页面。</div>';
+      els.status.innerHTML = `<strong>错误：</strong>${String(error.message || error)}`;
     }
-  });
+  }
+
+  boot();
 }());
