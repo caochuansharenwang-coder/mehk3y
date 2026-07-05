@@ -3,11 +3,7 @@
 
   const els = {
     username: document.getElementById('usernameInput'),
-    platform: document.getElementById('platformInput'),
     search: document.getElementById('searchButton'),
-    openTop: document.getElementById('openTopButton'),
-    copyAll: document.getElementById('copyAllButton'),
-    exportCsv: document.getElementById('exportButton'),
     siteCount: document.getElementById('siteCount'),
     resultCount: document.getElementById('resultCountMetric'),
     usernameMetric: document.getElementById('usernameMetric'),
@@ -19,15 +15,7 @@
   const state = {
     sites: [],
     filtered: [],
-    username: '',
-    category: 'all'
-  };
-
-  const categoryKeywords = {
-    code: ['github', 'gitlab', 'bitbucket', 'code', 'dev', 'npm', 'pypi', 'stackoverflow', 'stackexchange', 'docker', 'replit', 'codeberg', 'sourceforge'],
-    social: ['twitter', 'x.com', 'facebook', 'instagram', 'linkedin', 'tiktok', 'snapchat', 'threads', 'mastodon', 'bsky', 'bluesky', 'vk.com'],
-    forum: ['reddit', 'forum', 'discuss', 'community', 'hackernews', 'news.ycombinator', 'linux.org', 'lobste.rs', 'medium.com/@'],
-    media: ['youtube', 'twitch', 'soundcloud', 'spotify', 'vimeo', 'behance', 'dribbble', 'pinterest', 'deviantart', 'artstation', 'flickr']
+    username: ''
   };
 
   function normalizeUsername(value) {
@@ -42,14 +30,6 @@
     }
   }
 
-  function classify(site) {
-    const haystack = `${site.name} ${site.template} ${site.host}`.toLowerCase();
-    for (const [category, keywords] of Object.entries(categoryKeywords)) {
-      if (keywords.some(keyword => haystack.includes(keyword))) return category;
-    }
-    return 'other';
-  }
-
   function buildUrl(template, username) {
     const encoded = encodeURIComponent(username);
     return template.includes('{}') ? template.replaceAll('{}', encoded) : template + encoded;
@@ -62,32 +42,17 @@
         template,
         host: hostFromTemplate(template)
       };
-      site.category = classify(site);
-      site.search = `${site.name} ${site.host} ${site.template} ${site.category}`.toLowerCase();
       return site;
     }).sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  function filteredSites() {
-    const keyword = els.platform.value.trim().toLowerCase();
-    return state.sites.filter(site => {
-      if (state.category !== 'all' && site.category !== state.category) return false;
-      if (keyword && !site.search.includes(keyword)) return false;
-      return true;
-    });
   }
 
   function render() {
     const username = normalizeUsername(els.username.value);
     state.username = username;
-    state.filtered = filteredSites();
+    state.filtered = state.sites;
 
     els.resultCount.textContent = state.filtered.length.toLocaleString();
     els.usernameMetric.textContent = username || '--';
-
-    document.querySelectorAll('[data-category]').forEach(button => {
-      button.classList.toggle('active', button.dataset.category === state.category);
-    });
 
     if (!username) {
       els.resultTitle.textContent = '等待输入用户名';
@@ -95,13 +60,7 @@
       return;
     }
 
-    if (state.filtered.length === 0) {
-      els.resultTitle.textContent = `没有匹配平台：${username}`;
-      els.resultList.innerHTML = '<div class="empty">当前平台筛选没有结果，换一个关键词或切回“全部”。</div>';
-      return;
-    }
-
-    els.resultTitle.textContent = `${username} 的候选链接`;
+    els.resultTitle.textContent = `${username} 的全平台候选链接`;
     els.resultList.replaceChildren(...state.filtered.map(site => renderCard(site, username)));
     updateShareUrl(username);
   }
@@ -150,7 +109,6 @@
     return state.filtered.map(site => ({
       site: site.name,
       host: site.host,
-      category: site.category,
       url: buildUrl(site.template, state.username)
     }));
   }
@@ -169,56 +127,17 @@
     });
   }
 
-  function copyCurrentLinks() {
-    const rows = resultUrls();
-    if (!rows.length) return;
-    copyText(rows.map(row => row.url).join('\n'), els.copyAll);
-  }
-
-  function exportCurrentCsv() {
-    const rows = resultUrls();
-    if (!rows.length) return;
-    const header = ['site', 'host', 'category', 'url'];
-    const csv = [header, ...rows.map(row => header.map(key => row[key]))]
-      .map(row => row.map(csvCell).join(','))
-      .join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `aliens-eye-${state.username || 'results'}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function csvCell(value) {
-    const text = String(value || '');
-    return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-  }
-
-  function openTopResults() {
-    const rows = resultUrls().slice(0, 20);
-    rows.forEach((row, index) => {
-      setTimeout(() => window.open(row.url, '_blank', 'noopener,noreferrer'), index * 80);
-    });
-  }
-
   function updateShareUrl(username) {
     const url = new URL(window.location.href);
     url.searchParams.set('u', username);
-    const platform = els.platform.value.trim();
-    if (platform) url.searchParams.set('q', platform);
-    else url.searchParams.delete('q');
-    if (state.category !== 'all') url.searchParams.set('cat', state.category);
-    else url.searchParams.delete('cat');
+    url.searchParams.delete('q');
+    url.searchParams.delete('cat');
     history.replaceState(null, '', url);
   }
 
   function readInitialParams() {
     const params = new URLSearchParams(window.location.search);
     els.username.value = params.get('u') || '';
-    els.platform.value = params.get('q') || '';
-    state.category = params.get('cat') || 'all';
   }
 
   function wireEvents() {
@@ -229,18 +148,7 @@
     };
 
     els.username.addEventListener('input', schedule);
-    els.platform.addEventListener('input', schedule);
     els.search.addEventListener('click', render);
-    els.copyAll.addEventListener('click', copyCurrentLinks);
-    els.exportCsv.addEventListener('click', exportCurrentCsv);
-    els.openTop.addEventListener('click', openTopResults);
-
-    document.addEventListener('click', event => {
-      const category = event.target.closest('[data-category]');
-      if (!category) return;
-      state.category = category.dataset.category;
-      render();
-    });
   }
 
   async function boot() {

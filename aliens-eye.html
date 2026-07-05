@@ -130,7 +130,7 @@
 
     .search-grid {
       display: grid;
-      grid-template-columns: minmax(240px, 1.1fr) minmax(180px, .75fr) 170px;
+      grid-template-columns: minmax(240px, 1fr) 170px;
       gap: 10px;
       align-items: end;
     }
@@ -182,25 +182,6 @@
     }
 
     .primary:active { transform: translateY(1px); }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 12px;
-      border-top: 1px solid var(--border);
-      padding-top: 12px;
-    }
-
-    .toolbar-left,
-    .toolbar-right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
 
     .secondary {
       min-height: 34px;
@@ -460,7 +441,7 @@
       <div>
         <div class="eyebrow">Username Search</div>
         <h1>Aliens Eye</h1>
-        <p class="lead">输入一个用户名，立刻在 840 个平台模板里生成候选主页链接。你可以筛选平台、复制结果、打开当前结果，或导出 CSV 继续核验。</p>
+        <p class="lead">输入一个用户名，立刻在 840 个平台模板里生成候选主页链接。页面不做平台筛选，搜索按钮会直接生成全平台结果。</p>
       </div>
       <figure class="logo-card">
         <img src="/aliens-eye/logo.png" alt="Aliens Eye logo">
@@ -473,27 +454,7 @@
           <label for="usernameInput">用户名</label>
           <input id="usernameInput" type="search" autocomplete="off" placeholder="例如 mehk3y">
         </div>
-        <div class="field">
-          <label for="platformInput">筛选平台 / 域名</label>
-          <input id="platformInput" type="search" autocomplete="off" placeholder="github、reddit、dev...">
-        </div>
-        <button class="primary" id="searchButton" type="button">生成搜索结果</button>
-      </div>
-
-      <div class="toolbar">
-        <div class="toolbar-left" aria-label="分类筛选">
-          <button class="secondary active" type="button" data-category="all">全部</button>
-          <button class="secondary" type="button" data-category="code">开发</button>
-          <button class="secondary" type="button" data-category="social">社交</button>
-          <button class="secondary" type="button" data-category="forum">社区</button>
-          <button class="secondary" type="button" data-category="media">内容</button>
-          <button class="secondary" type="button" data-category="other">其他</button>
-        </div>
-        <div class="toolbar-right">
-          <button class="secondary" id="openTopButton" type="button">打开前 20 个</button>
-          <button class="secondary" id="copyAllButton" type="button">复制当前链接</button>
-          <button class="secondary" id="exportButton" type="button">导出 CSV</button>
-        </div>
+        <button class="primary" id="searchButton" type="button">搜索全平台</button>
       </div>
     </section>
 
@@ -531,8 +492,8 @@
         <h2>怎么用</h2>
         <p>输入用户名后，结果会按平台模板生成。例如 GitHub 会变成对应的用户主页 URL。点击“打开”后在新标签核验是否真实存在。</p>
         <ul>
-          <li>平台筛选支持站点名和域名关键词。</li>
-          <li>批量打开只打开当前结果前 20 个，避免浏览器拦截或打扰目标站点。</li>
+          <li>每次搜索都会生成全部平台候选链接。</li>
+          <li>页面只生成链接，不会自动请求第三方站点。</li>
           <li>此页不保存输入，也不把用户名发给第三方 API。</li>
         </ul>
         <div class="status" id="statusBox"><strong>数据：</strong>正在加载站点模板...</div>
