@@ -18,17 +18,17 @@
     total: 840,
     checked: 0,
     found: [],
-    username: '',
+    query: '',
     running: false
   };
 
-  function normalizeUsername(value) {
-    return String(value || '').trim().replace(/^@+/, '');
+  function normalizeQuery(value) {
+    return String(value || '').trim().replace(/^@+/, '').replace(/\s+/g, ' ');
   }
 
-  function updateShareUrl(username) {
+  function updateShareUrl(query) {
     const url = new URL(window.location.href);
-    url.searchParams.set('u', username);
+    url.searchParams.set('u', query);
     url.searchParams.delete('q');
     url.searchParams.delete('cat');
     history.replaceState(null, '', url);
@@ -39,41 +39,45 @@
     els.username.value = params.get('u') || '';
   }
 
-  function setIdle(username) {
-    state.username = username;
+  function isUsernameQuery(query) {
+    return /^[A-Za-z0-9._-]{1,40}$/.test(query);
+  }
+
+  function setIdle(query) {
+    state.query = query;
     state.checked = 0;
     state.found = [];
     state.running = false;
     els.checkedCount.textContent = '0';
     els.foundCount.textContent = '0';
-    els.usernameMetric.textContent = username || '--';
-    els.resultTitle.textContent = username ? `${username} 的扫描结果` : '等待输入用户名';
-    els.resultList.innerHTML = username
-      ? '<div class="empty">点击“开始扫描”，只显示检测到存在的账号。</div>'
-      : '<div class="empty">输入用户名后开始扫描。</div>';
+    els.usernameMetric.textContent = query || '--';
+    els.resultTitle.textContent = query ? `${query} 的搜索结果` : '等待输入';
+    els.resultList.innerHTML = query
+      ? '<div class="empty">点击“开始搜索”，英文用户名会扫描平台账号，中文昵称会搜索中文平台。</div>'
+      : '<div class="empty">输入用户名或中文昵称后开始搜索。</div>';
   }
 
   function renderResults(options = {}) {
     els.checkedCount.textContent = state.checked.toLocaleString();
     els.foundCount.textContent = state.found.length.toLocaleString();
-    els.usernameMetric.textContent = state.username || '--';
+    els.usernameMetric.textContent = state.query || '--';
 
-    if (!state.username) {
+    if (!state.query) {
       setIdle('');
       els.username.focus();
       return;
     }
 
-    els.resultTitle.textContent = `${state.username} 的扫描结果`;
+    els.resultTitle.textContent = `${state.query} 的搜索结果`;
     if (!state.found.length) {
       els.resultList.innerHTML = state.running
-        ? '<div class="empty">扫描中，目前还没有命中。</div>'
-        : '<div class="empty">扫描完成，没有检测到存在的公开账号。</div>';
+        ? '<div class="empty">搜索中，目前还没有命中。</div>'
+        : '<div class="empty">搜索完成，没有检测到可显示结果。</div>';
     } else {
       els.resultList.replaceChildren(...state.found.map(renderCard));
     }
 
-    updateShareUrl(state.username);
+    updateShareUrl(state.query);
     if (options.scroll) {
       requestAnimationFrame(() => {
         els.resultTitle.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -97,7 +101,9 @@
 
     const link = document.createElement('div');
     link.className = 'site-url';
-    link.textContent = `${targetUrl} · ${result.status || 'ok'} · ${result.confidence}%`;
+    link.textContent = result.kind === 'search'
+      ? `${targetUrl} · 搜索入口`
+      : `${targetUrl} · ${result.status || 'ok'} · ${result.confidence}%`;
     body.append(title, link);
 
     const actions = document.createElement('div');
@@ -155,34 +161,39 @@
   }
 
   async function startScan() {
-    const username = normalizeUsername(els.username.value);
-    if (!username) {
+    const query = normalizeQuery(els.username.value);
+    if (!query) {
       setIdle('');
       els.username.focus();
       return;
     }
 
-    state.username = username;
+    state.query = query;
     state.checked = 0;
     state.found = [];
     state.running = true;
     els.search.disabled = true;
-    els.search.textContent = '扫描中...';
-    els.status.innerHTML = `<strong>扫描：</strong>正在检查 ${state.total.toLocaleString()} 个平台。`;
+    els.search.textContent = '搜索中...';
+    if (isUsernameQuery(query)) {
+      els.status.innerHTML = `<strong>扫描：</strong>正在检查 ${state.total.toLocaleString()} 个平台。`;
+    } else {
+      els.status.innerHTML = '<strong>搜索：</strong>正在生成中文平台搜索结果。';
+    }
     renderResults({ scroll: true });
 
     let offset = 0;
     try {
       while (true) {
-        const data = await scanBatch(username, offset);
-        if (state.username !== username) return;
+        const data = await scanBatch(query, offset);
+        if (state.query !== query) return;
 
         state.total = data.total;
         state.checked = Math.min(data.nextOffset, data.total);
         state.found = mergeFound(state.found, data.found || []);
 
         els.siteCount.textContent = data.total.toLocaleString();
-        els.status.innerHTML = `<strong>扫描：</strong>已检查 ${state.checked.toLocaleString()} / ${data.total.toLocaleString()}，命中 ${state.found.length.toLocaleString()} 个。`;
+        const verb = data.mode === 'name' ? '搜索' : '扫描';
+        els.status.innerHTML = `<strong>${verb}：</strong>已检查 ${state.checked.toLocaleString()} / ${data.total.toLocaleString()}，显示 ${state.found.length.toLocaleString()} 个结果。`;
         renderResults();
 
         if (data.done) break;
@@ -190,7 +201,7 @@
       }
 
       state.running = false;
-      els.status.innerHTML = `<strong>完成：</strong>已检查 ${state.checked.toLocaleString()} 个平台，显示 ${state.found.length.toLocaleString()} 个命中结果。`;
+      els.status.innerHTML = `<strong>完成：</strong>已检查 ${state.checked.toLocaleString()} 个目标，显示 ${state.found.length.toLocaleString()} 个结果。`;
       renderResults();
     } catch (error) {
       state.running = false;
@@ -198,7 +209,7 @@
       renderResults();
     } finally {
       els.search.disabled = false;
-      els.search.textContent = '开始扫描';
+      els.search.textContent = '开始搜索';
     }
   }
 
@@ -220,7 +231,7 @@
       els.siteCount.textContent = state.total.toLocaleString();
       els.foundCount.textContent = '0';
       els.status.innerHTML = `<strong>数据：</strong>已加载 ${state.total.toLocaleString()} 个平台模板。`;
-      setIdle(normalizeUsername(els.username.value));
+      setIdle(normalizeQuery(els.username.value));
     } catch (error) {
       els.siteCount.textContent = '--';
       els.foundCount.textContent = '--';

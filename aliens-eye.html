@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Aliens Eye 用户名搜索 — Mehk3y</title>
-  <meta name="description" content="输入一个用户名，服务端扫描 840 个平台，只显示检测到存在的公开账号结果。">
+  <title>Aliens Eye 账号搜索 — Mehk3y</title>
+  <meta name="description" content="输入用户名或中文昵称，英文用户名扫描 840 个平台，中文昵称搜索小红书、抖音等中文平台。">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="Aliens Eye 用户名搜索">
-  <meta property="og:description" content="输入用户名，扫描 840 个平台，只显示检测到存在的公开账号结果。">
+  <meta property="og:title" content="Aliens Eye 账号搜索">
+  <meta property="og:description" content="输入用户名或中文昵称，搜索公开账号和中文平台结果。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mehk3y.com/aliens-eye">
   <meta property="og:image" content="https://mehk3y.com/aliens-eye/logo.png">
@@ -439,28 +439,28 @@
 
     <section class="hero">
       <div>
-        <div class="eyebrow">Username Search</div>
+        <div class="eyebrow">Account Search</div>
         <h1>Aliens Eye</h1>
-        <p class="lead">输入一个用户名，后端会扫描 840 个平台模板，只把检测到存在的公开账号显示出来。未命中的平台不会出现在结果里。</p>
+        <p class="lead">输入英文用户名会扫描 840 个平台模板，只把检测到存在的公开账号显示出来。输入中文昵称会直接搜索小红书、抖音、微博、B站、知乎等平台。</p>
       </div>
       <figure class="logo-card">
         <img src="/aliens-eye/logo.png" alt="Aliens Eye logo">
       </figure>
     </section>
 
-    <form class="search-panel" id="searchForm" aria-label="用户名搜索">
+    <form class="search-panel" id="searchForm" aria-label="账号搜索">
       <div class="search-grid">
         <div class="field">
-          <label for="usernameInput">用户名</label>
-          <input id="usernameInput" type="search" autocomplete="off" placeholder="例如 mehk3y">
+          <label for="usernameInput">用户名或中文昵称</label>
+          <input id="usernameInput" type="search" autocomplete="off" placeholder="例如 mehk3y、小红书昵称、抖音名字">
         </div>
-        <button class="primary" id="searchButton" type="submit">开始扫描</button>
+        <button class="primary" id="searchButton" type="submit">开始搜索</button>
       </div>
     </form>
 
     <section class="metrics" aria-label="搜索统计">
       <div class="metric">
-        <div class="metric-label">平台模板</div>
+        <div class="metric-label">搜索目标</div>
         <div class="metric-value" id="siteCount">--</div>
       </div>
       <div class="metric">
@@ -468,7 +468,7 @@
         <div class="metric-value" id="resultCountMetric">--</div>
       </div>
       <div class="metric">
-        <div class="metric-label">用户名</div>
+        <div class="metric-label">输入</div>
         <div class="metric-value" id="usernameMetric">--</div>
       </div>
       <div class="metric">
@@ -480,21 +480,21 @@
     <section class="workspace">
       <section class="results-panel" aria-label="搜索结果">
         <div class="results-head">
-          <div class="result-title" id="resultTitle">等待输入用户名</div>
-          <div class="hint">只显示检测到存在的账号；未命中平台会被隐藏。</div>
+          <div class="result-title" id="resultTitle">等待输入</div>
+          <div class="hint">英文用户名只显示检测到的账号；中文昵称显示可打开的平台搜索结果。</div>
         </div>
         <div class="result-list" id="resultList">
-          <div class="empty">输入用户名后开始扫描。</div>
+          <div class="empty">输入用户名或中文昵称后开始搜索。</div>
         </div>
       </section>
 
       <aside class="side-panel">
         <h2>怎么用</h2>
-        <p>输入用户名后，服务端会分批请求公开主页并做基础判定。扫描完成后，列表里只保留检测到存在的结果。</p>
+        <p>英文用户名会分批请求公开主页并做基础判定。中文昵称会生成小红书、抖音等平台的搜索结果入口。</p>
         <ul>
-          <li>扫描需要几十秒，页面会显示进度。</li>
-          <li>不同平台反爬策略不同，结果仍建议点开复核。</li>
-          <li>此页不保存输入；扫描时会请求第三方公开主页。</li>
+          <li>用户名扫描需要几十秒，页面会显示进度。</li>
+          <li>中文平台通常不开放稳定接口，结果建议点开确认。</li>
+          <li>此页不保存输入；搜索时会请求第三方公开页面。</li>
         </ul>
         <div class="status" id="statusBox"><strong>数据：</strong>正在加载站点模板...</div>
       </aside>

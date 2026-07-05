@@ -8,6 +8,17 @@ const MAX_LIMIT = 80;
 const TIMEOUT_MS = 4500;
 const MAX_BODY_CHARS = 120_000;
 const USER_AGENT = 'Mozilla/5.0 (compatible; Mehk3yAliensEye/1.0; +https://mehk3y.com/aliens-eye)';
+const USERNAME_RE = /^[A-Za-z0-9._-]{1,40}$/;
+
+const NAME_SEARCH_SITES = [
+  { name: '小红书搜索', template: 'https://www.xiaohongshu.com/search_result?keyword={}', kind: 'search' },
+  { name: '抖音用户搜索', template: 'https://www.douyin.com/search/{}?type=user', kind: 'search' },
+  { name: '微博用户搜索', template: 'https://s.weibo.com/user?q={}', kind: 'search' },
+  { name: 'B站 UP 主搜索', template: 'https://search.bilibili.com/upuser?keyword={}', kind: 'search' },
+  { name: '知乎用户搜索', template: 'https://www.zhihu.com/search?type=people&q={}', kind: 'search' },
+  { name: '百度小红书结果', template: 'https://www.baidu.com/s?wd={}+site%3Axiaohongshu.com', kind: 'search' },
+  { name: '百度抖音结果', template: 'https://www.baidu.com/s?wd={}+site%3Adouyin.com', kind: 'search' }
+];
 
 let cachedSites = null;
 
@@ -33,8 +44,12 @@ function sites() {
   return cachedSites;
 }
 
-function normalizeUsername(value) {
-  return String(value || '').trim().replace(/^@+/, '');
+function normalizeQuery(value) {
+  return String(value || '').trim().replace(/^@+/, '').replace(/\s+/g, ' ');
+}
+
+function isValidQuery(value) {
+  return value.length > 0 && value.length <= 60 && !/[\r\n<>]/.test(value);
 }
 
 function buildUrl(template, username) {
@@ -44,6 +59,20 @@ function buildUrl(template, username) {
 
 function hostOf(url) {
   try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
+}
+
+function buildSearchResult(site, query) {
+  const url = buildUrl(site.template, query);
+  return {
+    found: true,
+    confidence: 70,
+    kind: site.kind,
+    site: site.name,
+    url,
+    finalUrl: url,
+    host: hostOf(url),
+    status: 'search'
+  };
 }
 
 async function readLimitedText(response) {
@@ -200,24 +229,29 @@ export default async function handler(req, res) {
     return json(res, 400, { ok: false, error: 'invalid_json' });
   }
 
-  const username = normalizeUsername(body.username);
-  if (!/^[A-Za-z0-9._-]{1,40}$/.test(username)) {
-    return json(res, 400, { ok: false, error: 'invalid_username' });
+  const query = normalizeQuery(body.username ?? body.query);
+  if (!isValidQuery(query)) {
+    return json(res, 400, { ok: false, error: 'invalid_query' });
   }
 
-  const allSites = sites();
+  const usernameMode = USERNAME_RE.test(query);
+  const allSites = usernameMode ? sites() : NAME_SEARCH_SITES;
   const offset = Math.max(0, Math.min(Number(body.offset) || 0, allSites.length));
   const limit = Math.max(1, Math.min(Number(body.limit) || 60, MAX_LIMIT));
   const batch = allSites.slice(offset, offset + limit);
   const startedAt = Date.now();
-  const scanned = await scanBatch(batch, username, 20);
+  const scanned = usernameMode
+    ? await scanBatch(batch, query, 20)
+    : batch.map(site => buildSearchResult(site, query));
   const found = scanned
     .filter(item => item.found)
     .sort((a, b) => b.confidence - a.confidence || a.site.localeCompare(b.site));
 
   return json(res, 200, {
     ok: true,
-    username,
+    username: query,
+    query,
+    mode: usernameMode ? 'username' : 'name',
     offset,
     limit,
     total: allSites.length,
