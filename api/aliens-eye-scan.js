@@ -72,19 +72,19 @@ function detect({ site, url, finalUrl, status, text, username }) {
   const notFoundPatterns = [
     '<title>not found',
     '<title>page not found',
+    '<title>404',
+    '<h1>not found',
+    '<h1>page not found',
     'user not found',
     'profile not found',
     'account not found',
-    'does not exist',
-    "doesn't exist",
     'no such user',
-    'could not find',
-    "couldn't find",
-    'isn’t available',
-    "isn't available",
-    '不存在',
-    '未找到',
-    '找不到'
+    'sorry, this page isn',
+    'sorry, this profile isn',
+    'this user does not exist',
+    'this account does not exist',
+    '此用户不存在',
+    '用户不存在'
   ];
 
   const positivePatterns = [
@@ -93,12 +93,26 @@ function detect({ site, url, finalUrl, status, text, username }) {
     `"${user}"`,
     `>${user}<`,
     `content="${user}`,
-    `profile`,
+    'og:type" content="profile',
+    "og:type' content='profile",
+    '"@type":"person"',
+    '"@type": "person"',
     `followers`,
     `following`
   ];
 
   const hasNotFound = notFoundPatterns.some(pattern => lower.includes(pattern));
+  const hasChallenge = [
+    'verify-human',
+    '/captcha/',
+    'captcha required',
+    'cf-challenge',
+    'cloudflare challenge',
+    'please verify you are a human',
+    'sign in to continue',
+    'login to continue',
+    'checking your browser'
+  ].some(pattern => finalLower.includes(pattern) || lower.includes(pattern));
   const finalHasUser = finalLower.includes(encodeURIComponent(user)) || finalLower.includes(user);
   const bodyHasUser = lower.includes(user);
   const hasProfileSignal = positivePatterns.some(pattern => lower.includes(pattern));
@@ -111,9 +125,10 @@ function detect({ site, url, finalUrl, status, text, username }) {
   if (bodyHasUser) confidence += 24;
   if (hasProfileSignal) confidence += 8;
   if (hasNotFound) confidence -= 60;
+  if (hasChallenge) confidence -= 60;
   if (!okStatus) confidence -= 40;
 
-  const found = okStatus && !hardNotFound && !hasNotFound && (finalHasUser || bodyHasUser);
+  const found = okStatus && !hardNotFound && !hasNotFound && !hasChallenge && (bodyHasUser || (finalHasUser && hasProfileSignal));
   return {
     found,
     confidence: Math.max(0, Math.min(99, confidence)),
@@ -136,8 +151,7 @@ async function scanOne(site, username) {
       signal: ctrl.signal,
       headers: {
         'user-agent': USER_AGENT,
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'range': 'bytes=0-65535'
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
       }
     });
     const contentType = response.headers.get('content-type') || '';
