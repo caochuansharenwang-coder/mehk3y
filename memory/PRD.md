@@ -58,8 +58,8 @@ M  English.html               -350 KB
 M  common.css                  +0.7 KB
 M  index.html                  -0.1 KB
 M  vercel.json                 +1 cache rule
-M  apple.html  esim.html  hermes.html  perler.html
-M  ip.html     crypto.html     apple.html  perler.html   (skip-link + <main>)
+M  perler.html
+M  ip.html     crypto.html     perler.html   (skip-link + <main>)
 M  vercel.json                 (+ /data/*.json cache header)
 A  english.js                  10.5 KB
 A  data/english.json           331 KB
@@ -67,7 +67,7 @@ A  data/english.json           331 KB
 
 ## What was deliberately NOT changed
 
-- Sub-page business logic (`crypto.html`, `ip.html`, `apple.html`, `perler.html`) — already well-architected, no functional changes.
+- Sub-page business logic (`crypto.html`, `ip.html`, `perler.html`) — already well-architected, no functional changes.
 - Theme system, font loading, CSP, middleware rate-limit — already best-in-class.
 - Color tokens, brand identity — preserved.
 - Visual layout of any page — preserved (verified via screenshots: light + dark + mobile).
