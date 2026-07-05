@@ -9,6 +9,12 @@
   'use strict';
   var KEY = 'theme';
   var html = document.documentElement;
+  var HOME_TITLE = 'Mehk3y — 个人工具集 · 加密链上 · 网络检测';
+
+  function normalizeHomeTitle() {
+    var path = window.location.pathname.replace(/\/+$/, '') || '/';
+    if (path === '/') document.title = HOME_TITLE;
+  }
 
   function read() {
     try { return localStorage.getItem(KEY) || 'auto'; } catch (_) { return 'auto'; }
@@ -24,6 +30,7 @@
 
   // Initial paint
   apply(read());
+  normalizeHomeTitle();
 
   // Cycle and bind on DOM ready
   function next(v) { return v === 'auto' ? 'light' : v === 'light' ? 'dark' : 'auto'; }
