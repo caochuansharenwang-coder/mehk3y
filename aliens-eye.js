@@ -2,6 +2,7 @@
   'use strict';
 
   const els = {
+    form: document.getElementById('searchForm'),
     username: document.getElementById('usernameInput'),
     search: document.getElementById('searchButton'),
     siteCount: document.getElementById('siteCount'),
@@ -32,7 +33,7 @@
 
   function buildUrl(template, username) {
     const encoded = encodeURIComponent(username);
-    return template.includes('{}') ? template.replaceAll('{}', encoded) : template + encoded;
+    return template.includes('{}') ? template.split('{}').join(encoded) : template + encoded;
   }
 
   function prepareSites(raw) {
@@ -46,7 +47,7 @@
     }).sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  function render() {
+  function render(options = {}) {
     const username = normalizeUsername(els.username.value);
     state.username = username;
     state.filtered = state.sites;
@@ -57,12 +58,19 @@
     if (!username) {
       els.resultTitle.textContent = '等待输入用户名';
       els.resultList.innerHTML = '<div class="empty">输入用户名后开始生成结果。</div>';
+      els.username.focus();
       return;
     }
 
     els.resultTitle.textContent = `${username} 的全平台候选链接`;
     els.resultList.replaceChildren(...state.filtered.map(site => renderCard(site, username)));
+    els.status.innerHTML = `<strong>结果：</strong>已为 ${username} 生成 ${state.filtered.length.toLocaleString()} 个全平台候选链接。`;
     updateShareUrl(username);
+    if (options.scroll) {
+      requestAnimationFrame(() => {
+        els.resultTitle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
   }
 
   function renderCard(site, username) {
@@ -141,14 +149,10 @@
   }
 
   function wireEvents() {
-    let timer = null;
-    const schedule = () => {
-      clearTimeout(timer);
-      timer = setTimeout(render, 80);
-    };
-
-    els.username.addEventListener('input', schedule);
-    els.search.addEventListener('click', render);
+    els.form.addEventListener('submit', event => {
+      event.preventDefault();
+      render({ scroll: true });
+    });
   }
 
   async function boot() {
