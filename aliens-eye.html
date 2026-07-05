@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Aliens Eye 用户名搜索 — Mehk3y</title>
-  <meta name="description" content="输入一个用户名，在 840 个平台模板中快速生成可核验的公开主页候选链接，支持平台筛选、复制、批量打开和导出。">
+  <meta name="description" content="输入一个用户名，服务端扫描 840 个平台，只显示检测到存在的公开账号结果。">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
   <meta property="og:title" content="Aliens Eye 用户名搜索">
-  <meta property="og:description" content="输入用户名，生成 840 个平台的公开主页候选链接。">
+  <meta property="og:description" content="输入用户名，扫描 840 个平台，只显示检测到存在的公开账号结果。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mehk3y.com/aliens-eye">
   <meta property="og:image" content="https://mehk3y.com/aliens-eye/logo.png">
@@ -441,7 +441,7 @@
       <div>
         <div class="eyebrow">Username Search</div>
         <h1>Aliens Eye</h1>
-        <p class="lead">输入一个用户名，立刻在 840 个平台模板里生成候选主页链接。页面不做平台筛选，搜索按钮会直接生成全平台结果。</p>
+        <p class="lead">输入一个用户名，后端会扫描 840 个平台模板，只把检测到存在的公开账号显示出来。未命中的平台不会出现在结果里。</p>
       </div>
       <figure class="logo-card">
         <img src="/aliens-eye/logo.png" alt="Aliens Eye logo">
@@ -454,7 +454,7 @@
           <label for="usernameInput">用户名</label>
           <input id="usernameInput" type="search" autocomplete="off" placeholder="例如 mehk3y">
         </div>
-        <button class="primary" id="searchButton" type="submit">搜索全平台</button>
+        <button class="primary" id="searchButton" type="submit">开始扫描</button>
       </div>
     </form>
 
@@ -464,7 +464,7 @@
         <div class="metric-value" id="siteCount">--</div>
       </div>
       <div class="metric">
-        <div class="metric-label">当前结果</div>
+        <div class="metric-label">已检查</div>
         <div class="metric-value" id="resultCountMetric">--</div>
       </div>
       <div class="metric">
@@ -472,8 +472,8 @@
         <div class="metric-value" id="usernameMetric">--</div>
       </div>
       <div class="metric">
-        <div class="metric-label">模式</div>
-        <div class="metric-value">静态</div>
+        <div class="metric-label">命中</div>
+        <div class="metric-value" id="foundCountMetric">--</div>
       </div>
     </section>
 
@@ -481,20 +481,20 @@
       <section class="results-panel" aria-label="搜索结果">
         <div class="results-head">
           <div class="result-title" id="resultTitle">等待输入用户名</div>
-          <div class="hint">这里生成公开主页候选链接，不会在浏览器里批量请求第三方站点。</div>
+          <div class="hint">只显示检测到存在的账号；未命中平台会被隐藏。</div>
         </div>
         <div class="result-list" id="resultList">
-          <div class="empty">输入用户名后开始生成结果。</div>
+          <div class="empty">输入用户名后开始扫描。</div>
         </div>
       </section>
 
       <aside class="side-panel">
         <h2>怎么用</h2>
-        <p>输入用户名后，结果会按平台模板生成。例如 GitHub 会变成对应的用户主页 URL。点击“打开”后在新标签核验是否真实存在。</p>
+        <p>输入用户名后，服务端会分批请求公开主页并做基础判定。扫描完成后，列表里只保留检测到存在的结果。</p>
         <ul>
-          <li>每次搜索都会生成全部平台候选链接。</li>
-          <li>页面只生成链接，不会自动请求第三方站点。</li>
-          <li>此页不保存输入，也不把用户名发给第三方 API。</li>
+          <li>扫描需要几十秒，页面会显示进度。</li>
+          <li>不同平台反爬策略不同，结果仍建议点开复核。</li>
+          <li>此页不保存输入；扫描时会请求第三方公开主页。</li>
         </ul>
         <div class="status" id="statusBox"><strong>数据：</strong>正在加载站点模板...</div>
       </aside>
