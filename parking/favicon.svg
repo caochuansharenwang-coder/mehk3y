@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#0a0c10"/>
-  <rect x="5" y="5" width="22" height="22" rx="3" fill="none" stroke="#00ffcc" stroke-width="2" stroke-dasharray="3,2"/>
-  <text x="16" y="22" font-family="'Outfit',Arial,sans-serif" font-weight="800" font-size="16" fill="#00ffcc" text-anchor="middle">P</text>
-</svg>

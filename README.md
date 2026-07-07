@@ -8,10 +8,7 @@
 |---|---|
 | `/crypto` | BTC + ETH 实时链上指标合一：MVRV · ahr999 · Gas · MSTR / BMNR 储备 |
 | `/ip` | IP / 浏览器指纹 / Claude 可用性 检测 |
-| `/perler` | 照片转拼豆像素图 |
 | `/Photograph/` | 拍立得照片工具 |
-| `/yuepaomoniqi` | 约炮模拟器 |
-| `/parking/` | 停车工具 |
 | `/admin` | 非首页入口：访问统计管理页 |
 
 ## 技术栈

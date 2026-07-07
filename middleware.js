@@ -90,7 +90,11 @@ export default function middleware(request, context) {
   const ip = clientIp(request);
 
   if (url.pathname === '/btc' || url.pathname === '/btc.html' ||
-      url.pathname === '/eth' || url.pathname === '/eth.html') {
+      url.pathname === '/eth' || url.pathname === '/eth.html' ||
+      url.pathname === '/perler' || url.pathname === '/perler.html' ||
+      url.pathname === '/yuepaomoniqi' || url.pathname === '/yuepaomoniqi.html' ||
+      url.pathname === '/parking' || url.pathname === '/parking/' ||
+      url.pathname === '/parking/index.html') {
     return new Response('Gone', {
       status: 410,
       headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
