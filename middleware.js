@@ -94,7 +94,10 @@ export default function middleware(request, context) {
       url.pathname === '/perler' || url.pathname === '/perler.html' ||
       url.pathname === '/yuepaomoniqi' || url.pathname === '/yuepaomoniqi.html' ||
       url.pathname === '/parking' || url.pathname === '/parking/' ||
-      url.pathname === '/parking/index.html') {
+      url.pathname === '/parking/index.html' ||
+      url.pathname === '/gg-keeper' || url.pathname === '/gg-keeper/' ||
+      url.pathname === '/gg-keeper/index.html' ||
+      url.pathname === '/giffgaff' || url.pathname === '/giffgaff/') {
     return new Response('Gone', {
       status: 410,
       headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
