@@ -37,17 +37,18 @@
   --surface-2: #ffffff;  /* nested card / input bg */
   --border:     #ececec;
   --border-2:  #e2e2e2;
-  --text:       #0d0d0d;
-  --text-2:    #4a4a4a;
-  --dim:        #5f5f5f;
-  --faint:     #6b6b6b;
+  --text:       #111318;
+  --text-2:    #303846;
+  --dim:        #475569;
+  --faint:     #5f6f85;
 
-  /* Text-safe accents: each clears WCAG AA against the light surfaces. */
-  --orange:  #9a4d00;
-  --green:   #0b7a3b;
-  --red:     #b91c1c;
-  --blue:    #1d4ed8;
-  --purple:  #5746c7;
+  /* Vivid text-safe accents: each clears WCAG AA against light surfaces. */
+  --orange:  #c2410c;
+  --green:   #15803d;
+  --red:     #cf222e;
+  --blue:    #2563eb;
+  --purple:  #6d28d9;
+  --error-fg: #ffffff;
 
   --accent:    #0d0d0d;
   --accent-fg: #ffffff;
@@ -79,16 +80,17 @@
   --surface-2: #161616;
   --border:     #1f1f1f;
   --border-2:  #2a2a2a;
-  --text:       #f5f5f5;
-  --text-2:    #c4c4c4;
-  --dim:        #a3a3a3;
-  --faint:     #8a8a8a;
+  --text:       #f8fafc;
+  --text-2:    #e2e8f0;
+  --dim:        #bdc7d4;
+  --faint:     #94a3b8;
 
   --orange:  #ffae3d;
   --green:   #34d399;
   --red:     #f87171;
   --blue:    #60a5fa;
   --purple:  #a78bfa;
+  --error-fg: #0a0a0a;
 
   --accent:    #ffffff;
   --accent-fg: #0a0a0a;
@@ -115,15 +117,16 @@
     --surface-2: #161616;
     --border:     #1f1f1f;
     --border-2:  #2a2a2a;
-    --text:       #f5f5f5;
-    --text-2:    #c4c4c4;
-    --dim:        #a3a3a3;
-    --faint:     #8a8a8a;
+    --text:       #f8fafc;
+    --text-2:    #e2e8f0;
+    --dim:        #bdc7d4;
+    --faint:     #94a3b8;
     --orange:  #ffae3d;
     --green:   #34d399;
     --red:     #f87171;
     --blue:    #60a5fa;
     --purple:  #a78bfa;
+    --error-fg: #0a0a0a;
     --accent:    #ffffff;
     --accent-fg: #0a0a0a;
     --shadow-sm: 0 1px 2px rgba(0,0,0,.40);
@@ -311,9 +314,9 @@ body::after {
   /* Layout/paint isolation — major win on pages with many cards (English: 850). */
   contain: content;
 }
-.card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-bottom: 10px; font-weight: 500; }
+.card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-2); margin-bottom: 10px; font-weight: 500; }
 .card-main  { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
-.card-sub   { font-size: 12px; color: var(--dim); line-height: 1.6; }
+.card-sub   { font-size: 12px; color: var(--text-2); line-height: 1.6; }
 .card-sub b { color: var(--text); font-weight: 600; }
 
 .strip {
@@ -436,7 +439,7 @@ body::after {
 .error-toast {
   position: fixed; bottom: 20px; left: 50%;
   transform: translate(-50%, 16px);
-  background: var(--red); color: #fff;
+  background: var(--red); color: var(--error-fg);
   padding: 10px 20px; border-radius: 10px;
   font-size: 13px; opacity: 0; pointer-events: none; z-index: 99;
   box-shadow: var(--shadow-md);
