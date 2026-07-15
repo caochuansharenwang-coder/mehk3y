@@ -4,6 +4,12 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.mehk3y.com" }],
+      "destination": "https://mehk3y.com",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.mehk3y.com" }],
       "destination": "https://mehk3y.com/:path*",
