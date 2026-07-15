@@ -24,12 +24,12 @@
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🪙</text></svg>">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
-  <link rel="stylesheet" href="/common.css">
+  <link rel="stylesheet" href="/common.css?v=20260715-site">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <script src="/theme.js"></script>
   <link rel="preload" as="script" href="/common.js">
-  <link rel="preload" as="script" href="/script.js">
-  <link rel="preload" as="script" href="/eth.js">
+  <link rel="preload" as="script" href="/script.js?v=20260715-crypto">
+  <link rel="preload" as="script" href="/eth.js?v=20260715-crypto">
   <!-- 所有数据走 /api/* (Vercel Edge Runtime, 全球边缘部署) -->
 
   <style>
@@ -359,8 +359,8 @@
 
 <div class="error-toast" id="error-toast" hidden aria-hidden="true">数据加载失败，请稍后刷新</div>
 <script src="/common.js" defer></script>
-<script src="/script.js" defer></script>
-<script src="/eth.js" defer></script>
+<script src="/script.js?v=20260715-crypto" defer></script>
+<script src="/eth.js?v=20260715-crypto" defer></script>
 <!-- csp-refresh: 2026-05-25 -->
 <script src="/analytics.js?v=20260715-privacy" defer></script>
 </body>
