@@ -3,10 +3,35 @@
 const TAU=Math.PI*2;
 const canvas=document.getElementById('gl');
 const hint=document.getElementById('hint');
-const gl=canvas.getContext('webgl2',{antialias:false,alpha:false});
-if(!gl){hint.textContent='このブラウザはWebGL2に対応していません';return;}
-gl.getExtension('EXT_color_buffer_float');
+const fallback=document.getElementById('fallback');
+const fallbackMessage=document.getElementById('fallback-message');
+const fishStatus=document.getElementById('fish-status');
+const motionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+let reducedMotion=motionQuery.matches;
+let ambT=3,last=0,lastRendered=0,rafId=0,running=false;
+
+function showFallback(message){
+  if(fallbackMessage)fallbackMessage.textContent=message;
+  if(fallback)fallback.hidden=false;
+  canvas.hidden=true;
+  hint.hidden=true;
+}
+
+let gl;
+try{
+  gl=canvas.getContext('webgl2',{antialias:false,alpha:false,powerPreference:'high-performance'});
+}catch(_){gl=null;}
+if(!gl){showFallback('当前浏览器或设备不支持 WebGL 2，无法运行互动鱼池。');return;}
+if(!gl.getExtension('EXT_color_buffer_float')){
+  showFallback('当前设备缺少鱼池水波模拟所需的图形扩展。');
+  return;
+}
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+canvas.addEventListener('webglcontextlost',e=>{
+  e.preventDefault();
+  stopLoop();
+  showFallback('图形上下文已中断。请刷新页面以重新打开互动鱼池。');
+},{once:true});
 
 /* ---------------- shaders ---------------- */
 const VERT=`#version 300 es
@@ -98,7 +123,14 @@ function program(vs,fs){
   if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
   return p;
 }
-const simProg=program(VERT,SIM_FRAG), renProg=program(VERT,RENDER_FRAG);
+let simProg,renProg;
+try{
+  simProg=program(VERT,SIM_FRAG);
+  renProg=program(VERT,RENDER_FRAG);
+}catch(_){
+  showFallback('图形程序初始化失败，请刷新页面或更换浏览器后重试。');
+  return;
+}
 const su={
   prev:gl.getUniformLocation(simProg,'uPrev'),
   texel:gl.getUniformLocation(simProg,'uTexel'),
@@ -122,6 +154,7 @@ let cssW=0,cssH=0,dpr=1,fishScale=1;
 let simW=0,simH=0,texA=null,texB=null,fboA=null,fboB=null;
 const bCan=document.createElement('canvas'),bctx=bCan.getContext('2d');
 const fCan=document.createElement('canvas'),fctx=fCan.getContext('2d');
+if(!bctx||!fctx){showFallback('当前设备无法创建鱼池所需的绘图画布。');return;}
 const bottomTex=gl.createTexture(),fishTex=gl.createTexture();
 let fishTexW=0,fishTexH=0,bottomTexW=0,bottomTexH=0;
 
@@ -139,12 +172,17 @@ function makeTarget(w,h){
   const f=gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER,f);
   gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);
+  if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){
+    gl.deleteTexture(t);gl.deleteFramebuffer(f);
+    throw new Error('Framebuffer incomplete');
+  }
   gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
   return [t,f];
 }
 function createSim(){
   if(texA){gl.deleteTexture(texA);gl.deleteTexture(texB);gl.deleteFramebuffer(fboA);gl.deleteFramebuffer(fboB);}
-  const scale=Math.min(0.5,768/Math.max(cssW,cssH));
+  const simLimit=reducedMotion?448:640;
+  const scale=Math.min(reducedMotion?0.32:0.45,simLimit/Math.max(cssW,cssH));
   simW=Math.max(64,Math.round(cssW*scale));
   simH=Math.max(64,Math.round(cssH*scale));
   [texA,fboA]=makeTarget(simW,simH);
@@ -180,7 +218,8 @@ function paintBottom(){
     ag.addColorStop(0,'rgba(34,52,28,0.28)');ag.addColorStop(1,'rgba(34,52,28,0)');
     c.fillStyle=ag;c.beginPath();c.arc(x,y,r,0,TAU);c.fill();
   }
-  for(let i=0;i<2400;i++){
+  const grainCount=Math.min(reducedMotion?900:1800,Math.max(500,Math.round(w*h/850)));
+  for(let i=0;i<grainCount;i++){
     const x=Math.random()*w,y=Math.random()*h,r=Math.random()*1.7+0.4;
     c.fillStyle=Math.random()<0.5
       ?'rgba(255,240,200,'+(Math.random()*0.09).toFixed(3)+')'
@@ -418,11 +457,11 @@ function addDrop(x,y,r,s){
   if(drops.length>24)drops.shift();
 }
 const dropArr=new Float32Array(32);
-function simulate(){
+function simulate(steps=2){
   gl.useProgram(simProg);
   gl.viewport(0,0,simW,simH);
   gl.uniform2f(su.texel,1/simW,1/simH);
-  for(let step=0;step<2;step++){
+  for(let step=0;step<steps;step++){
     let n=0;
     if(step===0){
       n=Math.min(drops.length,8);
@@ -460,11 +499,15 @@ function render(t){
 
 /* ---------------- layout / input ---------------- */
 function resize(){
-  cssW=window.innerWidth;cssH=window.innerHeight;
-  dpr=Math.min(window.devicePixelRatio||1,2);
+  cssW=Math.max(1,window.innerWidth);cssH=Math.max(1,window.innerHeight);
+  const requestedDpr=Math.min(window.devicePixelRatio||1,reducedMotion?1:1.75);
+  const pixelBudget=reducedMotion?1000000:2200000;
+  const requestedPixels=cssW*cssH*requestedDpr*requestedDpr;
+  const budgetScale=Math.min(1,Math.sqrt(pixelBudget/Math.max(1,requestedPixels)));
+  dpr=Math.max(0.6,requestedDpr*budgetScale);
   canvas.width=Math.round(cssW*dpr);
   canvas.height=Math.round(cssH*dpr);
-  fishScale=Math.min(dpr,1.5);
+  fishScale=Math.min(dpr,reducedMotion?1:1.25);
   fCan.width=Math.round(cssW*fishScale);
   fCan.height=Math.round(cssH*fishScale);
   fishTexW=0;
@@ -477,17 +520,42 @@ function resize(){
     f.y=Math.max(40,Math.min(cssH-40,f.y));
   }
 }
-window.addEventListener('resize',resize);
+let resizeRaf=0;
+function scheduleResize(){
+  cancelAnimationFrame(resizeRaf);
+  resizeRaf=requestAnimationFrame(()=>{
+    try{resize();}
+    catch(_){stopLoop();showFallback('设备无法创建鱼池所需的图形缓冲区。');}
+  });
+}
+window.addEventListener('resize',scheduleResize,{passive:true});
 
-canvas.addEventListener('pointerdown',e=>{
-  const x=e.clientX,y=e.clientY;
+function handleMotionPreference(e){
+  reducedMotion=e.matches;
+  scheduleResize();
+}
+if(motionQuery.addEventListener)motionQuery.addEventListener('change',handleMotionPreference);
+else motionQuery.addListener(handleMotionPreference);
+
+let feedCount=0;
+function feedAt(x,y){
+  x=Math.max(0,Math.min(cssW,x));
+  y=Math.max(0,Math.min(cssH,y));
   addDrop(x,y,18,1.3);
   if(foods.length<25)
     foods.push({x:x+(Math.random()-0.5)*16,y:y+(Math.random()-0.5)*16,ph:Math.random()*TAU});
   hint.style.opacity=0;
+  feedCount++;
+  if(fishStatus)fishStatus.textContent=`已投喂 ${feedCount} 次，水面出现涟漪。`;
+}
+
+canvas.addEventListener('pointerdown',e=>{
+  if(e.isPrimary===false)return;
+  feedAt(e.clientX,e.clientY);
 });
 let lmx=-1,lmy=-1;
 canvas.addEventListener('pointermove',e=>{
+  if(reducedMotion||document.hidden)return;
   if(lmx<0){lmx=e.clientX;lmy=e.clientY;return;}
   const d=Math.hypot(e.clientX-lmx,e.clientY-lmy);
   if(d>26){
@@ -495,37 +563,67 @@ canvas.addEventListener('pointermove',e=>{
     lmx=e.clientX;lmy=e.clientY;
   }
 });
+canvas.addEventListener('pointerleave',()=>{lmx=-1;lmy=-1;});
+canvas.addEventListener('keydown',e=>{
+  if((e.key!=='Enter'&&e.key!==' ')||e.repeat)return;
+  e.preventDefault();
+  feedAt(cssW*0.5,cssH*0.5);
+});
 
 /* ---------------- main loop ---------------- */
-resize();
-fishes=[
-  makeFish('orange',118),
-  makeFish('kohaku',104),
-  makeFish('calico',92),
-  makeFish('red',128),
-  makeFish('orange',72),
-  makeFish('tancho',86)
-];
-for(let i=0;i<3;i++)
-  addDrop(Math.random()*cssW,Math.random()*cssH,14,0.6);
+try{
+  resize();
+  fishes=[
+    makeFish('orange',118),
+    makeFish('kohaku',104),
+    makeFish('calico',92),
+    makeFish('red',128),
+    makeFish('orange',72),
+    makeFish('tancho',86)
+  ];
+  for(let i=0;i<3;i++)
+    addDrop(Math.random()*cssW,Math.random()*cssH,14,0.6);
+}catch(_){
+  showFallback('设备无法创建鱼池所需的图形缓冲区。');
+  return;
+}
 setTimeout(()=>{hint.style.opacity=0;},9000);
 
-let ambT=3,last=0;
 function frame(ts){
-  requestAnimationFrame(frame);
+  if(!running)return;
+  rafId=requestAnimationFrame(frame);
+  if(reducedMotion&&ts-lastRendered<1000/12)return;
+  lastRendered=ts;
   const t=ts/1000;
   const dt=Math.min(0.05,Math.max(0.001,t-last));
   last=t;
-  ambT-=dt;
-  if(ambT<=0){
+  const motionDt=reducedMotion?dt*0.15:dt;
+  if(!reducedMotion)ambT-=dt;
+  if(!reducedMotion&&ambT<=0){
     addDrop(Math.random()*cssW,Math.random()*cssH,8,0.32);
     ambT=3+Math.random()*5;
   }
-  for(const f of fishes)updateFish(f,dt);
+  for(const f of fishes)updateFish(f,motionDt);
   drawFishCanvas(t);
   uploadFish();
-  simulate();
+  simulate(reducedMotion?1:2);
   render(t);
 }
-requestAnimationFrame(frame);
+function startLoop(){
+  if(running||document.hidden||canvas.hidden)return;
+  running=true;
+  last=performance.now()/1000;
+  lastRendered=0;
+  rafId=requestAnimationFrame(frame);
+}
+function stopLoop(){
+  running=false;
+  if(rafId)cancelAnimationFrame(rafId);
+  rafId=0;
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)stopLoop();
+  else startLoop();
+});
+startLoop();
 })();

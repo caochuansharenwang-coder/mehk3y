@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <title>Mehk3y — IP 检测</title>
-  <meta name="description" content="检测当前 IP 是否适合使用 Claude，识别代理、VPN、数据中心及浏览器指纹。">
-  <meta property="og:title" content="Mehk3y — IP 检测">
-  <meta property="og:description" content="信任评分 · VPN/代理识别 · 数据中心识别 · 浏览器指纹">
+  <title>Mehk3y — IP 与网络环境检测</title>
+  <meta name="description" content="查看当前出口 IP、代理、DNS 解析器与 WebRTC 泄露风险，并获得本站估算的网络环境参考分。非 Anthropic 官方工具。">
+  <meta property="og:title" content="Mehk3y — IP 与网络环境检测">
+  <meta property="og:description" content="出口 IP · VPN/代理识别 · DNS 解析器 · WebRTC 泄露 · 本站估算参考分">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mehk3y.com/ip">
-  <meta property="og:image" content="https://mehk3y.com/og-image.jpg">
+  <meta property="og:image" content="https://mehk3y.com/og-ip-20260715.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/jpeg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@Mehk3y">
-  <meta name="twitter:image" content="https://mehk3y.com/og-image.jpg">
+  <meta name="twitter:image" content="https://mehk3y.com/og-ip-20260715.jpg">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href="https://mehk3y.com/ip">
@@ -28,29 +28,36 @@
   <script src="/theme.js"></script>
   <link rel="preload" as="script" href="/common.js">
   <link rel="preload" as="script" href="/ip.js">
-  <link rel="dns-prefetch" href="https://cloudflare-dns.com">
-  <link rel="dns-prefetch" href="https://one.one.one.one">
+  <link rel="dns-prefetch" href="https://edns.ip-api.com">
   <link rel="dns-prefetch" href="https://ipwho.is">
   <link rel="dns-prefetch" href="https://free.freeipapi.com">
   <link rel="dns-prefetch" href="https://claude.ai">
   <link rel="dns-prefetch" href="https://www.anthropic.com">
   <link rel="dns-prefetch" href="https://status.claude.com">
-  <link rel="preconnect" href="https://cloudflare-dns.com" crossorigin>
-  <link rel="preconnect" href="https://one.one.one.one" crossorigin>
-  <link rel="preconnect" href="https://ipwho.is" crossorigin>
-  <link rel="preconnect" href="https://free.freeipapi.com" crossorigin>
-  <link rel="preconnect" href="https://claude.ai" crossorigin>
-  <link rel="preconnect" href="https://www.anthropic.com" crossorigin>
-  <link rel="preconnect" href="https://status.claude.com" crossorigin>
   <style>
     .wrap { max-width: 680px; }
-    .hdr  { align-items: baseline; margin-bottom: 16px; }
+    .hdr  { margin-bottom: 12px; }
     .card { padding: 14px 16px; }
-    .btn  { display: block; margin: 14px auto 0; padding: 8px 24px; border: 1.5px solid var(--border); border-radius: 99px; background: var(--bg); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn  { display: block; min-height: 44px; margin: 14px auto 0; padding: 10px 24px; border: 1.5px solid var(--border); border-radius: 99px; background: var(--bg); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; }
     .btn:hover    { background: var(--surface); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .ip-intro { margin: 2px 0 18px; max-width: 610px; }
+    .ip-intro h1 { font-size: clamp(24px, 5vw, 34px); line-height: 1.15; letter-spacing: -0.035em; margin-bottom: 9px; }
+    .ip-intro p { color: var(--text-2); font-size: 13px; line-height: 1.7; }
+    .ip-intro .ip-note { color: var(--dim); font-size: 12px; margin-top: 5px; }
+    .ip-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+    .ip-card-full { margin-bottom:8px; }
+    .ip-row { display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--border); }
+    .ip-row:last-child { border-bottom:0; }
+    .ip-row-label { color:var(--dim);font-size:12px; }
+    .ip-row-value { font-size:12px;font-weight:600;text-align:right;max-width:68%;overflow-wrap:anywhere; }
+    .ip-badge { display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700; }
+    .score-basis { margin-top:12px;padding-top:10px;border-top:1px solid var(--border);color:var(--text-2);font-size:11px;line-height:1.55;text-align:left; }
+    .score-disclaimer,.ip-card-note { color:var(--dim);font-size:10px;line-height:1.5;margin-top:7px;text-align:left; }
     code { font-family: "SF Mono", "Fira Code", monospace; }
+    @media (max-width: 560px) { .ip-grid2 { grid-template-columns:1fr; } }
     @media (max-width: 500px) { .wrap { padding: 18px 14px 40px; } }
+    @media (max-width: 400px) { .ip-row { align-items:flex-start; } .ip-row-value { max-width:62%; } }
   </style>
 </head>
 <body>
@@ -59,18 +66,24 @@
 <main class="wrap" id="main">
   <header class="hdr">
     <div class="hdr-left">
-      <a href="/" class="hdr-back">←</a>
+      <a href="/" class="hdr-back" aria-label="返回首页">←</a>
       <a href="/" class="hdr-name">Mehk3y</a>
       <span class="hdr-sub">IP 检测</span>
     </div>
   </header>
+  <section class="ip-intro" aria-labelledby="page-title">
+    <h1 id="page-title">IP 与网络环境检测</h1>
+    <p>查看当前出口 IP、代理或 VPN、DNS 解析器、WebRTC 泄露，以及浏览器网络环境信号。</p>
+    <p class="ip-note">参考分由本站按有限信号估算，仅供排查网络环境；本页不是 Anthropic 或 Claude 官方工具，也不能判断账号资格或保证服务可用。</p>
+  </section>
   <div class="divider"></div>
-  <div id="result"></div>
-  <button class="btn" id="retry-btn" disabled>重新检测</button>
-  <div class="footer"><a href="/">← 返回首页</a></div>
+  <p id="check-status" class="sr-only" role="status" aria-live="polite"></p>
+  <div id="result" aria-busy="true" aria-describedby="check-status"></div>
+  <button class="btn" id="retry-btn" type="button" disabled>重新检测</button>
+  <nav class="footer" aria-label="页脚导航"><a href="/">← 返回首页</a></nav>
 </main>
 <script src="/common.js" defer></script>
 <script src="/ip.js" defer></script>
-<script src="/analytics.js" defer></script>
+<script src="/analytics.js?v=20260715-privacy" defer></script>
 </body>
 </html>

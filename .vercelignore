@@ -2,6 +2,11 @@ README.md
 DEPLOY.md
 .env.example
 .gitconfig
+.DS_Store
+.claude/
+.emergent/
+test_result.md
+test_reports/
 
 # 本地开发工具 / Phase 1 CLI，不部署到 Vercel
 tools/
@@ -11,3 +16,9 @@ memory/
 
 # 工具脚本（本地数据更新用）
 scripts/
+
+# 已退役页面遗留资源 / 仅用于本地字体加工，线上不引用
+esim.js
+qrcode.js
+data/ipa_map.json
+fonts/*.ttf

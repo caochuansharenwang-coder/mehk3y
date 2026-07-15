@@ -12,6 +12,24 @@ const ft    = mehk3yFetch;
 const price = mehk3yPriceGate();
 let wma200Value = 0;
 
+const cryptoUi = window.mehk3yCryptoUi || { issue() {}, recovered() {} };
+
+function markIssue(key, message) {
+  cryptoUi.issue('eth', key, message);
+}
+
+function markRecovered(key, updatedAt) {
+  cryptoUi.recovered('eth', key, updatedAt);
+}
+
+function markBmnrIssue(key, message) {
+  cryptoUi.issue('bmnr', key, message);
+}
+
+function markBmnrRecovered(key, updatedAt) {
+  cryptoUi.recovered('bmnr', key, updatedAt);
+}
+
 function applyPrice(pd) {
   if (!pd) return;
   price.resolve(pd.price);
@@ -75,7 +93,13 @@ async function fetchBmnr() {
     if (!d || !d.holdings) throw new Error('no data');
     applyBmnr(d);
     cache.set('bmnr', d);
-  } catch (e) { console.error('bmnr', e); }
+    markBmnrRecovered('bmnr', d.asOf);
+    return true;
+  } catch (e) {
+    console.error('bmnr', e);
+    markBmnrIssue('bmnr', 'BMNR 公司储备');
+    return false;
+  }
 }
 
 function fmtEth(v) {
@@ -182,6 +206,8 @@ function applyBmnrWeekly(currentHoldings) {
   if (bc?.mnav) { applyMnav('bmnr-mnav', bc.mnav); document.getElementById('bmnr-detail').textContent = '股价 $' + bc.price + ' · 市值 / ETH 持仓价值'; }
   const w = cache.get('wma200', 86400000);
   if (w) { wma200Value = w; document.getElementById('eth-wma200-price').textContent = '$' + Math.round(w).toLocaleString(); applyWmaRatio(); }
+  const g = cache.get('gas', 120000);
+  if (g != null) applyGas(g);
 })();
 
 async function fetchPrice() {
@@ -191,8 +217,15 @@ async function fetchPrice() {
     if (d && d.price > 0) {
       applyPrice(d);
       cache.set('price', d);
+      markRecovered('ethPrice');
+      return true;
     }
-  } catch (e) { console.error('price', e); }
+    throw new Error('invalid ETH price');
+  } catch (e) {
+    console.error('price', e);
+    markIssue('ethPrice', 'ETH 实时价格');
+    return false;
+  }
 }
 
 async function fetchMarketAndSupply() {
@@ -202,24 +235,38 @@ async function fetchMarketAndSupply() {
     if (d && d.mcap) {
       applyMarket(d);
       cache.set('market', d);
+      markRecovered('ethMarket');
+      return true;
     }
-  } catch(e) { console.error('market', e); }
+    throw new Error('invalid ETH market data');
+  } catch(e) {
+    console.error('market', e);
+    markIssue('ethMarket', 'ETH 市场与供应');
+    return false;
+  }
+}
+
+function applyGas(gas) {
+  if (gas == null || !Number.isFinite(Number(gas))) return false;
+  const g = Number(gas);
+  const disp = g >= 10 ? Math.round(g) : g >= 1 ? g.toFixed(1) : g.toFixed(2);
+  document.getElementById('gas-price').textContent = disp + ' Gwei';
+  document.getElementById('gas-price').style.color = g < 20 ? 'var(--green)' : g < 50 ? 'var(--orange)' : 'var(--red)';
+  return true;
 }
 
 async function fetchGas() {
   try {
     const r = await ft('/api/eth-gas', 8000);
     const d = await r.json();
-    if (d.gas != null) {
-      const g = d.gas;
-      const disp = g >= 10 ? Math.round(g) : g >= 1 ? g.toFixed(1) : g.toFixed(2);
-      document.getElementById('gas-price').textContent = disp + ' Gwei';
-      document.getElementById('gas-price').style.color = g < 20 ? 'var(--green)' : g < 50 ? 'var(--orange)' : 'var(--red)';
-    } else {
-      document.getElementById('gas-price').textContent = '—';
-    }
-  } catch(_) {
-    document.getElementById('gas-price').textContent = '—';
+    if (!applyGas(d.gas)) throw new Error('invalid gas data');
+    cache.set('gas', d.gas);
+    markRecovered('ethGas');
+    return true;
+  } catch(error) {
+    console.error('gas', error);
+    markIssue('ethGas', 'ETH Gas');
+    return false;
   }
 }
 
@@ -232,8 +279,15 @@ async function fetchWma200() {
       document.getElementById('eth-wma200-price').textContent = '$' + Math.round(d.wma200).toLocaleString();
       applyWmaRatio();
       cache.set('wma200', d.wma200);
+      markRecovered('ethWma');
+      return true;
     }
-  } catch(e) { console.error('200WMA', e); }
+    throw new Error('invalid ETH 200WMA');
+  } catch(e) {
+    console.error('200WMA', e);
+    markIssue('ethWma', 'ETH 200 周均线');
+    return false;
+  }
 }
 
 function applyMnav(id, val) {
@@ -243,62 +297,115 @@ function applyMnav(id, val) {
   el.style.color = val < 1 ? 'var(--green)' : val < 2 ? 'var(--orange)' : 'var(--red)';
 }
 
-async function fetchMnav() {
-  await price.wait(8000);
-  if (!price.value) return;
-  try {
-    const r = await ft('/api/mstr', 10000);
-    const d = await r.json();
-    if (d.error) return;
-    const ethPrice = d.eth_price || price.value;
-    if (ethPrice <= 0) return;
+function applyMnavPayload(d, bmnrOverride) {
+  const ethPrice = price.value || d?.eth_price;
+  const b = d?.bmnr;
+  if (!(ethPrice > 0) || !b?.stock_price) return false;
 
-    const b = d.bmnr;
-    if (b?.stock_price) {
-      // 优先用 /api/bmnr 缓存中的 CoinGecko 数据 (更准)
-      let bmnrEth = b.eth_holdings || 0;
-      const cached = cache.get('bmnr', 1800000);
-      if (cached?.holdings && cached.holdings > 0) bmnrEth = cached.holdings;
+  let bmnrEth = bmnrOverride?.holdings || b.eth_holdings || 0;
+  const cached = cache.get('bmnr', 1800000);
+  if (!bmnrOverride?.holdings && cached?.holdings > 0) bmnrEth = cached.holdings;
+  if (!(bmnrEth > 0) || !(b.shares > 0)) return false;
 
-      if (bmnrEth > 0) {
-        const mcap = b.stock_price * b.shares;
-        const mnav = mcap / (bmnrEth * ethPrice);
-        applyMnav('bmnr-mnav', mnav);
-        document.getElementById('bmnr-detail').textContent = '股价 $' + b.stock_price + ' · 市值 ' + fmtUsd(mcap);
-        cache.set('bmnr-mnav', { mnav, eth: bmnrEth, price: b.stock_price });
-      }
-    }
-  } catch (e) { console.error('mNAV', e); }
+  const mcap = b.stock_price * b.shares;
+  const mnav = mcap / (bmnrEth * ethPrice);
+  applyMnav('bmnr-mnav', mnav);
+  document.getElementById('bmnr-detail').textContent = '股价 $' + b.stock_price + ' · 市值 ' + fmtUsd(mcap);
+  cache.set('bmnr-mnav', { mnav, eth: bmnrEth, price: b.stock_price, mcap });
+  return true;
 }
 
-Promise.all([
-  fetchPrice(),
-  fetchMarketAndSupply(),
-  fetchGas(),
-  fetchWma200(),
-  fetchBmnr(),
-  fetchMnav(),
-]);
+async function fetchMnav() {
+  await price.wait(8000);
+  if (!price.value) {
+    markBmnrIssue('mstr', 'BMNR mNAV（等待 ETH 价格）');
+    return false;
+  }
+  try {
+    const d = await window.mehk3yLoadMstr();
+    if (!applyMnavPayload(d)) throw new Error('invalid BMNR mNAV data');
+    markBmnrRecovered('mstr');
+    return true;
+  } catch (e) {
+    console.error('mNAV', e);
+    markBmnrIssue('mstr', 'BMNR mNAV 股价数据');
+    return false;
+  }
+}
+
+function applyEthSummary(payload) {
+  const groups = payload?.groups || {};
+  if (groups.ethPrice?.ok && groups.ethPrice.data?.price > 0) {
+    applyPrice(groups.ethPrice.data);
+    cache.set('price', groups.ethPrice.data);
+  }
+  if (groups.ethMarket?.ok && groups.ethMarket.data?.mcap) {
+    applyMarket(groups.ethMarket.data);
+    cache.set('market', groups.ethMarket.data);
+  }
+  if (groups.ethGas?.ok && applyGas(groups.ethGas.data?.gas)) {
+    cache.set('gas', groups.ethGas.data.gas);
+  }
+  if (groups.ethWma?.ok && groups.ethWma.data?.wma200 > 0) {
+    wma200Value = groups.ethWma.data.wma200;
+    document.getElementById('eth-wma200-price').textContent = '$' + Math.round(wma200Value).toLocaleString();
+    applyWmaRatio();
+    cache.set('wma200', wma200Value);
+  }
+  if (groups.bmnr?.ok && groups.bmnr.data?.holdings) {
+    applyBmnr(groups.bmnr.data);
+    cache.set('bmnr', groups.bmnr.data);
+  }
+  if (groups.mstr?.ok) applyMnavPayload(groups.mstr.data, groups.bmnr?.ok ? groups.bmnr.data : null);
+}
+
+async function recoverEthSummaryFailures(payload) {
+  const groups = payload?.groups || {};
+  const hadFailures = ['ethPrice', 'ethMarket', 'ethGas', 'ethWma', 'bmnr', 'mstr']
+    .some(key => groups[key] && !groups[key].ok);
+  const priceFailed = Boolean(groups.ethPrice && !groups.ethPrice.ok);
+  if (priceFailed) {
+    await fetchPrice();
+    // Re-apply successful price-dependent BMNR/mNAV metrics after the
+    // separately recovered ETH price has arrived.
+    applyEthSummary(payload);
+  }
+  const jobs = [];
+  if (groups.ethMarket && !groups.ethMarket.ok) jobs.push(fetchMarketAndSupply());
+  if (groups.ethGas && !groups.ethGas.ok) jobs.push(fetchGas());
+  if (groups.ethWma && !groups.ethWma.ok) jobs.push(fetchWma200());
+  if (groups.bmnr && !groups.bmnr.ok) jobs.push(fetchBmnr());
+  if (groups.mstr && !groups.mstr.ok) jobs.push(fetchMnav());
+  if (jobs.length) await Promise.allSettled(jobs);
+  if (hadFailures) cryptoUi.recoveryComplete?.();
+}
+
+document.addEventListener('mehk3y:crypto-summary', event => {
+  applyEthSummary(event.detail);
+  recoverEthSummaryFailures(event.detail).catch(error => console.error('ETH partial recovery', error));
+});
+const initialSummary = window.mehk3yCryptoSummary;
+if (initialSummary.current) {
+  applyEthSummary(initialSummary.current);
+  recoverEthSummaryFailures(initialSummary.current).catch(error => console.error('ETH partial recovery', error));
+} else {
+  initialSummary.load().catch(async error => {
+    console.error('crypto summary ETH fallback', error);
+    await Promise.all([
+      fetchPrice(), fetchMarketAndSupply(), fetchGas(),
+      fetchWma200(), fetchBmnr(), fetchMnav(),
+    ]);
+  });
+}
 
 mehk3yStartPolling([
   { fn: fetchPrice,             ms: 15000   },
   { fn: fetchGas,               ms: 30000   },
-  { fn: fetchMarketAndSupply,   ms: 600000  },
-  { fn: fetchWma200,            ms: 21600000 },
-  { fn: fetchBmnr,              ms: 1800000 },
-  { fn: fetchMnav,              ms: 3600000 },
+  // Keep slow jobs off the BTC timer boundaries to leave room for retries.
+  { fn: fetchMarketAndSupply,   ms: 683000   },
+  { fn: fetchBmnr,              ms: 1861000  },
+  { fn: fetchMnav,              ms: 3793000  },
+  { fn: fetchWma200,            ms: 22003000 },
 ], () => { fetchPrice(); fetchGas(); });
-
-document.getElementById('refresh-btn')?.addEventListener('click', () => {
-  const btn = document.getElementById('refresh-btn');
-  if (btn.classList.contains('spinning')) return;
-  btn.classList.add('spinning');
-  Promise.all([
-    fetchPrice(), fetchMarketAndSupply(),
-    fetchGas(), fetchWma200(), fetchBmnr(), fetchMnav(),
-  ]).finally(() => {
-    setTimeout(() => btn.classList.remove('spinning'), 500);
-  });
-});
 
 })();

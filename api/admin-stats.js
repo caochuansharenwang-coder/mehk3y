@@ -1,5 +1,5 @@
-import { isAuthenticated } from '../lib/admin-auth.js';
-import { getRedisConfig, readAnalytics, readIpTrail, readTrend } from '../lib/analytics-store.js';
+import { isAdminAuthConfigured, isAuthenticated } from '../lib/admin-auth.js';
+import { getRedisConfig, readAnalytics, readTrend } from '../lib/analytics-store.js';
 
 function json(res, status, data) {
   res.statusCode = status;
@@ -19,21 +19,14 @@ function toWebRequest(req) {
 export default async function handler(req, res) {
   const request = toWebRequest(req);
 
+  if (!isAdminAuthConfigured()) {
+    return json(res, 503, { ok: false, error: 'admin_unconfigured' });
+  }
   if (!(await isAuthenticated(request))) {
     return json(res, 401, { ok: false, error: 'unauthorized' });
   }
 
-  const url = new URL(request.url);
-
-  // 单 IP 轨迹查询
-  const ip = url.searchParams.get('ip');
-  if (ip) {
-    const trail = await readIpTrail(ip, 200);
-    return json(res, 200, { ok: true, ip, trail });
-  }
-
-  const limit = Number(url.searchParams.get('limit') || 300);
-  const stats = await readAnalytics(limit);
+  const stats = await readAnalytics();
   const trend = await readTrend(90);
   const redis = getRedisConfig();
   return json(res, 200, {

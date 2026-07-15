@@ -3,8 +3,13 @@
 
 export const config = { runtime: 'edge' };
 
-const race = (p, ms) =>
-  Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
+const race = (p, ms) => {
+  let timer;
+  return Promise.race([
+    p,
+    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('timeout')), ms); }),
+  ]).finally(() => clearTimeout(timer));
+};
 
 const tryJson = async (url, ms = 6000) => {
   try {

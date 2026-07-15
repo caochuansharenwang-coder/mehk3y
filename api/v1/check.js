@@ -3,10 +3,11 @@
 //   GET /api/v1/check?ip=1.2.3.4
 //   鉴权: 请求头 `x-api-key: <key>`  或  查询参数 `?key=<key>`
 //
-// 返回标准化情报 + Claude AI 信任评分 + 风险等级。按 key 每日计费 + 限额。
+// 返回标准化情报 + 本站估算的网络风险信号参考分。按 key 每日计费 + 限额。
 // 不带 ip 参数时, 检测调用方自身出口 IP。
 //
 // 计费/限额逻辑见 lib/api-keys.js; 评分逻辑见 lib/ip-intel.js (与站内 /ip 一致)。
+// 参考分仅依据代理、VPN、Tor、托管网络和上游风险信号，不代表任何第三方服务的判定。
 
 import { lookupIp, isValidIp } from '../../lib/ip-intel.js';
 import { authorizeAndMeter } from '../../lib/api-keys.js';

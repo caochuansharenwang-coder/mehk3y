@@ -1,7 +1,7 @@
 // /api/ip-check — 站内 /ip 页面用: 查调用者自身出口 IP 的地理 + 风险信息。
 //
 // 核心逻辑统一在 lib/ip-intel.js (与对外付费 API /api/v1/check 共用同一套
-// 多源地理定位、proxycheck 风险判定与信任评分, 避免两边口径漂移)。
+// 多源地理定位、proxycheck 风险判定与网络参考分, 避免两边口径漂移)。
 //
 // 本端点不鉴权 (仅查调用方自己的 IP), 保持原有响应字段以兼容 ip.js。
 
@@ -20,7 +20,7 @@ export default async function handler(request) {
   const proxyKey = (typeof process !== 'undefined' && process.env?.PROXYCHECK_KEY) || '';
   const d = await lookupIp(ip, { proxyKey });
 
-  // 兼容 ip.js 现有字段 (不含 trustScore/claudeRisk — 前端自行计算展示)。
+  // 兼容 ip.js 现有字段（参考分由前端按相同权重计算并展示）。
   return new Response(JSON.stringify({
     ip: d.ip, country: d.country, countryCode: d.countryCode,
     city: d.city, region: d.region, isp: d.isp, org: d.org,

@@ -1,7 +1,16 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
-    { "source": "/og-image.png", "destination": "/og-image.jpg", "permanent": true }
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.mehk3y.com" }],
+      "destination": "https://mehk3y.com/:path*",
+      "permanent": true
+    },
+    { "source": "/og-image.png", "destination": "/og-image-20260715.jpg", "permanent": true },
+    { "source": "/og-image.jpg", "destination": "/og-image-20260715.jpg", "permanent": true }
   ],
   "headers": [
     {
@@ -25,13 +34,32 @@
     {
       "source": "/(.*\\.(?:png|jpg|jpeg|webp|avif|svg|ico))",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, s-maxage=2592000, immutable" }
+        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800" }
       ]
     },
     {
-      "source": "/(.*\\.html)",
+      "source": "/og-:page(image|crypto|ip|fish)-20260715.jpg",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/:page(crypto|ip|fish|privacy)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/admin",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
       ]
     },
     {
@@ -46,7 +74,7 @@
         { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
         {
           "key":   "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.baidu.com https://www.gstatic.com https://chatgpt.com; font-src 'self'; media-src 'self' https://dict.youdao.com; connect-src 'self' https://vercel.live https://cloudflare-dns.com https://one.one.one.one https://ipwho.is https://free.freeipapi.com https://claude.ai https://www.anthropic.com https://status.claude.com; frame-ancestors 'none'"
+          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; script-src 'self' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.baidu.com https://www.gstatic.com https://chatgpt.com; font-src 'self'; media-src 'self' https://dict.youdao.com; connect-src 'self' https://vercel.live https://edns.ip-api.com https://*.edns.ip-api.com https://ipwho.is https://free.freeipapi.com https://claude.ai https://www.anthropic.com https://status.claude.com; frame-ancestors 'none'"
         }
       ]
     }

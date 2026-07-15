@@ -3,8 +3,13 @@
 
 export const config = { runtime: 'edge' };
 
-const race = (p, ms) =>
-  Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
+const race = (p, ms) => {
+  let timer;
+  return Promise.race([
+    p,
+    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('timeout')), ms); }),
+  ]).finally(() => clearTimeout(timer));
+};
 
 const rpcCall = async (url, method, params = []) => {
   const r = await race(
@@ -31,32 +36,39 @@ const rpcs = [
 export default async function handler() {
   let gas = null;
 
-  for (const rpc of rpcs) {
-    try {
+  // Race the six providers in parallel (the Edge connection ceiling is six)
+  // instead of waiting up to 72 seconds through two serial fallback loops.
+  try {
+    gas = await Promise.any(rpcs.map(async (rpc) => {
       const fh = await rpcCall(rpc, 'eth_feeHistory', ['0x1', 'latest', [50]]);
       const baseFeeHex = fh.baseFeePerGas[fh.baseFeePerGas.length - 1];
       const priorityHex = fh.reward?.[0]?.[0] || '0x0';
       const baseFee = parseInt(baseFeeHex, 16);
       const priority = parseInt(priorityHex, 16);
-      gas = +((baseFee + priority) / 1e9).toFixed(2);
-      break;
-    } catch { /* try next rpc */ }
-  }
+      const value = +((baseFee + priority) / 1e9).toFixed(2);
+      if (!Number.isFinite(value) || value <= 0) throw new Error('invalid fee history');
+      return value;
+    }));
+  } catch { /* fall back to eth_gasPrice below */ }
 
   if (gas == null) {
-    for (const rpc of rpcs) {
-      try {
+    try {
+      gas = await Promise.any(rpcs.map(async (rpc) => {
         const hex = await rpcCall(rpc, 'eth_gasPrice');
-        gas = +(parseInt(hex, 16) / 1e9).toFixed(2);
-        break;
-      } catch { /* try next */ }
-    }
+        const value = +(parseInt(hex, 16) / 1e9).toFixed(2);
+        if (!Number.isFinite(value) || value <= 0) throw new Error('invalid gas price');
+        return value;
+      }));
+    } catch { /* handled as a 502 below */ }
   }
 
   return new Response(JSON.stringify({ gas }), {
+    status: gas == null ? 502 : 200,
     headers: {
       'content-type':  'application/json; charset=utf-8',
-      'cache-control': 'public, max-age=15, s-maxage=15, stale-while-revalidate=60',
+      'cache-control': gas == null
+        ? 'no-store'
+        : 'public, max-age=15, s-maxage=15, stale-while-revalidate=60',
     },
   });
 }

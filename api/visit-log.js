@@ -1,7 +1,13 @@
 // /api/visit-log — backward-compatible explicit visit endpoint.
 // Page views are tracked by the shared analytics.js beacon.
 
-import { createVisitEntry, enrichIp, recordDuration, recordVisit, truncate } from '../lib/analytics-store.js';
+import {
+  createVisitEntry,
+  normalizePage,
+  recordDuration,
+  recordVisit,
+  sanitizeReferrer,
+} from '../lib/analytics-store.js';
 
 async function getPayload(request) {
   try {
@@ -21,21 +27,69 @@ function json(res, status, data, extraHeaders = {}) {
   res.end(JSON.stringify(data));
 }
 
+function noContent(res) {
+  res.statusCode = 204;
+  res.setHeader('cache-control', 'no-store');
+  res.end();
+}
+
+function hasPrivacyOptOut(request) {
+  return request.headers.get('dnt') === '1'
+    || request.headers.get('sec-gpc') === '1';
+}
+
 async function toWebRequest(req) {
   const host = req.headers.host || 'mehk3y.com';
   const url = `https://${host}${req.url || '/api/visit-log'}`;
   const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > 4096) throw new Error('payload_too_large');
+    chunks.push(chunk);
+  }
   const body = chunks.length ? Buffer.concat(chunks) : undefined;
   return new Request(url, { method: req.method, headers: req.headers, body });
 }
 
-export default async function handler(req, res) {
-  const request = await toWebRequest(req);
+function isCrossSite(req) {
+  const fetchSite = String(req.headers['sec-fetch-site'] || '').toLowerCase();
+  if (fetchSite === 'cross-site') return true;
+  const origin = req.headers.origin;
+  if (!origin) return false;
+  try {
+    return new URL(origin).host !== String(req.headers.host || 'mehk3y.com');
+  } catch {
+    return true;
+  }
+}
 
-  if (request.method !== 'POST') {
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
     return json(res, 405, { ok: false, error: 'method_not_allowed' }, { allow: 'POST' });
   }
+  if (isCrossSite(req)) return json(res, 403, { ok: false, error: 'cross_site_forbidden' });
+
+  const contentType = String(req.headers['content-type'] || '').toLowerCase();
+  if (!contentType.startsWith('application/json')) {
+    return json(res, 415, { ok: false, error: 'content_type_required' });
+  }
+  if (Number(req.headers['content-length'] || 0) > 4096) {
+    return json(res, 413, { ok: false, error: 'payload_too_large' });
+  }
+
+  let request;
+  try {
+    request = await toWebRequest(req);
+  } catch (error) {
+    if (error?.message === 'payload_too_large') {
+      return json(res, 413, { ok: false, error: 'payload_too_large' });
+    }
+    return json(res, 400, { ok: false, error: 'invalid_request' });
+  }
+
+  // Enforce browser privacy signals server-side as well as in analytics.js.
+  if (hasPrivacyOptOut(request)) return noContent(res);
 
   const payload = await getPayload(request);
 
@@ -46,52 +100,10 @@ export default async function handler(req, res) {
   }
 
   const entry = createVisitEntry(request);
-  entry.page = truncate(payload.page || entry.page, 80);
-  entry.query = truncate(payload.query, 200);
-  entry.title = truncate(payload.title, 120);
-  entry.referrer = truncate(payload.referrer || entry.referrer, 220);
-  if (payload.language) entry.language = truncate(payload.language, 140);
-  entry.languages = truncate(payload.languages, 120);
-  if (payload.timezone) entry.timezone = truncate(payload.timezone, 60);
-
-  // 设备硬件
-  entry.screen = truncate(payload.screen, 40);
-  entry.viewport = truncate(payload.viewport, 40);
-  entry.pixelRatio = Number(payload.pixelRatio) || 1;
-  entry.colorDepth = Number(payload.colorDepth) || 0;
-  entry.cpuCores = Number(payload.cpuCores) || 0;
-  entry.deviceMemory = Number(payload.deviceMemory) || 0;
-  entry.touch = Boolean(payload.touch);
-  entry.colorScheme = truncate(payload.colorScheme, 8);
-  entry.orientation = truncate(payload.orientation, 24);
-  entry.dnt = Boolean(payload.dnt);
-  entry.netType = truncate(payload.netType, 16);
-  entry.netDownlink = Number(payload.netDownlink) || 0;
-  entry.netRtt = Number(payload.netRtt) || 0;
-  entry.netSaveData = Boolean(payload.netSaveData);
-
-  // 访客 / 会话
-  entry.vid = truncate(payload.vid, 48);
-  entry.sid = truncate(payload.sid, 48);
-  entry.isReturning = Boolean(payload.isReturning);
-  entry.sessionStart = Boolean(payload.sessionStart);
-
-  // 来源渠道
-  entry.utmSource = truncate(payload.utmSource, 60);
-  entry.utmMedium = truncate(payload.utmMedium, 60);
-  entry.utmCampaign = truncate(payload.utmCampaign, 80);
-
-  // IP 富化: 运营商 / ASN / 是否机房·VPN (尽力而为, 不阻塞)
-  const ipInfo = await enrichIp(entry.ip);
-  if (ipInfo) {
-    entry.isp = ipInfo.isp;
-    entry.org = ipInfo.org;
-    entry.asn = ipInfo.asn;
-    entry.isHosting = ipInfo.isHosting;
-  }
+  entry.page = normalizePage(payload.page || '/');
+  entry.referrer = sanitizeReferrer(payload.referrer, request.url);
 
   entry.source = 'client';
-  console.log(JSON.stringify(entry));
   await recordVisit(entry);
 
   return json(res, 200, { ok: true });

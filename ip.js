@@ -1,13 +1,3 @@
-// Claude AI heavily risk-controls or blocks sessions originating from these
-// countries (mainland CN, HK, MO, RU, KP, IR, SY, CU, BY, VE). When the exit
-// IP lives in one of them, force the trust score to 0 regardless of how
-// "clean" the IP looks — Claude will block the login anyway. Keyed by ISO-2.
-const CLAUDE_RESTRICTED_CC = {
-  CN: '中国大陆', HK: '香港', MO: '澳门',
-  RU: '俄罗斯', KP: '朝鲜', IR: '伊朗', SY: '叙利亚',
-  CU: '古巴',   BY: '白俄罗斯', VE: '委内瑞拉',
-};
-
 // Country code → representative IANA timezone, used as a fallback when the
 // upstream IP API didn't return a precise `timezone`. Picks the most
 // populous TZ for multi-TZ countries (US: LA, RU: Moscow, CA: Toronto).
@@ -166,18 +156,13 @@ function getDeviceInfo(ip) {
 }
 
 function trustScore(ip) {
-  // Restricted region → forced 0. Claude blocks/heavily risk-controls these
-  // regardless of how clean the IP otherwise looks.
-  const cc = (ip.countryCode || '').toUpperCase();
-  if (CLAUDE_RESTRICTED_CC[cc]) return 0;
-
   // Start from 100 and subtract for risk signals — easier to reason about
   // than "base + bonuses", and a fully-clean IP can actually reach top tier.
-  // Calibrated against the reference scoring at ip.net.coffee/claude:
+  // The weights are a local diagnostic heuristic, not an Anthropic score:
   //   - hosting/datacenter is a "warn" not a "danger" — softened from -35 to -20
   //   - VPN / proxy / Tor still drop the score significantly but no longer
   //     bottom it out (typical residential VPN should land in the 中性 tier,
-  //     not the 可疑 tier — Claude tolerates many of them)
+  //     instead of treating every residential VPN as the strongest warning)
   //   - Browser fingerprint signals (TZ / language mismatch) are dropped
   //     entirely from the score: they are weak signals with high false-
   //     positive rates (overseas Chinese, EU travelers, neighbor-zone IPs).
@@ -198,48 +183,56 @@ function trustScore(ip) {
 }
 
 function trustLabel(s) {
-  // Tiers must stay in sync with the subtitle text in render(). Aligned with
-  // ip.net.coffee/claude: 95+ 极度纯净, 80+ 纯净, 50+ 良好, 25+ 中性, <25 可疑.
-  if (s >= 95) return { text: '极度纯净', color: '#0a6e1e', bg: '#f0fdf4' };
-  if (s >= 80) return { text: '纯净',     color: '#16a34a', bg: '#f0fdf4' };
-  if (s >= 50) return { text: '良好',     color: '#2563eb', bg: '#eff6ff' };
-  if (s >= 25) return { text: '中性',     color: '#ca8a04', bg: '#fefce8' };
-  return               { text: '可疑',    color: '#dc2626', bg: '#fef2f2' };
+  if (s >= 95) return { text: '低风险信号', color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
+  if (s >= 80) return { text: '较低风险',   color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
+  if (s >= 50) return { text: '需留意',     color: 'var(--tint-blue-fg)',   bg: 'var(--tint-blue-bg)' };
+  if (s >= 25) return { text: '较高风险',   color: 'var(--tint-yellow-fg)', bg: 'var(--tint-yellow-bg)' };
+  return               { text: '高风险信号', color: 'var(--tint-red-fg)',   bg: 'var(--tint-red-bg)' };
 }
 
 function badge(text, ok) {
-  const color = ok  ? '#16a34a' : '#dc2626';
-  const bg    = ok  ? '#f0fdf4' : '#fef2f2';
-  return `<span style="background:${bg};color:${color};padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600">${text}</span>`;
+  const color = ok ? 'var(--tint-green-fg)' : 'var(--tint-red-fg)';
+  const bg    = ok ? 'var(--tint-green-bg)' : 'var(--tint-red-bg)';
+  return `<span class="ip-badge" style="background:${bg};color:${color}">${text}</span>`;
 }
 
 function warnBadge(text) {
-  return `<span style="background:#fff7ed;color:#f7931a;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600">${text}</span>`;
+  return `<span class="ip-badge" style="background:var(--tint-orange-bg);color:var(--tint-orange-fg)">${text}</span>`;
 }
 
 function row(label, valueHtml) {
-  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
-    <span style="color:var(--dim);font-size:12px">${label}</span>
-    <span style="font-size:12px;font-weight:600;text-align:right;max-width:65%">${valueHtml}</span>
+  return `<div class="ip-row">
+    <span class="ip-row-label">${label}</span>
+    <span class="ip-row-value">${valueHtml}</span>
   </div>`;
 }
 
 function card(label, content, extra) {
-  return `<div class="card" style="${extra || ''}">
-    <div class="card-label" style="margin-bottom:8px">${label}</div>
+  return `<section class="card" aria-label="${label}" style="${extra || ''}">
+    <h2 class="card-label" style="margin-bottom:8px">${label}</h2>
     ${content}
-  </div>`;
+  </section>`;
+}
+
+function scoreReasons(ip) {
+  const reasons = [];
+  if (ip.isTOR) reasons.push('检测到 Tor 出口');
+  else if (ip.isVPN) reasons.push('检测到 VPN');
+  else if (ip.proxy) reasons.push('检测到代理');
+  if (ip.isHosting) reasons.push('出口属于数据中心或托管网络');
+  if (ip.risk > 0) reasons.push(`上游风险指标为 ${Math.round(ip.risk)}/100`);
+  if (!reasons.length) reasons.push('未发现 VPN、代理、Tor、数据中心或已知上游风险信号');
+  return reasons;
 }
 
 function render(ip, dev, dnsResult, webrtcResult) {
   const score = trustScore(ip);
   const lbl   = trustLabel(score);
-  const ccUp  = (ip.countryCode || '').toUpperCase();
-  const restrictedName = CLAUDE_RESTRICTED_CC[ccUp] || null;
+  const reasons = scoreReasons(ip);
 
   const ipType = ip.isVPN ? 'VPN' : ip.isTOR ? 'Tor' : ip.proxy ? '代理 IP' : ip.isHosting ? '数据中心 IP' : '家庭 IP';
-  const itColor = (ip.proxy || ip.isVPN || ip.isTOR) ? '#dc2626' : ip.isHosting ? '#f7931a' : '#16a34a';
-  const itBg    = (ip.proxy || ip.isVPN || ip.isTOR) ? '#fef2f2' : ip.isHosting ? '#fff7ed' : '#f0fdf4';
+  const itColor = (ip.proxy || ip.isVPN || ip.isTOR) ? 'var(--tint-red-fg)' : ip.isHosting ? 'var(--tint-orange-fg)' : 'var(--tint-green-fg)';
+  const itBg    = (ip.proxy || ip.isVPN || ip.isTOR) ? 'var(--tint-red-bg)' : ip.isHosting ? 'var(--tint-orange-bg)' : 'var(--tint-green-bg)';
 
   const tzLine = dev.tzMismatch
     ? `${warnBadge('时区不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${dev.localTz} / 出口: ${dev.expectedTz || ip.timezone || '—'}</small>`
@@ -249,28 +242,30 @@ function render(ip, dev, dnsResult, webrtcResult) {
     ? `${warnBadge('语言不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${dev.lang}${dev.expectedLangs?.length ? ' / 出口常用: ' + dev.expectedLangs.join('/') : ''}</small>`
     : `${badge('一致', true)} <small style="color:var(--dim);font-size:11px">${dev.lang}</small>`;
 
-  // DNS leak card
+  // DNS resolver card. A browser can identify the resolver used for a unique
+  // lookup, but it cannot decide by itself whether that resolver is the one a
+  // VPN/user intended. We therefore report facts instead of a false safe/leak verdict.
   let dnsContent;
   if (dnsResult.error) {
     dnsContent = `${row('状态', badge('检测失败', false))}`;
   } else if (dnsResult.ip) {
-    const dnsLeaked = ip.ip && dnsResult.ip !== ip.ip;
     dnsContent = `
-      ${row('状态', badge(dnsLeaked ? '检测到泄露' : '未检测到泄露', !dnsLeaked))}
-      ${row('DNS 出口', `<code style="font-size:12px">${dnsResult.loc ? dnsResult.loc + ' ' : ''}${dnsResult.ip}</code>`)}
-      ${row('服务商', dnsResult.org || '—')}
+      ${row('状态', badge('已识别解析器', true))}
+      ${row('解析器 IP', `<code style="font-size:12px">${dnsResult.ip}</code>`)}
+      ${row('归属', dnsResult.org || '—')}
     `;
   } else {
     dnsContent = `
       ${row('状态', `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
-      ${row('DNS 出口', `<span style="color:var(--dim);font-size:12px">—</span>`)}
-      ${row('服务商', `<span style="color:var(--dim);font-size:12px">—</span>`)}
+      ${row('解析器 IP', `<span style="color:var(--dim);font-size:12px">—</span>`)}
+      ${row('归属', `<span style="color:var(--dim);font-size:12px">—</span>`)}
     `;
   }
-  const dnsCard = `<div class="card">
-    <div class="card-label" style="margin-bottom:12px">DNS 泄露检测</div>
-    <div id="dns-card-inner">${dnsContent}</div>
-  </div>`;
+  const dnsCard = `<section class="card" aria-labelledby="dns-card-title">
+    <h2 class="card-label" id="dns-card-title" style="margin-bottom:12px">DNS 解析器检测</h2>
+    <div id="dns-card-inner" role="status" aria-live="polite" aria-busy="true">${dnsContent}</div>
+    <p class="ip-card-note">请确认解析器归属符合你的 VPN 或网络设置；仅凭网页结果无法自动判定是否泄露。</p>
+  </section>`;
 
   // WebRTC leak card
   let webrtcContent;
@@ -288,59 +283,54 @@ function render(ip, dev, dnsResult, webrtcResult) {
       ${row('归属地', `<span style="color:var(--dim);font-size:12px">—</span>`)}
     `;
   }
-  const webrtcCard = `<div class="card">
-    <div class="card-label" style="margin-bottom:12px">WebRTC UDP 泄露检测</div>
-    <div id="webrtc-card-inner">${webrtcContent}</div>
-  </div>`;
+  const webrtcCard = `<section class="card" aria-labelledby="webrtc-card-title">
+    <h2 class="card-label" id="webrtc-card-title" style="margin-bottom:12px">WebRTC UDP 泄露检测</h2>
+    <div id="webrtc-card-inner" role="status" aria-live="polite" aria-busy="true">${webrtcContent}</div>
+  </section>`;
 
   // Claude availability card — populated asynchronously by runClaudeCheck().
   // We only emit the loading shell here; the real rows are written by
   // renderClaudeInner() once the probes resolve.
-  const claudeCard = `<div class="card">
+  const claudeCard = `<section class="card" aria-labelledby="claude-card-title">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div style="display:flex;align-items:center;gap:6px">
-        <span class="card-label" style="margin:0">CLAUDE 可用性检测</span>
+        <h2 class="card-label" id="claude-card-title" style="margin:0">网络可达性与官方服务状态</h2>
       </div>
       <button id="claude-refresh-btn" type="button"
-              style="background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;padding:2px 6px"
-              title="重新检测">刷新</button>
+              style="min-width:44px;min-height:44px;background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;padding:8px"
+              aria-label="重新检测 Claude 网络可达性" title="重新检测网络可达性">刷新</button>
     </div>
-    <div id="claude-card-inner">
+    <div id="claude-card-inner" role="status" aria-live="polite" aria-busy="true">
       ${row('claude.ai',          `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
       ${row('anthropic.com',      `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
       ${row('Claude 服务状态',    `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
     </div>
-  </div>`;
+    <p class="ip-card-note">网络可达不等于账号或地区可用；服务状态取自 Claude 官方状态页。</p>
+  </section>`;
 
   return `
-    <style>
-      .ip-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
-      @media(max-width:560px){ .ip-grid2 { grid-template-columns:1fr; } }
-      .ip-card-full { margin-bottom:8px; }
-    </style>
-
     <!-- Trust Score + Claude 可用性 — 2 columns -->
     <div class="ip-grid2">
-      <div class="card" style="text-align:center">
-        <div class="card-label" style="margin-bottom:8px">CLAUDE AI 信任评分</div>
+      <section class="card" style="text-align:center" aria-labelledby="score-title">
+        <h2 class="card-label" id="score-title" style="margin-bottom:8px">Claude 网络环境参考分（本站估算）</h2>
         <div style="margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:10px">
-          <span style="font-size:36px;font-weight:800;letter-spacing:-0.04em;color:${restrictedName ? '#dc2626' : lbl.color};line-height:1">${score}</span>
-          <span style="background:${restrictedName ? '#fef2f2' : lbl.bg};color:${restrictedName ? '#dc2626' : lbl.color};padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700">${restrictedName ? '不可访问' : lbl.text}</span>
+          <output aria-label="本站估算参考分 ${score} 分" style="font-size:36px;font-weight:800;letter-spacing:-0.04em;color:${lbl.color};line-height:1">${score}</output>
+          <span class="ip-badge" style="background:${lbl.bg};color:${lbl.color}">${lbl.text}</span>
         </div>
         <div style="color:var(--dim);font-size:11px;margin-bottom:10px">${
-          restrictedName ? '处于不可访问区域，Claude 会严格风控' :
-          score >= 95 ? '该 IP 信誉极好' :
-          score >= 80 ? '该 IP 信誉优异' :
-          score >= 50 ? '该 IP 存在轻微风险' :
-          score >= 25 ? '该 IP 存在一定风险' :
-                        '该 IP 风险极高'
+          score >= 95 ? '本次未发现明显网络风险信号' :
+          score >= 80 ? '本次发现的网络风险信号较少' :
+          score >= 50 ? '本次发现部分需要留意的网络信号' :
+          score >= 25 ? '本次发现较多网络风险信号' :
+                        '本次发现多个高风险网络信号'
         }</div>
-        <div style="position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#dc2626 0%,#f97316 25%,#eab308 50%,#84cc16 75%,#16a34a 100%);margin-bottom:5px">
-          <div style="position:absolute;top:50%;left:${score}%;transform:translate(-50%,-50%);width:14px;height:14px;background:#fff;border:2px solid #0d0d0d;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
+        <div role="meter" aria-label="本站估算的网络环境参考分" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}" style="position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#b91c1c 0%,#c2410c 25%,#a16207 50%,#4d7c0f 75%,#0b7a3b 100%);margin-bottom:5px">
+          <div aria-hidden="true" style="position:absolute;top:50%;left:${score}%;transform:translate(-50%,-50%);width:14px;height:14px;background:var(--bg);border:2px solid var(--text);border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim)"><span>0 可疑</span><span>100 可信</span></div>
-        ${restrictedName ? `<div style="margin-top:10px;padding:8px 10px;background:#fef2f2;border:1px solid #fee2e2;border-radius:10px;color:#dc2626;font-size:11px;font-weight:600;text-align:left;line-height:1.5">⚠️ 出口 IP 位于<strong>${restrictedName}</strong>，登录 Claude 容易触发封号风控</div>` : ''}
-      </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim)"><span>0 风险信号多</span><span>100 风险信号少</span></div>
+        <div class="score-basis"><strong>估算依据：</strong>${reasons.join('；')}。</div>
+        <p class="score-disclaimer">分数只反映本页当前可见的有限信号，不代表 Anthropic 官方判断，也不能预测登录、封禁或账号资格；服务地区请核对 <a href="https://www.anthropic.com/supported-countries" target="_blank" rel="noopener">官方支持列表</a>。</p>
+      </section>
       ${claudeCard}
     </div>
 
@@ -364,7 +354,7 @@ function render(ip, dev, dnsResult, webrtcResult) {
       `)}
     </div>
 
-    <!-- DNS泄露 + WebRTC泄露 — 2 columns -->
+    <!-- DNS 解析器 + WebRTC 泄露 — 2 columns -->
     <div class="ip-grid2">
       ${dnsCard}
       ${webrtcCard}
@@ -401,21 +391,30 @@ async function fetchIpData() {
   return null;
 }
 
-// DNS leak detection: fetch Cloudflare trace to identify DNS resolver
-async function detectDnsLeak() {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 7000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const r = await fetch('https://cloudflare-dns.com/dns-query?name=whoami.cloudflare&type=TXT', {
-      headers: { 'Accept': 'application/dns-json' }
-    });
-    if (!r.ok) return { error: true };
-    const d = await r.json();
-    // The resolver IP is in the edns client subnet or we use the response metadata
-    // Fallback: use 1.1.1.1/cdn-cgi/trace for resolver info
-    const traceR = await fetch('https://one.one.one.one/cdn-cgi/trace');
-    const traceText = await traceR.text();
-    const lines = {};
-    traceText.split('\n').forEach(l => { const [k, v] = l.split('='); if (k) lines[k] = v; });
-    return { ip: lines.ip || '—', loc: lines.loc || '', org: 'Cloudflare' };
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// edns.ip-api.com redirects through a unique hostname. The authoritative DNS
+// side observes the resolver that handled that lookup and returns its public
+// IP/organization. This identifies the resolver without pretending that a
+// mismatch alone proves a leak.
+async function detectDnsResolver() {
+  try {
+    const response = await fetchWithTimeout('https://edns.ip-api.com/json', {
+      cache: 'no-store',
+      credentials: 'omit',
+    }, 7000);
+    if (!response.ok) return { error: true };
+    const data = await response.json();
+    if (!data?.dns?.ip) return { error: true };
+    return { ip: data.dns.ip, org: data.dns.geo || '—' };
   } catch (_) {
     return { error: true };
   }
@@ -525,9 +524,8 @@ function detectWebrtcLeak() {
 // Lookup geo for a given IP. Use HTTPS-only sources because the page is
 // served over HTTPS (mixed content would block http://ip-api.com).
 async function lookupGeo(ip) {
-  // 1. ipwho.is — HTTPS, free, 10k/month, returns full country + city
-  try {
-    const r = await fetch(`https://ipwho.is/${ip}`);
+  const ipwho = async () => {
+    const r = await fetchWithTimeout(`https://ipwho.is/${ip}`, { cache: 'no-store' }, 4500);
     if (r.ok) {
       const d = await r.json();
       if (d && d.success !== false) {
@@ -537,10 +535,10 @@ async function lookupGeo(ip) {
         };
       }
     }
-  } catch (_) {}
-  // 2. freeipapi.com — HTTPS fallback
-  try {
-    const r = await fetch(`https://free.freeipapi.com/api/json/${ip}`);
+    return null;
+  };
+  const freeip = async () => {
+    const r = await fetchWithTimeout(`https://free.freeipapi.com/api/json/${ip}`, { cache: 'no-store' }, 4500);
     if (r.ok) {
       const d = await r.json();
       return {
@@ -548,6 +546,17 @@ async function lookupGeo(ip) {
         geo: `${d.countryName || ''}${d.cityName ? ' ' + d.cityName : ''}`.trim(),
       };
     }
+    return null;
+  };
+  // Query the fallback only when the first provider fails, minimizing which
+  // third parties receive the detected address.
+  try {
+    const primary = await ipwho();
+    if (primary) return primary;
+  } catch (_) {}
+  try {
+    const fallback = await freeip();
+    if (fallback) return fallback;
   } catch (_) {}
   return {};
 }
@@ -611,47 +620,57 @@ async function probeClaudeStatus() {
 // hit shows "良好" and a warm-pool 0-RTT QUIC hit (sub-100ms) still reads
 // the same — we don't over-segment small numbers.
 function latencyStatus(probe) {
-  if (!probe.ok)            return { text: '不可达', color: '#dc2626', bg: '#fef2f2' };
-  if (probe.ms < 200)       return { text: '良好',   color: '#16a34a', bg: '#f0fdf4' };
-  if (probe.ms < 600)       return { text: '正常',   color: '#2563eb', bg: '#eff6ff' };
-  if (probe.ms < 1500)      return { text: '较慢',   color: '#ca8a04', bg: '#fefce8' };
-  return                           { text: '超时',   color: '#dc2626', bg: '#fef2f2' };
+  if (!probe.ok)            return { text: '不可达', color: 'var(--tint-red-fg)',    bg: 'var(--tint-red-bg)' };
+  if (probe.ms < 200)       return { text: '良好',   color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
+  if (probe.ms < 600)       return { text: '正常',   color: 'var(--tint-blue-fg)',   bg: 'var(--tint-blue-bg)' };
+  if (probe.ms < 1500)      return { text: '较慢',   color: 'var(--tint-yellow-fg)', bg: 'var(--tint-yellow-bg)' };
+  return                           { text: '超时',   color: 'var(--tint-red-fg)',    bg: 'var(--tint-red-bg)' };
 }
 
 // Statuspage indicator → user-facing label + color. Aligns with Statuspage's
 // own conventions (none/minor/major/critical/maintenance).
 function statusIndicatorLabel(s) {
-  if (!s) return { text: '查询失败', color: '#dc2626', bg: '#fef2f2' };
+  if (!s) return { text: '查询失败', color: 'var(--tint-red-fg)', bg: 'var(--tint-red-bg)' };
   switch (s.indicator) {
-    case 'none':        return { text: '全部服务正常', color: '#16a34a', bg: '#f0fdf4' };
-    case 'minor':       return { text: '部分服务异常', color: '#ca8a04', bg: '#fefce8' };
-    case 'major':       return { text: '重大故障',     color: '#f7931a', bg: '#fff7ed' };
-    case 'critical':    return { text: '全面瘫痪',     color: '#dc2626', bg: '#fef2f2' };
-    case 'maintenance': return { text: '维护中',       color: '#2563eb', bg: '#eff6ff' };
-    default:            return { text: s.description || '未知状态', color: '#909090', bg: '#f6f6f6' };
+    case 'none':        return { text: '全部服务正常', color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
+    case 'minor':       return { text: '部分服务异常', color: 'var(--tint-yellow-fg)', bg: 'var(--tint-yellow-bg)' };
+    case 'major':       return { text: '重大故障',     color: 'var(--tint-orange-fg)', bg: 'var(--tint-orange-bg)' };
+    case 'critical':    return { text: '全面故障',     color: 'var(--tint-red-fg)',    bg: 'var(--tint-red-bg)' };
+    case 'maintenance': return { text: '维护中',       color: 'var(--tint-blue-fg)',   bg: 'var(--tint-blue-bg)' };
+    default:            return { text: s.description || '未知状态', color: 'var(--text-2)', bg: 'var(--surface)' };
   }
 }
 
 let _ipData = null, _devData = null;
 
+function setLiveStatus(message) {
+  const status = document.getElementById('check-status');
+  if (status) status.textContent = message;
+}
+
 async function runCheck() {
   const btn = document.getElementById('retry-btn');
+  const resultEl = document.getElementById('result');
   btn.disabled = true;
   btn.textContent = '检测中…';
-  document.getElementById('result').innerHTML = `
+  resultEl.setAttribute('aria-busy', 'true');
+  setLiveStatus('正在查询出口 IP 与网络环境，请稍候。');
+  resultEl.innerHTML = `
     <div style="text-align:center;padding:60px 0;color:var(--dim)">
-      <div style="font-size:32px;margin-bottom:12px">⏳</div>
+      <div aria-hidden="true" style="font-size:32px;margin-bottom:12px">⏳</div>
       <div style="font-size:14px">正在查询 IP 信息，请稍候…</div>
     </div>`;
 
   const ip = await fetchIpData();
 
   if (!ip) {
-    document.getElementById('result').innerHTML = `
+    resultEl.innerHTML = `
       <div style="text-align:center;padding:60px 0;color:var(--dim)">
-        <div style="font-size:32px;margin-bottom:12px">❌</div>
+        <div aria-hidden="true" style="font-size:32px;margin-bottom:12px">❌</div>
         <div style="font-size:14px">无法获取 IP 信息，请检查网络后重试</div>
       </div>`;
+    resultEl.setAttribute('aria-busy', 'false');
+    setLiveStatus('检测失败：无法获取 IP 信息。请检查网络后重试。');
     btn.disabled = false; btn.textContent = '重新检测';
     return;
   }
@@ -663,65 +682,78 @@ async function runCheck() {
   // Initial render with empty DNS/WebRTC (loading state shown via cards)
   const dnsResult = {};
   const webrtcResult = {};
-  document.getElementById('result').innerHTML = render(ip, dev, dnsResult, webrtcResult);
+  resultEl.innerHTML = render(ip, dev, dnsResult, webrtcResult);
+  setLiveStatus('已获取出口 IP，正在检测网络泄露与服务状态。');
 
   // Auto-trigger DNS + WebRTC checks (in parallel) right after main render.
-  runDnsCheck();
-  runWebrtcCheck();
-  runClaudeCheck();
   // Bind the in-card refresh button — recreated on every full render, so we
   // (re-)wire it after innerHTML lands. CSP blocks inline onclick.
   document.getElementById('claude-refresh-btn')?.addEventListener('click', runClaudeCheck);
+  await Promise.allSettled([runDnsCheck(), runWebrtcCheck(), runClaudeCheck()]);
 
+  resultEl.setAttribute('aria-busy', 'false');
+  setLiveStatus('检测完成。结果包含本站估算的网络环境参考分、泄露检测与服务状态。');
   btn.disabled = false; btn.textContent = '重新检测';
 }
 
 async function runDnsCheck() {
   const inner = document.getElementById('dns-card-inner');
+  inner?.setAttribute('aria-busy', 'true');
   if (inner) inner.innerHTML = `
     ${row('状态', `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
-    ${row('DNS 出口', `<span style="color:var(--dim);font-size:12px">—</span>`)}
-    ${row('服务商', `<span style="color:var(--dim);font-size:12px">—</span>`)}
+    ${row('解析器 IP', `<span style="color:var(--dim);font-size:12px">—</span>`)}
+    ${row('归属', `<span style="color:var(--dim);font-size:12px">—</span>`)}
   `;
 
-  const result = await detectDnsLeak();
-  if (inner) {
+  try {
+    const result = await detectDnsResolver();
+    if (!inner) return;
     if (result.error) {
       inner.innerHTML = `${row('状态', badge('检测失败', false))}`;
     } else {
-      const leaked = result.ip && _ipData.ip && result.ip !== _ipData.ip;
       inner.innerHTML = `
-        ${row('状态', badge(leaked ? '检测到泄露' : '未检测到泄露', !leaked))}
-        ${row('DNS 出口', `<code style="font-size:12px">${result.loc ? result.loc + ' ' : ''}${result.ip || '—'}</code>`)}
-        ${row('服务商', result.org || '—')}
+        ${row('状态', badge('已识别解析器', true))}
+        ${row('解析器 IP', `<code style="font-size:12px">${result.ip || '—'}</code>`)}
+        ${row('归属', result.org || '—')}
       `;
     }
+  } finally {
+    inner?.setAttribute('aria-busy', 'false');
   }
 }
 
 async function runWebrtcCheck() {
   const inner = document.getElementById('webrtc-card-inner');
+  inner?.setAttribute('aria-busy', 'true');
   if (inner) inner.innerHTML = `
     ${row('状态', `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
     ${row('UDP 出口', `<span style="color:var(--dim);font-size:12px">—</span>`)}
     ${row('归属地', `<span style="color:var(--dim);font-size:12px">—</span>`)}
   `;
 
-  const result = await detectWebrtcLeak();
-  let geo = result.geo || '';
-  let loc = '';
-  if (result.ip) {
-    const g = await lookupGeo(result.ip);
-    geo = g.geo || '查询失败';
-    loc = g.loc || '';
-  }
-  if (inner) {
+  try {
+    const result = await detectWebrtcLeak();
+    let geo = result.geo || '';
+    let loc = '';
+    if (result.ip) {
+      if (_ipData?.ip === result.ip) {
+        geo = `${_ipData.country || ''}${_ipData.city ? ' ' + _ipData.city : ''}`.trim();
+        loc = (_ipData.countryCode || '').toLowerCase();
+      } else {
+        const g = await lookupGeo(result.ip);
+        geo = g.geo || '查询失败';
+        loc = g.loc || '';
+      }
+    }
+    if (!inner) return;
     const leaked = result.ip && _ipData.ip && result.ip !== _ipData.ip;
     inner.innerHTML = `
       ${row('状态', badge(result.ip ? (leaked ? '检测到泄露' : '未检测到泄露') : '未获取到公网 IP', result.ip ? !leaked : true))}
       ${row('UDP 出口', `<code style="font-size:12px">${loc ? loc + ' ' : ''}${result.ip || '—'}</code>`)}
       ${row('归属地', geo || '—')}
     `;
+  } finally {
+    inner?.setAttribute('aria-busy', 'false');
   }
 }
 
@@ -729,7 +761,7 @@ async function runWebrtcCheck() {
 // where states span more than just green/red and we want richer semantics
 // than the generic two-color badge() helper.
 function pill(label) {
-  return `<span style="background:${label.bg};color:${label.color};padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600">${label.text}</span>`;
+  return `<span class="ip-badge" style="background:${label.bg};color:${label.color}">${label.text}</span>`;
 }
 
 async function runClaudeCheck() {
@@ -739,40 +771,44 @@ async function runClaudeCheck() {
 
   // Loading state
   if (btn) { btn.disabled = true; btn.textContent = '检测中…'; }
+  inner.setAttribute('aria-busy', 'true');
   inner.innerHTML = `
     ${row('claude.ai',       `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
     ${row('anthropic.com',   `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
     ${row('Claude 服务状态', `<span style="color:var(--dim);font-size:12px">检测中…</span>`)}
   `;
 
-  // Run all three probes in parallel — bounded by each probe's own timeout.
-  const [claudeAi, anthropic, status] = await Promise.all([
-    probeLatency('https://claude.ai/'),
-    probeLatency('https://www.anthropic.com/'),
-    probeClaudeStatus(),
-  ]);
+  try {
+    // Run all three probes in parallel — bounded by each probe's own timeout.
+    const [claudeAi, anthropic, status] = await Promise.all([
+      probeLatency('https://claude.ai/'),
+      probeLatency('https://www.anthropic.com/'),
+      probeClaudeStatus(),
+    ]);
 
-  const claudeLbl    = latencyStatus(claudeAi);
-  const anthropicLbl = latencyStatus(anthropic);
-  const statusLbl    = statusIndicatorLabel(status);
+    const claudeLbl    = latencyStatus(claudeAi);
+    const anthropicLbl = latencyStatus(anthropic);
+    const statusLbl    = statusIndicatorLabel(status);
 
-  const msTxt = (p) => p.ok
-    ? `<span style="color:var(--dim);font-size:12px;margin-left:8px">${p.ms}ms</span>`
-    : `<span style="color:var(--dim);font-size:12px;margin-left:8px">—</span>`;
+    const msTxt = (p) => p.ok
+      ? `<span style="color:var(--dim);font-size:12px;margin-left:8px">${p.ms}ms</span>`
+      : `<span style="color:var(--dim);font-size:12px;margin-left:8px">—</span>`;
 
   // Surface Anthropic's official status string (e.g. "All Systems Operational")
   // beside our localized label so the source of truth stays visible.
-  const statusDetail = (status && status.description)
-    ? `<span style="color:var(--dim);font-size:11px;margin-left:8px">${status.description}</span>`
-    : '';
+    const statusDetail = (status && status.description)
+      ? `<span style="color:var(--dim);font-size:11px;margin-left:8px">${status.description}</span>`
+      : '';
 
-  inner.innerHTML = `
-    ${row('claude.ai',        pill(claudeLbl)    + msTxt(claudeAi))}
-    ${row('anthropic.com',    pill(anthropicLbl) + msTxt(anthropic))}
-    ${row('Claude 服务状态',  pill(statusLbl)    + statusDetail)}
-  `;
-
-  if (btn) { btn.disabled = false; btn.textContent = '刷新'; }
+    inner.innerHTML = `
+      ${row('claude.ai',        pill(claudeLbl)    + msTxt(claudeAi))}
+      ${row('anthropic.com',    pill(anthropicLbl) + msTxt(anthropic))}
+      ${row('Claude 服务状态',  pill(statusLbl)    + statusDetail)}
+    `;
+  } finally {
+    inner.setAttribute('aria-busy', 'false');
+    if (btn) { btn.disabled = false; btn.textContent = '刷新'; }
+  }
 }
 
 // Bind retry button (CSP blocks inline onclick, so we wire it up here).

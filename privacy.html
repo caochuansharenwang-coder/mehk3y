@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>隐私说明 — Mehk3y</title>
+  <meta name="description" content="Mehk3y.com 的隐私说明：自 2026-07-15 起，新统计记录采用不含长期标识符、原始 IP 和逐次事件日志的第一方汇总方案。">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="隐私说明 — Mehk3y">
+  <meta property="og:description" content="了解 Mehk3y.com 如何以最少数据运行站内工具和第一方汇总统计。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mehk3y.com/privacy">
+  <meta property="og:image" content="https://mehk3y.com/og-image-20260715.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mehk3y.com/og-image-20260715.jpg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://mehk3y.com/privacy">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/common.css">
+  <script src="/theme.js?v=20260705-title"></script>
+  <style>
+    .wrap { max-width: 720px; }
+    .privacy-hero { margin: 8px 0 26px; }
+    .privacy-hero h1 { font-size: clamp(30px, 7vw, 44px); letter-spacing: -0.045em; line-height: 1.08; margin-bottom: 10px; }
+    .privacy-hero p { max-width: 610px; color: var(--text-2); font-size: 14px; line-height: 1.75; }
+    .privacy-stack { display: grid; gap: 12px; }
+    .privacy-card { contain: none; }
+    .privacy-card h2 { font-size: 17px; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .privacy-card p, .privacy-card li { color: var(--text-2); font-size: 13px; line-height: 1.75; }
+    .privacy-card p + p { margin-top: 9px; }
+    .privacy-card ul { margin: 7px 0 0; padding-left: 20px; }
+    .privacy-card li + li { margin-top: 4px; }
+    .privacy-card a { color: var(--text); text-underline-offset: 3px; }
+    .privacy-note { margin-top: 18px; color: var(--dim); font-size: 12px; line-height: 1.7; }
+    @media (max-width: 520px) {
+      .wrap { padding: 20px 14px 40px; }
+      .privacy-card { padding: 17px 16px; }
+    }
+  </style>
+</head>
+<body>
+<a href="#main" class="skip-link">跳到隐私说明</a>
+<div class="site-top">
+  <button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题">
+    <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+  </button>
+</div>
+
+<main class="wrap" id="main">
+  <header class="hdr">
+    <div class="hdr-left">
+      <a href="/" class="hdr-back" aria-label="返回首页">←</a>
+      <a href="/" class="hdr-name">Mehk3y</a>
+      <span class="hdr-sub">隐私</span>
+    </div>
+  </header>
+
+  <section class="privacy-hero" aria-labelledby="page-title">
+    <h1 id="page-title">隐私说明</h1>
+    <p>自 2026 年 7 月 15 日启用 privacy-v2 起，本站只为工具运行和页面使用汇总收集最少信息，不使用广告追踪器，也不再建立跨天的访客档案。</p>
+  </section>
+
+  <div class="privacy-stack">
+    <section class="card privacy-card" aria-labelledby="analytics-title">
+      <h2 id="analytics-title">现行第一方汇总统计</h2>
+      <p>以下说明适用于 2026 年 7 月 15 日起由 privacy-v2 新产生的统计记录。页面会向本站自己的接口发送不含查询参数的页面路径，并汇总以下大类信息：</p>
+      <ul>
+        <li>页面浏览量和无法关联到个人的平均停留时长；</li>
+        <li>手机、平板或桌面等设备大类，以及浏览器和操作系统家族；</li>
+        <li>Vercel 提供的国家代码，以及搜索、社交、消息、开发者社区或其他等固定来源类别。</li>
+      </ul>
+      <p>这些统计以计数形式保存，不记录逐次访问事件。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="not-collected-title">
+      <h2 id="not-collected-title">现行版本不再写入的信息</h2>
+      <ul>
+        <li>不设置统计 Cookie，不在 Local Storage 或 Session Storage 写入访客 ID；</li>
+        <li>不保存原始 IP、完整 User-Agent、精确位置、页面查询参数或单个 IP 的访问轨迹；</li>
+        <li>不收集屏幕尺寸、CPU、内存、网络类型、网速、延迟等指纹或网络遥测；</li>
+        <li>不使用 Google Analytics 等第三方统计或广告服务。</li>
+      </ul>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="legacy-title">
+      <h2 id="legacy-title">旧版统计数据</h2>
+      <p>在 2026 年 7 月 15 日之前，旧版站内统计曾保存长期访客或会话标识、原始 IP、完整 User-Agent、页面参数、设备与网络细节及逐次访问记录。现行线上统计代码和统计后台不再读取或展示这些旧版统计键，新记录也写入独立的 <code>analytics:privacy-v2</code> 命名空间。</p>
+      <p>软件升级不会自动删除 Redis 中已存在的旧版键；它们需要由站点维护者单独清理。在完成清理前，历史数据仍可能保留在原存储中。旧脚本写入浏览器的访客或会话标识会在用户再次访问并运行新脚本时移除。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="signals-title">
+      <h2 id="signals-title">浏览器隐私信号</h2>
+      <p>本站尊重 <strong>Do Not Track（DNT）</strong> 和 <strong>Global Privacy Control（GPC）</strong>。浏览器启用任一信号时，前端不会发送统计请求；统计接口也会再次检查相应请求头。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="tools-title">
+      <h2 id="tools-title">托管、安全与检测工具</h2>
+      <p>网站由 Vercel 托管。与其他网站一样，托管平台会为传输、安全和运行日志处理请求 IP 与基础请求信息。本站中间件还会在内存中短暂使用 IP 做限流，但不会把它写入站内统计。</p>
+      <p>当你主动使用 IP 与网络环境检测时，浏览器可能直接请求 Google / Cloudflare STUN、edns.ip-api.com、ipwho.is、FreeIPAPI、Anthropic 或 Claude 的公开端点；这些服务会收到完成检测所必需的请求信息，并适用各自的隐私规则。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="contact-title">
+      <h2 id="contact-title">联系与更新</h2>
+      <p>如对隐私说明有疑问，可通过 <a href="https://x.com/mehk3y" target="_blank" rel="noopener">@Mehk3y</a> 联系。说明若有实质变化，会更新本页日期。</p>
+      <p>最后更新：2026 年 7 月 15 日</p>
+    </section>
+  </div>
+
+  <p class="privacy-note">privacy-v2 新记录不含访客标识符或逐次事件，因此无法反向识别、导出或删除某位访客的新记录；旧版历史数据适用上方单独说明。</p>
+  <nav class="footer" aria-label="页脚导航"><a href="/">← 返回首页</a></nav>
+</main>
+
+<script src="/analytics.js?v=20260715-privacy" defer></script>
+</body>
+</html>

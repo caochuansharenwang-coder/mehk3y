@@ -7,8 +7,9 @@
 | 路径 | 用途 |
 |---|---|
 | `/crypto` | BTC + ETH 实时链上指标合一：MVRV · ahr999 · Gas · MSTR / BMNR 储备 |
-| `/ip` | IP / 浏览器指纹 / Claude 可用性 检测 |
-| `/Photograph/` | 拍立得照片工具 |
+| `/ip` | 出口 IP、代理、DNS 解析器、WebRTC 与网络环境检测 |
+| `/fish` | WebGL 鱼池小玩具 |
+| `/privacy` | 隐私说明 |
 | `/admin` | 非首页入口：访问统计管理页 |
 
 ## 技术栈
@@ -18,6 +19,7 @@
 - **浅 / 深 / 跟随系统** 三态主题，CSP 友好（`script-src 'self'`）
 - 共享样式 `common.css` · 共享工具 `common.js` · 主题控制 `theme.js`
 - Vercel Serverless Functions (`api/`) · Edge Middleware 速率限制 (`middleware.js`)
+- **隐私友好的第一方汇总统计**：尊重 DNT / GPC，不保存长期访客 ID、原始 IP、逐次访问事件、查询参数或设备硬件遥测
 - 部署：Vercel
 
 ## 设计系统
@@ -43,11 +45,22 @@ python3 -m http.server 8000
 npx vercel dev
 ```
 
-## 环境变量 (可选)
+## 环境变量
 
 | 变量 | 作用 |
 |---|---|
 | `PROXYCHECK_KEY` | proxycheck.io 免费 key |
+| `ADMIN_PASSWORD_HASH` | `/admin` 强密码的 SHA-256（64 位十六进制） |
+| `ADMIN_SESSION_SECRET` | 独立的高熵会话签名密钥（至少 32 字符） |
+
+后台默认关闭：只有两个 `ADMIN_*` 变量同时有效才会启用，缺少任一项时登录和旧 Cookie 都会 fail closed。生成示例：
+
+```bash
+printf '%s' '你的强密码' | shasum -a 256
+openssl rand -hex 32
+```
+
+将结果分别保存到 Vercel Production 环境变量，不要写入仓库，也不要用密码哈希兼作会话密钥。
 
 ## 文件布局
 
@@ -58,21 +71,20 @@ npx vercel dev
 ├── common.css common.js     # 共享样式 + helpers
 ├── theme.js                 # 三态主题控制
 ├── fonts/                   # Geist 字体（Apache 2.0）
-├── icon.svg                 # 站点 SVG favicon
+├── icon.png icon-192.png    # 站点图标与 PWA 图标
 ├── *.js                     # 页面级脚本
-├── qrcode.js                # QR 库 (esim 页用)
 ├── api/                     # Vercel serverless 函数
 ├── middleware.js            # 速率限制
 ├── manifest.webmanifest     # PWA
 ├── vercel.json              # 路由 + CSP + 缓存
 ├── sitemap.xml robots.txt
-├── og-image.png
+├── og-image-20260715.jpg    # 版本化首页 / 通用分享图
 └── tools/podcast/           # Phase 1 本地 CLI (不部署)
 ```
 
 ## 路由
 
-`vercel.json` 启用 `cleanUrls`，所以 `*.html` 页面可用无后缀路径访问。独立 `/btc`、`/eth` 已下线并返回 410，数据集中到 `/crypto`。
+`vercel.json` 启用 `cleanUrls` 与无尾斜杠规范 URL，所以 `*.html` 页面使用无后缀路径访问。独立 `/btc`、`/eth` 已下线并返回 410，数据集中到 `/crypto`。
 
 ## License
 

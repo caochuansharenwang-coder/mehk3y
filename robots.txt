@@ -3,15 +3,19 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-# AI 训练 / 检索爬虫: 不允许抓取(守规矩的会遵守; 不守规矩的由 middleware 拦)。
+# OpenAI 搜索爬虫可收录公开页面，但不能抓取接口。
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+
+# AI 训练爬虫: 不允许抓取(守规矩的会遵守; 不守规矩的由 middleware 拦)。
 User-agent: GPTBot
 Disallow: /
 
-User-agent: OAI-SearchBot
-Disallow: /
-
+# 用户主动让 ChatGPT 打开页面时允许访问；这不是训练爬虫。
 User-agent: ChatGPT-User
-Disallow: /
+Allow: /
+Disallow: /api/
 
 User-agent: ClaudeBot
 Disallow: /

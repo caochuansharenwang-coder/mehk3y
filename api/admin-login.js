@@ -1,4 +1,10 @@
-import { clearSessionCookie, createSessionCookie, isAuthenticated, passwordIsValid } from '../lib/admin-auth.js';
+import {
+  clearSessionCookie,
+  createSessionCookie,
+  isAdminAuthConfigured,
+  isAuthenticated,
+  passwordIsValid,
+} from '../lib/admin-auth.js';
 
 export const config = { runtime: 'edge' };
 
@@ -7,6 +13,13 @@ async function readJson(request) {
 }
 
 export default async function handler(request) {
+  if (request.method !== 'DELETE' && !isAdminAuthConfigured()) {
+    return new Response(JSON.stringify({ ok: false, error: 'admin_unconfigured' }), {
+      status: 503,
+      headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
+    });
+  }
+
   if (request.method === 'GET') {
     return new Response(JSON.stringify({ ok: await isAuthenticated(request) }), {
       headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },

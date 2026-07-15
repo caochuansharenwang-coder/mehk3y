@@ -6,7 +6,7 @@
 //
 // 说明: in-memory Map 每个 Edge 实例独立, 冷启动会重置 - 对个人站够用。
 
-import { createVisitEntry, enrichIp, isBlockedBot, isBotUa, recordVisit, shouldTrackRequest } from './lib/analytics-store.js';
+import { createVisitEntry, isBlockedBot, isBotUa, recordVisit, shouldTrackRequest } from './lib/analytics-store.js';
 
 export const config = {
   // 匹配所有页面与 API, 排除静态资源。
@@ -18,10 +18,6 @@ const WINDOW_MS    = 60_000;
 const MAX_REQS     = 30;  // /api/ 每 IP 每分钟上限
 const MAX_PAGES    = 60;  // 页面每 IP 每分钟上限(真人多开标签也够用)
 const GC_AT        = 1000; // 超过这么多 IP 就回收一次过期 bucket
-
-// IP 富化结果缓存, 避免同一爬虫反复抓站时狂打 geo 接口。
-const ipCache = new Map();
-const IP_TTL_MS = 30 * 60_000;
 
 function clientIp(request) {
   return request.headers.get('x-forwarded-for')?.split(',')[0].trim()
@@ -59,28 +55,9 @@ function blockBot() {
   });
 }
 
-async function cachedEnrichIp(ip) {
-  const hit = ipCache.get(ip);
-  if (hit && hit.exp > Date.now()) return hit.info;
-  const info = await enrichIp(ip);
-  ipCache.set(ip, { info, exp: Date.now() + IP_TTL_MS });
-  if (ipCache.size > 2000) ipCache.clear();
-  return info;
-}
-
 async function recordBotVisit(request) {
   const entry = createVisitEntry(request);
-  const url = new URL(request.url);
-  entry.utmSource = url.searchParams.get('utm_source') || '';
-  entry.query = url.search.slice(0, 200);
   entry.source = 'server';
-  const ipInfo = await cachedEnrichIp(entry.ip);
-  if (ipInfo) {
-    entry.isp = ipInfo.isp;
-    entry.org = ipInfo.org;
-    entry.asn = ipInfo.asn;
-    entry.isHosting = ipInfo.isHosting;
-  }
   await recordVisit(entry);
 }
 

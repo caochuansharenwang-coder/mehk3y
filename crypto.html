@@ -10,13 +10,13 @@
   <meta property="og:description" content="BTC + ETH 实时链上指标合一：价格、200WMA、Gas、MVRV、MSTR / BMNR 公司储备。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mehk3y.com/crypto">
-  <meta property="og:image" content="https://mehk3y.com/og-image.jpg">
+  <meta property="og:image" content="https://mehk3y.com/og-crypto-20260715.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:alt" content="Mehk3y Crypto Dashboard — BTC + ETH 合一">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://mehk3y.com/og-image.jpg">
+  <meta name="twitter:image" content="https://mehk3y.com/og-crypto-20260715.jpg">
   <meta name="twitter:site" content="@Mehk3y">
   <link rel="canonical" href="https://mehk3y.com/crypto">
   <link rel="manifest" href="/manifest.webmanifest">
@@ -38,15 +38,48 @@
        ============================================================ */
     .wrap { max-width: 880px; padding: 16px 20px 32px; }
     .hdr  { margin-bottom: 10px; }
+    .hdr-left { align-items: center; flex-wrap: wrap; }
+    .page-title {
+      font-size: 13px; font-weight: 650; color: var(--text-2);
+      letter-spacing: -0.01em; line-height: 1.25;
+    }
     .divider { margin: 0 0 8px; }
 
-    /* —— 紧凑但留呼吸感 —— */
-    .card        { padding: 11px 14px; }
-    .card-label  { margin-bottom: 4px; font-size: 10px; }
-    .card-main   { font-size: 18px; margin-bottom: 3px; line-height: 1.2; }
-    .card-sub    { font-size: 11px; line-height: 1.45; }
+    /* —— 紧凑但保持手机端可读性 —— */
+    .card        { padding: 13px 15px; }
+    .card-label  { margin-bottom: 5px; font-size: 11.5px; color: var(--text-2); }
+    .card-main   { font-size: 20px; margin-bottom: 4px; line-height: 1.2; }
+    .card-sub    { font-size: 12px; line-height: 1.5; color: var(--text-2); }
     .grid4, .grid2, .grid3 { gap: 8px; margin-bottom: 8px; }
-    .section-title { margin: 14px 0 6px; font-size: 10.5px; }
+    .section-title { margin: 16px 0 6px; font-size: 11.5px; color: var(--text-2); }
+
+    .update-summary {
+      display: flex; align-items: center; gap: 8px;
+      margin: 10px 0 12px; padding: 9px 12px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); color: var(--text-2);
+      font-size: 12px; line-height: 1.5;
+    }
+    .update-summary::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--orange); flex: 0 0 auto;
+    }
+    .update-summary.is-ok::before { background: var(--green); }
+    .update-summary.is-partial::before { background: var(--orange); }
+    .update-summary.is-error::before { background: var(--red); }
+    .data-meta {
+      margin: -2px 2px 10px; color: var(--text-2);
+      font-size: 12px; line-height: 1.5;
+    }
+    .data-error {
+      margin: -3px 0 9px; padding: 8px 10px;
+      border: 1px solid color-mix(in srgb, var(--orange) 35%, var(--border));
+      border-radius: 9px; background: color-mix(in srgb, var(--orange) 8%, transparent);
+      color: var(--text-2); font-size: 12px; line-height: 1.45;
+    }
+    .data-error[hidden], .error-toast[hidden] { display: none !important; }
+    .refresh-btn, .theme-toggle { min-width: 44px; min-height: 44px; }
+    .refresh-btn:disabled { cursor: wait; opacity: .65; }
 
     /* —— Coin banner (slim 一行 + 中段内嵌指标) —— */
     .coin-banner {
@@ -63,8 +96,8 @@
     .coin-banner.btc .coin-price { color: var(--orange); }
     .coin-banner.eth .coin-symbol,
     .coin-banner.eth .coin-price { color: var(--purple); }
-    .coin-name     { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
-    .coin-sub      { font-size: 11px; color: var(--dim); margin-left: 1px; }
+    .coin-name     { font-size: 15px; font-weight: 650; color: var(--text); letter-spacing: -0.01em; }
+    .coin-sub      { font-size: 12px; color: var(--text-2); margin-left: 1px; }
     .coin-banner-r { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
     .coin-price    { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
     .coin-chg      { font-size: 12px; font-weight: 500; color: var(--dim); font-variant-numeric: tabular-nums; }
@@ -79,9 +112,9 @@
       display: inline-flex; align-items: baseline; gap: 6px;
       font-variant-numeric: tabular-nums; white-space: nowrap; line-height: 1.1;
     }
-    .bm-label { font-size: 10px; color: var(--dim); font-weight: 600; letter-spacing: 0.02em; }
+    .bm-label { font-size: 11px; color: var(--text-2); font-weight: 600; letter-spacing: 0.02em; }
     .bm-value { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
-    .bm-sub   { font-size: 10.5px; color: var(--dim); }
+    .bm-sub   { font-size: 11.5px; color: var(--text-2); }
 
     /* —— Halving progress bar (BTC) —— */
     .halving-track { height: 3px; background: var(--border); border-radius: 2px; margin-top: 7px; overflow: hidden; }
@@ -92,29 +125,39 @@
       display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px 14px;
       padding: 9px 14px; margin-bottom: 8px;
       background: var(--surface); border-radius: 12px;
-      font-size: 11.5px; color: var(--dim);
+      font-size: 12.5px; color: var(--text-2);
     }
     .treasury-row .t-name    { font-size: 13px; font-weight: 700; color: var(--text); }
-    .treasury-row .t-ticker  { font-size: 10.5px; color: var(--dim); }
+    .treasury-row .t-ticker  { font-size: 11.5px; color: var(--text-2); }
     .treasury-row .t-amount  { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
     .treasury-row.btc .t-amount { color: var(--orange); }
     .treasury-row.eth .t-amount { color: var(--purple); }
-    .treasury-row .t-usd     { font-size: 11px; color: var(--dim); }
-    .treasury-row .t-meta    { font-size: 11px; color: var(--dim); }
+    .treasury-row .t-usd     { font-size: 12px; color: var(--text-2); }
+    .treasury-row .t-meta    { font-size: 12px; color: var(--text-2); }
     .treasury-row .t-meta b  { color: var(--text); font-weight: 600; }
     .treasury-row .t-sep     { color: var(--faint); font-size: 9px; padding: 0 2px; }
 
     .pos { color: var(--green); }
     .neg { color: var(--red); }
+    .disclaimer {
+      margin: 20px auto 0; max-width: 680px; text-align: center;
+      color: var(--text-2); font-size: 12px; line-height: 1.6;
+    }
 
     @media (max-width: 700px) {
-      .coin-banner { flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
-      .coin-banner-m { justify-content: flex-start; gap: 4px 12px; margin: 2px 0 0; width: 100%; order: 3; }
+      .wrap { padding: 18px 16px 36px; }
+      .coin-banner { flex-wrap: wrap; padding: 12px 14px; gap: 8px; }
+      .coin-banner-m { justify-content: flex-start; gap: 7px 16px; margin: 4px 0 0; width: 100%; order: 3; }
       .grid4 { grid-template-columns: repeat(2, 1fr); }
     }
-    @media (max-width: 420px) {
-      .card-main { font-size: 14px; }
-      .bm-value { font-size: 12px; }
+    @media (max-width: 520px) {
+      .grid4, .grid3, .grid2 { grid-template-columns: 1fr; }
+      .card { padding: 15px 16px; }
+      .card-main { font-size: 20px; }
+      .coin-price { font-size: 22px; }
+      .bm-value { font-size: 14px; }
+      .treasury-row { padding: 12px 14px; gap: 7px 12px; }
+      .update-summary, .data-meta, .data-error, .disclaimer { font-size: 12.5px; }
     }
   </style>
 </head>
@@ -126,22 +169,25 @@
 
   <header class="hdr">
     <div class="hdr-left">
-      <a href="/" class="hdr-back">←</a>
+      <a href="/" class="hdr-back" aria-label="返回首页">←</a>
       <a href="/" class="hdr-name">Mehk3y</a>
-      <span class="hdr-sub">Crypto Dashboard</span>
-      <button class="refresh-btn" id="refresh-btn" title="刷新数据" aria-label="刷新数据">↻</button>
+      <h1 class="page-title">Crypto Dashboard</h1>
+      <button class="refresh-btn" id="refresh-btn" type="button" title="刷新数据" aria-label="刷新全部数据">↻</button>
     </div>
   </header>
 
   <div class="divider"></div>
 
+  <div class="update-summary" id="update-summary" role="status" aria-live="polite" aria-atomic="true">正在加载最新数据…</div>
+
   <!-- ========== BTC ========== -->
+  <section aria-labelledby="btc-heading">
   <div class="coin-banner btc">
-    <div class="coin-banner-l">
+    <h2 class="coin-banner-l" id="btc-heading">
       <span class="coin-symbol">₿</span>
       <span class="coin-name">Bitcoin</span>
       <span class="coin-sub">BTC</span>
-    </div>
+    </h2>
     <div class="coin-banner-m">
       <div class="bm-item"><span class="bm-label">算力</span><span class="bm-value" id="hashrate" style="color:var(--blue)">—</span></div>
       <div class="bm-item"><span class="bm-label">AHR999</span><span class="bm-value" id="ahr999">—</span></div>
@@ -153,6 +199,8 @@
       <div class="coin-chg" id="btc-chg"></div>
     </div>
   </div>
+  <p class="data-meta" id="btc-data-meta">来源与更新时间将在数据返回后显示</p>
+  <p class="data-error" id="btc-data-error" role="status" hidden></p>
   <span hidden id="fng-dot"></span>
   <span hidden id="fng-desc"></span>
 
@@ -180,7 +228,9 @@
     </div>
   </div>
 
-  <div class="section-title">Strategy (MSTR) · 公司 BTC 储备</div>
+  <h3 class="section-title">Strategy (MSTR) · 公司 BTC 储备</h3>
+  <p class="data-meta" id="mstr-data-meta">来源与更新时间将在数据返回后显示</p>
+  <p class="data-error" id="mstr-data-error" role="status" hidden></p>
 
   <div class="treasury-row btc">
     <span class="t-name">Strategy</span>
@@ -217,14 +267,16 @@
       <div class="card-sub">按当前市价</div>
     </div>
   </div>
+  </section>
 
   <!-- ========== ETH ========== -->
+  <section aria-labelledby="eth-heading">
   <div class="coin-banner eth">
-    <div class="coin-banner-l">
+    <h2 class="coin-banner-l" id="eth-heading">
       <span class="coin-symbol">⟠</span>
       <span class="coin-name">Ethereum</span>
       <span class="coin-sub">ETH</span>
-    </div>
+    </h2>
     <div class="coin-banner-m">
       <div class="bm-item"><span class="bm-label">ETH/BTC</span><span class="bm-value" id="eth-btc" style="color:var(--blue)">—</span></div>
       <div class="bm-item"><span class="bm-label">市值</span><span class="bm-value" id="market-cap">—</span></div>
@@ -236,6 +288,8 @@
       <div class="coin-chg" id="eth-chg"></div>
     </div>
   </div>
+  <p class="data-meta" id="eth-data-meta">来源与更新时间将在数据返回后显示</p>
+  <p class="data-error" id="eth-data-error" role="status" hidden></p>
 
   <div class="grid3">
     <div class="card">
@@ -255,7 +309,9 @@
     </div>
   </div>
 
-  <div class="section-title">BitMine Immersion (BMNR) · 公司 ETH 储备</div>
+  <h3 class="section-title">BitMine Immersion (BMNR) · 公司 ETH 储备</h3>
+  <p class="data-meta" id="bmnr-data-meta">来源与更新时间将在数据返回后显示</p>
+  <p class="data-error" id="bmnr-data-error" role="status" hidden></p>
 
   <div class="treasury-row eth">
     <span class="t-name">BitMine Immersion</span>
@@ -291,18 +347,21 @@
       <div class="card-sub">BMNR / 全部 ETH 公司储备</div>
     </div>
   </div>
+  </section>
+
+  <p class="disclaimer">数据可能存在延迟或局部缺失，仅供信息参考，不构成任何投资建议。</p>
 
   <footer class="footer">
-    OKX · mempool.space · alternative.me · CoinGecko · 截至 <span id="bmnr-asof">—</span> ·
+    数据来源见各分区 · BMNR 数据截至 <span id="bmnr-asof">—</span> ·
     <a href="https://x.com/mehk3y" target="_blank" rel="noopener">@Mehk3y</a>
   </footer>
 </main>
 
-<div class="error-toast" id="error-toast">数据加载失败，请稍后刷新</div>
+<div class="error-toast" id="error-toast" hidden aria-hidden="true">数据加载失败，请稍后刷新</div>
 <script src="/common.js" defer></script>
 <script src="/script.js" defer></script>
 <script src="/eth.js" defer></script>
 <!-- csp-refresh: 2026-05-25 -->
-<script src="/analytics.js" defer></script>
+<script src="/analytics.js?v=20260715-privacy" defer></script>
 </body>
 </html>
