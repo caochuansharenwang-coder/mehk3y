@@ -97,9 +97,9 @@
     .coin-banner-l { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex-shrink: 0; }
     .coin-symbol   { font-size: 18px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
     .coin-banner.btc .coin-symbol,
-    .coin-banner.btc .coin-price { color: var(--crypto-neutral); }
+    .coin-banner.btc .coin-price,
     .coin-banner.eth .coin-symbol,
-    .coin-banner.eth .coin-price { color: var(--purple); }
+    .coin-banner.eth .coin-price { color: var(--crypto-neutral); }
     .coin-name     { font-size: 15px; font-weight: 650; color: var(--text); letter-spacing: -0.01em; }
     .coin-sub      { font-size: 12px; color: var(--text-2); margin-left: 1px; }
     .coin-banner-r { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
@@ -301,12 +301,12 @@
     </div>
     <div class="card">
       <div class="card-label">ETH 总供应</div>
-      <div class="card-main" id="supply-total"><span class="skeleton">0 M</span></div>
+      <div class="card-main tone-info" id="supply-total"><span class="skeleton">0 M</span></div>
       <div class="card-sub" id="supply-note" style="color:var(--dim)">加载中…</div>
     </div>
     <div class="card">
       <div class="card-label">质押量</div>
-      <div class="card-main" id="supply-staked"><span class="skeleton">0 M</span></div>
+      <div class="card-main tone-info" id="supply-staked"><span class="skeleton">0 M</span></div>
       <div class="card-sub">占总供应 <b id="supply-staked-pct">—</b></div>
     </div>
   </div>
@@ -340,12 +340,12 @@
     </div>
     <div class="card">
       <div class="card-label">年化质押收益</div>
-      <div class="card-main" id="bmnr-yield"><span class="skeleton">$0</span></div>
+      <div class="card-main tone-positive" id="bmnr-yield"><span class="skeleton">$0</span></div>
       <div class="card-sub">按 85% 质押 · 3.5% APR</div>
     </div>
     <div class="card">
       <div class="card-label">公司储备占比</div>
-      <div class="card-main" id="bmnr-share"><span class="skeleton">—</span></div>
+      <div class="card-main tone-info" id="bmnr-share"><span class="skeleton">—</span></div>
       <div class="card-sub">BMNR / 全部 ETH 公司储备</div>
     </div>
   </div>
