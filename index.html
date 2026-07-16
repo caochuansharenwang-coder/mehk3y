@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="auto">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,9 +7,8 @@
   <meta name="description" content="一个轻量、无广告、注重隐私的个人工具站：BTC / ETH 实时链上仪表盘、IP 与浏览器环境检测。">
   <meta name="keywords" content="BTC,ETH,链上数据,IP 检测,VPN,Claude">
   <meta name="author" content="Mehk3y">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
-  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
 
   <meta property="og:title" content="Mehk3y — 个人工具集 · 加密链上 · 网络检测">
   <meta property="og:description" content="BTC / ETH 实时指标 · IP 与浏览器环境检测。无广告，采用隐私友好的站内汇总统计。">
@@ -32,10 +31,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/common.css?v=20260716-original">
-  <!-- Theme controller: external + 'self' so the homepage CSP needs no 'unsafe-inline'.
-       Synchronous in <head> so it still applies before first paint (no FOUC). -->
-  <script src="/theme.js?v=20260705-title"></script>
+  <link rel="stylesheet" href="/common.css?v=20260716-light-only">
 
   <script type="application/ld+json">
   {
@@ -80,13 +76,6 @@
     }
     .container {
       width: 100%; max-width: 540px;
-    }
-
-    /* —— Top bar (right-aligned theme toggle) —— */
-    .top-bar {
-      position: fixed; top: 20px; right: 20px;
-      z-index: 10;
-      animation: none !important;
     }
 
     /* —— Hero —— */
@@ -205,7 +194,6 @@
       body { padding: 40px 16px 48px; }
       .logo { font-size: 36px; }
       .nav a { padding: 16px 18px; gap: 14px; }
-      .top-bar { top: 14px; right: 14px; }
     }
     @media (prefers-reduced-motion: reduce) {
       .nav a { animation: none; }
@@ -214,14 +202,6 @@
 </head>
 <body>
   <a href="#tools" class="skip-link">跳到工具列表</a>
-  <div class="top-bar">
-    <button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题">
-      <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
-    </button>
-  </div>
-
   <div class="container">
     <div class="hero">
       <h1 class="logo">Mehk3y</h1>

@@ -37,7 +37,7 @@ function applyPrice(pd) {
   const chgEl = document.getElementById('eth-chg');
   const chg = pd.chg ?? 0;
   chgEl.textContent = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
-  chgEl.style.color = chg > 0 ? 'var(--green)' : chg < 0 ? 'var(--red)' : 'var(--text-2)';
+  chgEl.style.color = chg > 0 ? 'var(--crypto-positive)' : chg < 0 ? 'var(--crypto-negative)' : 'var(--text-2)';
   if (pd.ethbtc != null && pd.ethbtc > 0) {
     document.getElementById('eth-btc').textContent = pd.ethbtc.toFixed(5);
     cache.set('ethbtc', pd.ethbtc);
@@ -163,7 +163,7 @@ function applyBmnrWeekly(currentHoldings) {
       const delta = currentHoldings - oldest.h;
       const pct = oldest.h > 0 ? delta / oldest.h * 100 : 0;
       el.textContent = (delta > 0 ? '+' : delta < 0 ? '−' : '') + fmtEth(Math.abs(delta));
-      el.style.color = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--text-2)';
+      el.style.color = delta > 0 ? 'var(--crypto-positive)' : delta < 0 ? 'var(--crypto-negative)' : 'var(--text-2)';
       sub.textContent = `${days} 天样本 · ${(pct > 0 ? '+' : '') + pct.toFixed(2)}%`;
     } else {
       el.textContent = fmtEth(currentHoldings);
@@ -181,7 +181,7 @@ function applyBmnrWeekly(currentHoldings) {
   }
   const pct = (delta / best.h * 100);
   el.textContent = (delta >= 0 ? '+' : '−') + fmtEth(Math.abs(delta));
-  el.style.color = delta >= 0 ? 'var(--green)' : 'var(--red)';
+  el.style.color = delta > 0 ? 'var(--crypto-positive)' : 'var(--crypto-negative)';
   sub.textContent = (delta >= 0 ? '+' : '') + pct.toFixed(2) + '% · 较 ' + best.d;
 }
 
@@ -240,7 +240,7 @@ function applyGas(gas) {
   const g = Number(gas);
   const disp = g >= 10 ? Math.round(g) : g >= 1 ? g.toFixed(1) : g.toFixed(2);
   document.getElementById('gas-price').textContent = disp + ' Gwei';
-  document.getElementById('gas-price').style.color = g < 20 ? 'var(--text-2)' : g < 50 ? 'var(--orange)' : 'var(--red)';
+  document.getElementById('gas-price').style.color = g < 20 ? 'var(--crypto-positive)' : g < 50 ? 'var(--crypto-neutral)' : 'var(--crypto-negative)';
   return true;
 }
 
@@ -283,7 +283,7 @@ function applyMnav(id, val) {
   const el = document.getElementById(id);
   if (!el || val == null || isNaN(val)) return;
   el.textContent = val.toFixed(2) + 'x';
-  el.style.color = val < 1.2 ? 'var(--text)' : val < 2 ? 'var(--orange)' : 'var(--red)';
+  el.style.color = val < 1 ? 'var(--crypto-positive)' : val < 2 ? 'var(--crypto-neutral)' : 'var(--crypto-negative)';
 }
 
 function applyMnavPayload(d, bmnrOverride) {

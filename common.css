@@ -1,5 +1,5 @@
 /* mehk3y.com — Shared design system.
- * Premium minimal, dual theme (light/dark/auto), self-hosted Geist.
+ * Premium minimal, light-only, self-hosted Geist.
  * Loaded once and cached cross-page. Page-specific overrides stay inline.
  */
 
@@ -32,6 +32,7 @@
    Tokens — Light (default)
    ============================================================ */
 :root {
+  color-scheme: light;
   --bg:         #ffffff;
   --surface:    #f6f6f6;
   --surface-2: #ffffff;  /* nested card / input bg */
@@ -67,73 +68,6 @@
   --noise-opacity: 0.025;
   --spot-1: rgba(0, 0, 0, 0.025);
   --spot-2: rgba(0, 0, 0, 0.012);
-}
-
-/* ============================================================
-   Tokens — Dark
-   ============================================================ */
-:root[data-theme="dark"] {
-  --bg:         #0a0a0a;
-  --surface:    #111111;
-  --surface-2: #161616;
-  --border:     #1f1f1f;
-  --border-2:  #2a2a2a;
-  --text:       #f5f5f5;
-  --text-2:    #c4c4c4;
-  --dim:        #707070;
-  --faint:     #4a4a4a;
-
-  --orange:  #ffae3d;
-  --green:   #34d399;
-  --red:     #f87171;
-  --blue:    #60a5fa;
-  --purple:  #a78bfa;
-
-  --accent:    #ffffff;
-  --accent-fg: #0a0a0a;
-
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.40);
-  --shadow-md: 0 4px 14px -4px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.30);
-  --shadow-lg: 0 22px 50px -20px rgba(0,0,0,.70), 0 6px 14px -4px rgba(0,0,0,.40);
-
-  --ring: 0 0 0 3px rgba(255,255,255,.16);
-
-  --noise-opacity: 0.045;
-  --spot-1: rgba(255, 255, 255, 0.04);
-  --spot-2: rgba(255, 255, 255, 0.02);
-
-  color-scheme: dark;
-}
-
-/* Auto-detect dark mode for users who haven't explicitly chosen light/dark */
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="auto"],
-  :root:not([data-theme]) {
-    --bg:         #0a0a0a;
-    --surface:    #111111;
-    --surface-2: #161616;
-    --border:     #1f1f1f;
-    --border-2:  #2a2a2a;
-    --text:       #f5f5f5;
-    --text-2:    #c4c4c4;
-    --dim:        #707070;
-    --faint:     #4a4a4a;
-    --orange:  #ffae3d;
-    --green:   #34d399;
-    --red:     #f87171;
-    --blue:    #60a5fa;
-    --purple:  #a78bfa;
-    --accent:    #ffffff;
-    --accent-fg: #0a0a0a;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.40);
-    --shadow-md: 0 4px 14px -4px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.30);
-    --shadow-lg: 0 22px 50px -20px rgba(0,0,0,.70), 0 6px 14px -4px rgba(0,0,0,.40);
-    --ring: 0 0 0 3px rgba(255,255,255,.16);
-    --noise-opacity: 0.045;
-    --spot-1: rgba(255, 255, 255, 0.04);
-    --spot-2: rgba(255, 255, 255, 0.02);
-    color-scheme: dark;
-  }
 }
 
 /* ============================================================
@@ -246,12 +180,6 @@ body::after {
   opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-:root[data-theme="dark"] body::after { filter: invert(1); }
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="auto"] body::after,
-  :root:not([data-theme]) body::after { filter: invert(1); }
-}
-
 /* ============================================================
    Cascade entrance
    ============================================================ */
@@ -349,9 +277,9 @@ body::after {
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
 /* ============================================================
-   Buttons (refresh + theme toggle)
+   Refresh button
    ============================================================ */
-.refresh-btn, .theme-toggle {
+.refresh-btn {
   width: 44px; height: 44px;
   border: 1px solid var(--border); border-radius: 50%;
   background: var(--bg); color: var(--dim);
@@ -359,26 +287,15 @@ body::after {
   display: inline-flex; align-items: center; justify-content: center;
   transition: color .2s, border-color .2s, background-color .2s, transform .2s;
 }
-.refresh-btn:hover, .theme-toggle:hover {
+.refresh-btn:hover {
   color: var(--text); border-color: var(--border-2); background: var(--surface);
 }
-.refresh-btn:active, .theme-toggle:active { transform: scale(0.94); }
+.refresh-btn:active { transform: scale(0.94); }
 .refresh-btn.spinning { animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.theme-toggle svg { width: 16px; height: 16px; display: block; }
-/* show correct icon per theme */
-.theme-toggle .icon-dark,
-.theme-toggle .icon-auto { display: none; }
-:root[data-theme="dark"] .theme-toggle .icon-light { display: none; }
-:root[data-theme="dark"] .theme-toggle .icon-dark  { display: block; }
-:root[data-theme="auto"] .theme-toggle .icon-light,
-:root[data-theme="auto"] .theme-toggle .icon-dark  { display: none; }
-:root[data-theme="auto"] .theme-toggle .icon-auto  { display: block; }
-
 /* ============================================================
    Tint tokens — for alerts, tags, inline accent backgrounds.
-   Pastels in light mode, low-saturation in dark mode.
    ============================================================ */
 :root {
   --tint-red-bg:    #fef2f2; --tint-red-fg:    #991b1b;
@@ -391,44 +308,6 @@ body::after {
   --tint-fuchsia-bg:#fdf4ff; --tint-fuchsia-fg:#86198f;
   --tint-orange-border: #fed7aa;
 }
-:root[data-theme="dark"] {
-  --tint-red-bg:    rgba(248,113,113,.14); --tint-red-fg:    #fca5a5;
-  --tint-green-bg:  rgba(52,211,153,.14);  --tint-green-fg:  #6ee7b7;
-  --tint-blue-bg:   rgba(96,165,250,.14);  --tint-blue-fg:   #93c5fd;
-  --tint-orange-bg: rgba(255,174,61,.14);  --tint-orange-fg: #fdba74;
-  --tint-purple-bg: rgba(167,139,250,.14); --tint-purple-fg: #c4b5fd;
-  --tint-yellow-bg: rgba(234,179,8,.14);   --tint-yellow-fg: #fcd34d;
-  --tint-pink-bg:   rgba(244,114,182,.14); --tint-pink-fg:   #fbcfe8;
-  --tint-fuchsia-bg:rgba(217,70,239,.14);  --tint-fuchsia-fg:#f0abfc;
-  --tint-orange-border: rgba(253,186,116,.30);
-}
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="auto"], :root:not([data-theme]) {
-    --tint-red-bg:    rgba(248,113,113,.14); --tint-red-fg:    #fca5a5;
-    --tint-green-bg:  rgba(52,211,153,.14);  --tint-green-fg:  #6ee7b7;
-    --tint-blue-bg:   rgba(96,165,250,.14);  --tint-blue-fg:   #93c5fd;
-    --tint-orange-bg: rgba(255,174,61,.14);  --tint-orange-fg: #fdba74;
-    --tint-purple-bg: rgba(167,139,250,.14); --tint-purple-fg: #c4b5fd;
-    --tint-yellow-bg: rgba(234,179,8,.14);   --tint-yellow-fg: #fcd34d;
-    --tint-pink-bg:   rgba(244,114,182,.14); --tint-pink-fg:   #fbcfe8;
-    --tint-fuchsia-bg:rgba(217,70,239,.14);  --tint-fuchsia-fg:#f0abfc;
-    --tint-orange-border: rgba(253,186,116,.30);
-  }
-}
-
-/* ============================================================
-   Floating top-bar (theme toggle on sub-pages)
-   ============================================================ */
-.site-top {
-  position: fixed; top: 16px; right: 16px;
-  z-index: 50;
-  animation: none !important;
-}
-@media (max-width: 480px) {
-  .site-top { top: 12px; right: 12px; }
-  .hdr { padding-right: 52px; }
-}
-
 /* ============================================================
    Error toast
    ============================================================ */
@@ -494,5 +373,5 @@ body::after {
    ============================================================ */
 @media (max-width: 480px) {
   .btn-pill { padding: 10px 22px; }
-  .refresh-btn, .theme-toggle { width: 44px; height: 44px; }
+  .refresh-btn { width: 44px; height: 44px; }
 }

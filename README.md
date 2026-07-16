@@ -1,6 +1,6 @@
 # mehk3y.com
 
-个人静态工具站，部署在 Vercel。**v2 视觉升级**：高级简约风、深色模式、Geist 字体、统一 SVG 图标。
+个人静态工具站，部署在 Vercel。**v2 视觉升级**：高级简约风、固定浅色界面、Geist 字体、统一 SVG 图标。
 
 ## 工具页面
 
@@ -16,8 +16,8 @@
 
 - 静态 HTML + 原生 JS，无框架
 - **自托管 Geist 字体**（Apache 2.0，vercel/geist-font）— `/fonts/Geist-Variable.woff2`
-- **浅 / 深 / 跟随系统** 三态主题，CSP 友好（`script-src 'self'`）
-- 共享样式 `common.css` · 共享工具 `common.js` · 主题控制 `theme.js`
+- **固定浅色界面**，不跟随系统外观切换
+- 共享样式 `common.css` · 共享工具 `common.js`
 - Vercel Serverless Functions (`api/`) · Edge Middleware 速率限制 (`middleware.js`)
 - **隐私友好的第一方汇总统计**：尊重 DNT / GPC，不保存长期访客 ID、原始 IP、逐次访问事件、查询参数或设备硬件遥测
 - 部署：Vercel
@@ -29,7 +29,7 @@
 | `--bg / --surface / --surface-2` | 三级背景层 |
 | `--text / --text-2 / --dim / --faint` | 四级文字 |
 | `--accent / --accent-fg` | 主按钮（双向反色） |
-| `--tint-{red,green,blue,orange,purple,...}-bg/fg` | 提示色（自动适配深浅模式） |
+| `--tint-{red,green,blue,orange,purple,...}-bg/fg` | 浅色界面的提示色 |
 | `--r-sm/md/lg/xl` | 圆角刻度 |
 | `--shadow-sm/md/lg` | 阴影刻度 |
 | `--ease` | 统一缓动 `cubic-bezier(0.16,1,0.3,1)` |
@@ -69,7 +69,6 @@ openssl rand -hex 32
 ├── index.html               # 导航首页（v2 - SVG 图标 · JSON-LD）
 ├── *.html                   # 首页可达工具页面 + admin
 ├── common.css common.js     # 共享样式 + helpers
-├── theme.js                 # 三态主题控制
 ├── fonts/                   # Geist 字体（Apache 2.0）
 ├── icon.png icon-192.png    # 站点图标与 PWA 图标
 ├── *.js                     # 页面级脚本

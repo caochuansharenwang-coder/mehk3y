@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="auto">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <title>Mehk3y — Crypto</title>
   <meta name="description" content="BTC + ETH 实时链上仪表盘合一：价格、200WMA、MVRV、Gas、质押率，以及 MSTR / BMNR 公司储备。">
   <meta property="og:title" content="Mehk3y — Crypto">
@@ -20,22 +20,26 @@
   <meta name="twitter:site" content="@Mehk3y">
   <link rel="canonical" href="https://mehk3y.com/crypto">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🪙</text></svg>">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
-  <link rel="stylesheet" href="/common.css?v=20260716-original">
+  <link rel="stylesheet" href="/common.css?v=20260716-light-only">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <script src="/theme.js"></script>
   <link rel="preload" as="script" href="/common.js">
-  <link rel="preload" as="script" href="/script.js?v=20260716-hierarchy">
-  <link rel="preload" as="script" href="/eth.js?v=20260716-hierarchy">
+  <link rel="preload" as="script" href="/script.js?v=20260716-light-palette">
+  <link rel="preload" as="script" href="/eth.js?v=20260716-light-palette">
   <!-- 所有数据走 /api/* (Vercel Edge Runtime, 全球边缘部署) -->
 
   <style>
     /* ============================================================
        crypto.html — 紧凑模式覆盖 (page-scoped)
        ============================================================ */
+    :root {
+      --crypto-positive: var(--green);
+      --crypto-negative: var(--red);
+      --crypto-neutral: var(--orange);
+      --crypto-info: var(--blue);
+    }
     .wrap { max-width: 880px; padding: 16px 20px 32px; }
     .hdr  { margin-bottom: 10px; }
     .hdr-left { align-items: center; flex-wrap: wrap; }
@@ -62,23 +66,23 @@
     }
     .update-summary::before {
       content: ''; width: 7px; height: 7px; border-radius: 50%;
-      background: var(--orange); flex: 0 0 auto;
+      background: var(--crypto-neutral); flex: 0 0 auto;
     }
-    .update-summary.is-ok::before { background: var(--green); }
-    .update-summary.is-partial::before { background: var(--orange); }
-    .update-summary.is-error::before { background: var(--red); }
+    .update-summary.is-ok::before { background: var(--crypto-positive); }
+    .update-summary.is-partial::before { background: var(--crypto-neutral); }
+    .update-summary.is-error::before { background: var(--crypto-negative); }
     .data-meta {
       margin: -2px 2px 10px; color: var(--text-2);
       font-size: 11.5px; line-height: 1.5;
     }
     .data-error {
       margin: -3px 0 9px; padding: 8px 10px;
-      border: 1px solid color-mix(in srgb, var(--orange) 35%, var(--border));
-      border-radius: 9px; background: color-mix(in srgb, var(--orange) 8%, transparent);
+      border: 1px solid color-mix(in srgb, var(--crypto-neutral) 35%, var(--border));
+      border-radius: 9px; background: color-mix(in srgb, var(--crypto-neutral) 8%, transparent);
       color: var(--text-2); font-size: 12px; line-height: 1.45;
     }
     .data-error[hidden], .error-toast[hidden] { display: none !important; }
-    .refresh-btn, .theme-toggle { min-width: 44px; min-height: 44px; }
+    .refresh-btn { min-width: 44px; min-height: 44px; }
     .refresh-btn:disabled { cursor: wait; opacity: .65; }
 
     /* —— Coin banner (slim 一行 + 中段内嵌指标) —— */
@@ -93,7 +97,7 @@
     .coin-banner-l { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex-shrink: 0; }
     .coin-symbol   { font-size: 18px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
     .coin-banner.btc .coin-symbol,
-    .coin-banner.btc .coin-price { color: var(--orange); }
+    .coin-banner.btc .coin-price { color: var(--crypto-neutral); }
     .coin-banner.eth .coin-symbol,
     .coin-banner.eth .coin-price { color: var(--purple); }
     .coin-name     { font-size: 15px; font-weight: 650; color: var(--text); letter-spacing: -0.01em; }
@@ -118,7 +122,7 @@
 
     /* —— Halving progress bar (BTC) —— */
     .halving-track { height: 3px; background: var(--border); border-radius: 2px; margin-top: 7px; overflow: hidden; }
-    .halving-fill  { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.5s; }
+    .halving-fill  { height: 100%; background: var(--crypto-neutral); border-radius: 2px; transition: width 0.5s; }
 
     /* —— Treasury 行 (MSTR / BMNR) 单行紧凑布局 —— */
     .treasury-row {
@@ -135,8 +139,10 @@
     .treasury-row .t-meta b  { color: var(--text); font-weight: 600; }
     .treasury-row .t-sep     { color: var(--faint); font-size: 9px; padding: 0 2px; }
 
-    .pos { color: var(--green); }
-    .neg { color: var(--red); }
+    .tone-positive, .pos { color: var(--crypto-positive); }
+    .tone-negative, .neg { color: var(--crypto-negative); }
+    .tone-neutral { color: var(--crypto-neutral); }
+    .tone-info { color: var(--crypto-info); }
     .disclaimer {
       margin: 20px auto 0; max-width: 680px; text-align: center;
       color: var(--text-2); font-size: 12px; line-height: 1.6;
@@ -161,8 +167,6 @@
 </head>
 <body>
 <a href="#main" class="skip-link">跳到内容</a>
-<div class="site-top"><button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题"><svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button></div>
-
 <main class="wrap" id="main">
 
   <header class="hdr">
@@ -187,9 +191,9 @@
       <span class="coin-sub">BTC</span>
     </h2>
     <div class="coin-banner-m">
-      <div class="bm-item"><span class="bm-label">算力</span><span class="bm-value" id="hashrate">—</span></div>
+      <div class="bm-item"><span class="bm-label">算力</span><span class="bm-value tone-info" id="hashrate">—</span></div>
       <div class="bm-item"><span class="bm-label">AHR999</span><span class="bm-value" id="ahr999">—</span></div>
-      <div class="bm-item"><span class="bm-label">减半</span><span class="bm-value" id="halving-pct">—</span></div>
+      <div class="bm-item"><span class="bm-label">减半</span><span class="bm-value tone-neutral" id="halving-pct">—</span></div>
       <div class="bm-item"><span class="bm-label">F&amp;G</span><span class="bm-value" id="fng-value">—</span><span class="bm-sub" id="fng-status">中性</span></div>
     </div>
     <div class="coin-banner-r">
@@ -205,12 +209,12 @@
   <div class="grid4">
     <div class="card">
       <div class="card-label">200 周均线</div>
-      <div class="card-main" id="btc-wma200-price">$—</div>
+      <div class="card-main tone-info" id="btc-wma200-price">$—</div>
       <div class="card-sub">当前 / 200WMA = <b id="btc-wma200-ratio">—</b>x<br><span id="btc-wma200-note">BTC 历史从未长期跌破</span></div>
     </div>
     <div class="card">
       <div class="card-label">均衡价格</div>
-      <div class="card-main" id="bp-price">$—</div>
+      <div class="card-main tone-positive" id="bp-price">$—</div>
       <div class="card-sub">当前 / BP = <b id="bp-ratio">—</b>x<br><span id="bp-note">已实现价格 − 转移价格</span></div>
     </div>
     <div class="card">
@@ -220,7 +224,7 @@
     </div>
     <div class="card">
       <div class="card-label">⏳ 减半倒计时</div>
-      <div class="card-main" id="halving-days">— 天</div>
+      <div class="card-main tone-neutral" id="halving-days">— 天</div>
       <div class="card-sub">区块 <b id="halving-block">—</b> / 1,050,000<br>预计 <b id="halving-date">—</b></div>
       <div class="halving-track"><div class="halving-fill" id="halving-fill" style="width:0%"></div></div>
     </div>
@@ -276,7 +280,7 @@
       <span class="coin-sub">ETH</span>
     </h2>
     <div class="coin-banner-m">
-      <div class="bm-item"><span class="bm-label">ETH/BTC</span><span class="bm-value" id="eth-btc">—</span></div>
+      <div class="bm-item"><span class="bm-label">ETH/BTC</span><span class="bm-value tone-info" id="eth-btc">—</span></div>
       <div class="bm-item"><span class="bm-label">市值</span><span class="bm-value" id="market-cap">—</span></div>
       <div class="bm-item"><span class="bm-label">24H量</span><span class="bm-value" id="volume-24h">—</span></div>
       <div class="bm-item"><span class="bm-label">Gas</span><span class="bm-value" id="gas-price">—</span></div>
@@ -292,7 +296,7 @@
   <div class="grid3">
     <div class="card">
       <div class="card-label">200 周均线</div>
-      <div class="card-main" id="eth-wma200-price"><span class="skeleton">$0</span></div>
+      <div class="card-main tone-info" id="eth-wma200-price"><span class="skeleton">$0</span></div>
       <div class="card-sub">当前 / 200WMA = <b id="eth-wma200-ratio">—</b><br><span id="eth-wma200-note">加载中…</span></div>
     </div>
     <div class="card">
@@ -357,8 +361,8 @@
 
 <div class="error-toast" id="error-toast" hidden aria-hidden="true">数据加载失败，请稍后刷新</div>
 <script src="/common.js" defer></script>
-<script src="/script.js?v=20260716-hierarchy" defer></script>
-<script src="/eth.js?v=20260716-hierarchy" defer></script>
+<script src="/script.js?v=20260716-light-palette" defer></script>
+<script src="/eth.js?v=20260716-light-palette" defer></script>
 <!-- csp-refresh: 2026-05-25 -->
 <script src="/analytics.js?v=20260715-privacy" defer></script>
 </body>

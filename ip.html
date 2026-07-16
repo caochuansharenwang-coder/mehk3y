@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="auto">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <title>Mehk3y — IP 与网络环境检测</title>
   <meta name="description" content="查看当前出口 IP、代理、DNS 解析器与 WebRTC 泄露风险，并获得本站估算的网络环境参考分。非 Anthropic 官方工具。">
   <meta property="og:title" content="Mehk3y — IP 与网络环境检测">
@@ -17,15 +17,13 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@Mehk3y">
   <meta name="twitter:image" content="https://mehk3y.com/og-ip-20260715.jpg">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://mehk3y.com/ip">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
-  <link rel="stylesheet" href="/common.css?v=20260716-original">
+  <link rel="stylesheet" href="/common.css?v=20260716-light-only">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <script src="/theme.js"></script>
   <link rel="preload" as="script" href="/common.js">
   <link rel="preload" as="script" href="/ip.js?v=20260716-original-colors">
   <link rel="dns-prefetch" href="https://edns.ip-api.com">
@@ -62,7 +60,6 @@
 </head>
 <body>
 <a href="#main" class="skip-link">跳到内容</a>
-<div class="site-top"><button class="theme-toggle" data-theme-toggle type="button" aria-label="切换主题" title="主题"><svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button></div>
 <main class="wrap" id="main">
   <header class="hdr">
     <div class="hdr-left">

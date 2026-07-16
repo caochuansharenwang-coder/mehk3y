@@ -244,7 +244,7 @@ function applyPrice(pd) {
   const chg = pd.chg ?? 0;
   const el = document.getElementById('btc-chg');
   el.textContent = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
-  el.style.color = chg > 0 ? 'var(--green)' : chg < 0 ? 'var(--red)' : 'var(--text-2)';
+  el.style.color = chg > 0 ? 'var(--crypto-positive)' : chg < 0 ? 'var(--crypto-negative)' : 'var(--text-2)';
   // MSTR may arrive before BTC price during a degraded fallback. Replaying
   // the last payload closes that race so mNAV and USD values do not stay blank.
   if (latestMstrPayload) applyMstrPayload(latestMstrPayload);
@@ -306,12 +306,12 @@ function applyFng(val) {
   valEl.textContent = val;
   document.getElementById('fng-dot').style.left = val + '%';
   let label, color, desc;
-  if (val <= 20)      { label='极度恐惧'; color='var(--red)';    desc='市场极度恐慌，历史上往往是买入机会'; }
-  else if (val <= 40) { label='恐惧';     color='var(--orange)'; desc='市场情绪偏空，投资者较为谨慎'; }
-  else if (val <= 60) { label='中性';     color='var(--text-2)'; desc='市场情绪中性，多空力量均衡'; }
-  else if (val <= 80) { label='贪婪';     color='var(--orange)'; desc='市场情绪偏多，注意控制仓位'; }
-  else                { label='极度贪婪'; color='var(--red)';    desc='市场过度乐观，可考虑分批止盈'; }
-  valEl.style.removeProperty('color');
+  if (val <= 20)      { label='极度恐惧'; color='var(--crypto-negative)'; desc='市场极度恐慌，历史上往往是买入机会'; }
+  else if (val <= 40) { label='恐惧';     color='var(--crypto-neutral)';  desc='市场情绪偏空，投资者较为谨慎'; }
+  else if (val <= 60) { label='中性';     color='var(--crypto-neutral)';  desc='市场情绪中性，多空力量均衡'; }
+  else if (val <= 80) { label='贪婪';     color='var(--crypto-positive)'; desc='市场情绪偏多，注意控制仓位'; }
+  else                { label='极度贪婪'; color='var(--crypto-negative)'; desc='市场过度乐观，可考虑分批止盈'; }
+  valEl.style.color = color;
   document.getElementById('fng-status').textContent = label;
   document.getElementById('fng-status').style.color = color;
   document.getElementById('fng-desc').textContent = desc;
@@ -378,10 +378,10 @@ function applyMvrv(mvrv) {
   const el = document.getElementById('mvrv-value');
   const noteEl = document.getElementById('mvrv-note');
   el.textContent = mvrv.toFixed(2);
-  if (mvrv < 1)        { el.style.color='var(--text)';   noteEl.textContent='MVRV 小于 1 — 低估区间，历史大底'; }
-  else if (mvrv < 2)   { el.style.color='var(--text)';   noteEl.textContent='正常偏低 — 持币 / 定投区间'; }
-  else if (mvrv < 3.5) { el.style.color='var(--orange)'; noteEl.textContent='正常偏高 — 注意风险'; }
-  else                 { el.style.color='var(--red)';    noteEl.textContent='MVRV 大于 3.5 — 过热，历史顶部'; }
+  if (mvrv < 1)        { el.style.color='var(--crypto-positive)'; noteEl.textContent='MVRV 小于 1 — 低估区间，历史大底'; }
+  else if (mvrv < 2)   { el.style.color='var(--crypto-positive)'; noteEl.textContent='正常偏低 — 持币 / 定投区间'; }
+  else if (mvrv < 3.5) { el.style.color='var(--crypto-neutral)';  noteEl.textContent='正常偏高 — 注意风险'; }
+  else                 { el.style.color='var(--crypto-negative)'; noteEl.textContent='MVRV 大于 3.5 — 过热，历史顶部'; }
 }
 
 async function fetchOnchain() {
@@ -412,10 +412,10 @@ function applyHalving(d) {
 function applyAhr999(ahr) {
   const el = document.getElementById('ahr999');
   el.textContent = ahr.toFixed(2);
-  if (ahr < 0.45)      { el.style.color='var(--text-2)'; el.title='抄底区间'; }
-  else if (ahr < 1.2)  { el.style.color='var(--text-2)'; el.title='定投区间'; }
-  else if (ahr < 5)    { el.style.color='var(--orange)'; el.title='观望区间'; }
-  else                 { el.style.color='var(--red)';    el.title='泡沫区间'; }
+  if (ahr < 0.45)      { el.style.color='var(--crypto-positive)'; el.title='抄底区间'; }
+  else if (ahr < 1.2)  { el.style.color='var(--crypto-positive)'; el.title='定投区间'; }
+  else if (ahr < 5)    { el.style.color='var(--crypto-neutral)';  el.title='观望区间'; }
+  else                 { el.style.color='var(--crypto-negative)'; el.title='泡沫区间'; }
 }
 
 async function fetchAhr999() {
@@ -444,7 +444,7 @@ function applyMnav(id, val) {
   const el = document.getElementById(id);
   if (!el || val == null || isNaN(val)) return;
   el.textContent = val.toFixed(2) + 'x';
-  el.style.color = val < 1.2 ? 'var(--text)' : val < 2 ? 'var(--orange)' : 'var(--red)';
+  el.style.color = val < 1 ? 'var(--crypto-positive)' : val < 2 ? 'var(--crypto-neutral)' : 'var(--crypto-negative)';
 }
 function setEl(id, text, color) {
   const el = document.getElementById(id);
@@ -489,7 +489,7 @@ function applyMstrHoldingTrend(currentHoldings) {
   const days = best ? 7 : oldest ? Math.max(1, Math.floor((now - oldest.t) / 86400000)) : 7;
   const delta = baseline ? currentHoldings - baseline.h : 0;
   const daily = delta / days;
-  const color = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--text-2)';
+  const color = delta > 0 ? 'var(--crypto-positive)' : delta < 0 ? 'var(--crypto-negative)' : 'var(--text-2)';
   const weekEl = document.getElementById('mstr-week-delta');
   const dayEl = document.getElementById('mstr-daily-delta');
   if (!weekEl || !dayEl) return;
@@ -701,7 +701,7 @@ function loadCache() {
     applyPrice(p);
   }
   const hr  = cache.get('hashrate', WEEK);    if (hr)   document.getElementById('hashrate').textContent = (typeof hr === 'number' ? hr.toFixed(1) : hr) + ' EH/s';
-  const fng = cache.get('fng', 7200000);      if (fng)  applyFng(fng);
+  const fng = cache.get('fng', 7200000);      if (fng != null) applyFng(fng);
   const wma = cache.get('wma200', WEEK);      if (wma)  applyWma200(wma);
   const bp  = cache.get('bp', WEEK);          if (bp)   applyBp(bp);
   const halv= cache.get('halving', WEEK);     if (halv) applyHalving(halv);
