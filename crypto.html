@@ -40,10 +40,20 @@
        crypto.html — 紧凑模式覆盖 (page-scoped)
        ============================================================ */
     :root {
-      --crypto-positive: var(--green-text);
-      --crypto-negative: var(--red-text);
-      --crypto-neutral: var(--orange-text);
-      --crypto-info: var(--blue-text);
+      /* Reference-inspired colors adapted for this page's white background.
+       * Large values stay vivid; compact labels use a slightly deeper tone. */
+      --crypto-positive-display: #12a150;
+      --crypto-negative-display: #e03a55;
+      --crypto-neutral-display: #d66a00;
+      --crypto-info-display: #0a7ff2;
+      --crypto-positive-compact: #108242;
+      --crypto-negative-compact: #d52d4a;
+      --crypto-neutral-compact: #bd5000;
+      --crypto-info-compact: #006fd6;
+      --crypto-positive: var(--crypto-positive-display);
+      --crypto-negative: var(--crypto-negative-display);
+      --crypto-neutral: var(--crypto-neutral-display);
+      --crypto-info: var(--crypto-info-display);
       --crypto-positive-accent: var(--green);
       --crypto-negative-accent: var(--red);
       --crypto-neutral-accent: var(--orange);
@@ -114,6 +124,14 @@
     .coin-banner-r { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
     .coin-price    { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
     .coin-chg      { font-size: 12px; font-weight: 650; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+    /* Small status text needs a little more contrast than the large values. */
+    .coin-banner-m, .coin-chg, .metric-status, .treasury-row .t-meta {
+      --crypto-positive: var(--crypto-positive-compact);
+      --crypto-negative: var(--crypto-negative-compact);
+      --crypto-neutral: var(--crypto-neutral-compact);
+      --crypto-info: var(--crypto-info-compact);
+    }
 
     /* —— 中段内嵌迷你指标（吃掉 banner 中间留白）—— */
     .coin-banner-m {
