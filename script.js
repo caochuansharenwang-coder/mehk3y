@@ -411,11 +411,20 @@ function applyHalving(d) {
 
 function applyAhr999(ahr) {
   const el = document.getElementById('ahr999');
+  const statusEl = document.getElementById('ahr999-status');
   el.textContent = ahr.toFixed(2);
-  if (ahr < 0.45)      { el.style.color='var(--crypto-positive)'; el.title='抄底区间'; }
-  else if (ahr < 1.2)  { el.style.color='var(--crypto-positive)'; el.title='定投区间'; }
-  else if (ahr < 5)    { el.style.color='var(--crypto-neutral)';  el.title='观望区间'; }
-  else                 { el.style.color='var(--crypto-negative)'; el.title='泡沫区间'; }
+  let tone;
+  let status;
+  if (ahr < 0.45)      { tone='positive'; status='抄底'; }
+  else if (ahr < 1.2)  { tone='positive'; status='定投'; }
+  else if (ahr < 5)    { tone='neutral';  status='观望'; }
+  else                 { tone='negative'; status='泡沫'; }
+  el.style.color = `var(--crypto-${tone})`;
+  el.title = `${status}区间`;
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = `metric-status tone-${tone}`;
+  }
 }
 
 async function fetchAhr999() {
@@ -443,8 +452,15 @@ async function fetchAhr999() {
 function applyMnav(id, val) {
   const el = document.getElementById(id);
   if (!el || val == null || isNaN(val)) return;
+  const statusEl = document.getElementById(`${id}-status`);
+  const tone = val < 1 ? 'positive' : val < 2 ? 'neutral' : 'negative';
+  const status = val < 1 ? '折价' : val < 2 ? '常态' : '高溢价';
   el.textContent = val.toFixed(2) + 'x';
-  el.style.color = val < 1 ? 'var(--crypto-positive)' : val < 2 ? 'var(--crypto-neutral)' : 'var(--crypto-negative)';
+  el.style.color = `var(--crypto-${tone})`;
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = `metric-status tone-${tone}`;
+  }
 }
 function setEl(id, text, color) {
   const el = document.getElementById(id);

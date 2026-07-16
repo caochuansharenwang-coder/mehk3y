@@ -17,6 +17,7 @@ credentials.json
 *.pem
 *.key
 .gitconfig
+memory/test_credentials.md
 
 # Dependencies
 node_modules/

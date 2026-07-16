@@ -14,18 +14,22 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="Mehk3y IP 与网络环境检测">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@Mehk3y">
+  <meta name="twitter:title" content="Mehk3y — IP 与网络环境检测">
+  <meta name="twitter:description" content="检测出口 IP、VPN 或代理、DNS 解析器、WebRTC 泄露与网络环境信号。">
   <meta name="twitter:image" content="https://mehk3y.com/og-ip-20260715.jpg">
+  <meta name="twitter:image:alt" content="Mehk3y IP 与网络环境检测">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://mehk3y.com/ip">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
-  <link rel="stylesheet" href="/common.css?v=20260716-light-only">
+  <link rel="stylesheet" href="/common.css?v=20260716-a11y-palette">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="script" href="/common.js">
-  <link rel="preload" as="script" href="/ip.js?v=20260716-original-colors">
+  <link rel="preload" as="script" href="/ip.js?v=20260716-security-v3">
   <link rel="dns-prefetch" href="https://edns.ip-api.com">
   <link rel="dns-prefetch" href="https://ipwho.is">
   <link rel="dns-prefetch" href="https://free.freeipapi.com">
@@ -71,7 +75,7 @@
   <section class="ip-intro" aria-labelledby="page-title">
     <h1 id="page-title">IP 与网络环境检测</h1>
     <p>查看当前出口 IP、代理或 VPN、DNS 解析器、WebRTC 泄露，以及浏览器网络环境信号。</p>
-    <p class="ip-note">参考分由本站按有限信号估算，仅供排查网络环境；本页不是 Anthropic 或 Claude 官方工具，也不能判断账号资格或保证服务可用。</p>
+    <p class="ip-note">出口 IP 参考分只依据代理、VPN、Tor、托管网络与上游风险信号；DNS、WebRTC、时区和语言会单独展示，不计入该分数。本页不是 Anthropic 或 Claude 官方工具。</p>
   </section>
   <div class="divider"></div>
   <p id="check-status" class="sr-only" role="status" aria-live="polite"></p>
@@ -80,7 +84,7 @@
   <nav class="footer" aria-label="页脚导航"><a href="/">← 返回首页</a></nav>
 </main>
 <script src="/common.js" defer></script>
-<script src="/ip.js?v=20260716-original-colors" defer></script>
+<script src="/ip.js?v=20260716-security-v3" defer></script>
 <script src="/analytics.js?v=20260715-privacy" defer></script>
 </body>
 </html>

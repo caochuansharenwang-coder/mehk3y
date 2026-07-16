@@ -53,6 +53,51 @@ const CC_TO_LANGS = {
   CO: ['es'], PE: ['es'], VE: ['es'],
 };
 
+// Every value received from an upstream service or the browser environment
+// must pass through this helper before being interpolated into innerHTML.
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[char]);
+}
+
+function safeText(value, fallback = '—') {
+  return value === null || value === undefined || value === ''
+    ? escapeHtml(fallback)
+    : escapeHtml(value);
+}
+
+function canonicalIp(value) {
+  const ip = String(value || '').trim();
+  if (!ip || ip.length > 45) return null;
+
+  const v4Parts = ip.split('.');
+  if (v4Parts.length === 4 &&
+      v4Parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255)) {
+    return v4Parts.map(Number).join('.');
+  }
+  if (!ip.includes(':')) return null;
+
+  try {
+    const hostname = new URL(`http://[${ip}]/`).hostname;
+    return hostname.startsWith('[') && hostname.endsWith(']')
+      ? hostname.slice(1, -1).toLowerCase()
+      : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function sameIp(left, right) {
+  const a = canonicalIp(left);
+  const b = canonicalIp(right);
+  return Boolean(a && b && a === b);
+}
+
 // Current UTC offset (in minutes) for an IANA timezone. Returns null if the
 // runtime can't resolve it. Used for offset-based TZ comparison instead of
 // zone-name string equality, which falsely flags neighbor zones with the
@@ -183,33 +228,33 @@ function trustScore(ip) {
 }
 
 function trustLabel(s) {
-  if (s >= 95) return { text: '低风险信号', color: '#0a6e1e', bg: '#f0fdf4' };
-  if (s >= 80) return { text: '较低风险',   color: '#16a34a', bg: '#f0fdf4' };
-  if (s >= 50) return { text: '需留意',     color: '#2563eb', bg: '#eff6ff' };
-  if (s >= 25) return { text: '较高风险',   color: '#ca8a04', bg: '#fefce8' };
-  return               { text: '高风险信号', color: '#dc2626', bg: '#fef2f2' };
+  if (s >= 95) return { text: '低风险信号', color: 'var(--green-text)', bg: '#f0fdf4' };
+  if (s >= 80) return { text: '较低风险',   color: 'var(--green-text)', bg: '#f0fdf4' };
+  if (s >= 50) return { text: '需留意',     color: 'var(--blue-text)', bg: '#eff6ff' };
+  if (s >= 25) return { text: '较高风险',   color: 'var(--orange-text)', bg: '#fefce8' };
+  return               { text: '高风险信号', color: 'var(--red-text)', bg: '#fef2f2' };
 }
 
 function badge(text, ok) {
-  const color = ok ? '#16a34a' : '#dc2626';
+  const color = ok ? 'var(--green-text)' : 'var(--red-text)';
   const bg    = ok ? '#f0fdf4' : '#fef2f2';
-  return `<span class="ip-badge" style="background:${bg};color:${color}">${text}</span>`;
+  return `<span class="ip-badge" style="background:${bg};color:${color}">${escapeHtml(text)}</span>`;
 }
 
 function warnBadge(text) {
-  return `<span class="ip-badge" style="background:#fff7ed;color:#f7931a">${text}</span>`;
+  return `<span class="ip-badge" style="background:#fff7ed;color:var(--orange-text)">${escapeHtml(text)}</span>`;
 }
 
 function row(label, valueHtml) {
   return `<div class="ip-row">
-    <span class="ip-row-label">${label}</span>
+    <span class="ip-row-label">${escapeHtml(label)}</span>
     <span class="ip-row-value">${valueHtml}</span>
   </div>`;
 }
 
 function card(label, content, extra) {
-  return `<section class="card" aria-label="${label}" style="${extra || ''}">
-    <h2 class="card-label" style="margin-bottom:8px">${label}</h2>
+  return `<section class="card" aria-label="${escapeHtml(label)}" style="${extra || ''}">
+    <h2 class="card-label" style="margin-bottom:8px">${escapeHtml(label)}</h2>
     ${content}
   </section>`;
 }
@@ -231,16 +276,18 @@ function render(ip, dev, dnsResult, webrtcResult) {
   const reasons = scoreReasons(ip);
 
   const ipType = ip.isVPN ? 'VPN' : ip.isTOR ? 'Tor' : ip.proxy ? '代理 IP' : ip.isHosting ? '数据中心 IP' : '家庭 IP';
-  const itColor = (ip.proxy || ip.isVPN || ip.isTOR) ? '#dc2626' : ip.isHosting ? '#f7931a' : '#16a34a';
+  const itColor = (ip.proxy || ip.isVPN || ip.isTOR)
+    ? 'var(--red-text)'
+    : ip.isHosting ? 'var(--orange-text)' : 'var(--green-text)';
   const itBg    = (ip.proxy || ip.isVPN || ip.isTOR) ? '#fef2f2' : ip.isHosting ? '#fff7ed' : '#f0fdf4';
 
   const tzLine = dev.tzMismatch
-    ? `${warnBadge('时区不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${dev.localTz} / 出口: ${dev.expectedTz || ip.timezone || '—'}</small>`
-    : `${badge('一致', true)} <small style="color:var(--dim);font-size:11px">${dev.localTz}</small>`;
+    ? `${warnBadge('时区不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${safeText(dev.localTz)} / 出口: ${safeText(dev.expectedTz || ip.timezone)}</small>`
+    : `${badge('一致', true)} <small style="color:var(--dim);font-size:11px">${safeText(dev.localTz)}</small>`;
 
   const langLine = dev.langMismatch
-    ? `${warnBadge('语言不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${dev.lang}${dev.expectedLangs?.length ? ' / 出口常用: ' + dev.expectedLangs.join('/') : ''}</small>`
-    : `${badge('一致', true)} <small style="color:var(--dim);font-size:11px">${dev.lang}</small>`;
+    ? `${warnBadge('语言不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${safeText(dev.lang)}${dev.expectedLangs?.length ? ' / 出口常用: ' + safeText(dev.expectedLangs.join('/')) : ''}</small>`
+    : `${badge('一致', true)} <small style="color:var(--dim);font-size:11px">${safeText(dev.lang)}</small>`;
 
   // DNS resolver card. A browser can identify the resolver used for a unique
   // lookup, but it cannot decide by itself whether that resolver is the one a
@@ -251,8 +298,8 @@ function render(ip, dev, dnsResult, webrtcResult) {
   } else if (dnsResult.ip) {
     dnsContent = `
       ${row('状态', badge('已识别解析器', true))}
-      ${row('解析器 IP', `<code style="font-size:12px">${dnsResult.ip}</code>`)}
-      ${row('归属', dnsResult.org || '—')}
+      ${row('解析器 IP', `<code style="font-size:12px">${safeText(dnsResult.ip)}</code>`)}
+      ${row('归属', safeText(dnsResult.org))}
     `;
   } else {
     dnsContent = `
@@ -270,11 +317,11 @@ function render(ip, dev, dnsResult, webrtcResult) {
   // WebRTC leak card
   let webrtcContent;
   if (webrtcResult.ip || webrtcResult.done) {
-    const leaked = webrtcResult.ip && ip.ip && webrtcResult.ip !== ip.ip;
+    const leaked = webrtcResult.ip && ip.ip && !sameIp(webrtcResult.ip, ip.ip);
     webrtcContent = `
       ${row('状态', badge(webrtcResult.ip ? (leaked ? '检测到泄露' : '未检测到泄露') : '未获取到公网 IP', webrtcResult.ip ? !leaked : true))}
-      ${row('UDP 出口', `<code style="font-size:12px">${webrtcResult.loc ? webrtcResult.loc + ' ' : ''}${webrtcResult.ip || '—'}</code>`)}
-      ${row('归属地', webrtcResult.geo || '—')}
+      ${row('UDP 出口', `<code style="font-size:12px">${webrtcResult.loc ? safeText(webrtcResult.loc) + ' ' : ''}${safeText(webrtcResult.ip)}</code>`)}
+      ${row('归属地', safeText(webrtcResult.geo))}
     `;
   } else {
     webrtcContent = `
@@ -312,24 +359,24 @@ function render(ip, dev, dnsResult, webrtcResult) {
     <!-- Trust Score + Claude 可用性 — 2 columns -->
     <div class="ip-grid2">
       <section class="card" style="text-align:center" aria-labelledby="score-title">
-        <h2 class="card-label" id="score-title" style="margin-bottom:8px">Claude 网络环境参考分（本站估算）</h2>
+        <h2 class="card-label" id="score-title" style="margin-bottom:8px">出口 IP 风险参考分（本站估算）</h2>
         <div style="margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:10px">
-          <output aria-label="本站估算参考分 ${score} 分" style="font-size:36px;font-weight:800;letter-spacing:-0.04em;color:${lbl.color};line-height:1">${score}</output>
+          <output aria-label="出口 IP 风险参考分 ${score} 分" style="font-size:36px;font-weight:800;letter-spacing:-0.04em;color:${lbl.color};line-height:1">${score}</output>
           <span class="ip-badge" style="background:${lbl.bg};color:${lbl.color}">${lbl.text}</span>
         </div>
         <div style="color:var(--dim);font-size:11px;margin-bottom:10px">${
-          score >= 95 ? '本次未发现明显网络风险信号' :
-          score >= 80 ? '本次发现的网络风险信号较少' :
-          score >= 50 ? '本次发现部分需要留意的网络信号' :
-          score >= 25 ? '本次发现较多网络风险信号' :
-                        '本次发现多个高风险网络信号'
+          score >= 95 ? '本次未发现明显出口 IP 风险信号' :
+          score >= 80 ? '本次发现的出口 IP 风险信号较少' :
+          score >= 50 ? '本次发现部分需要留意的出口 IP 信号' :
+          score >= 25 ? '本次发现较多出口 IP 风险信号' :
+                        '本次发现多个高风险出口 IP 信号'
         }</div>
-        <div role="meter" aria-label="本站估算的网络环境参考分" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}" style="position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#dc2626 0%,#f97316 25%,#eab308 50%,#84cc16 75%,#16a34a 100%);margin-bottom:5px">
+        <div role="meter" aria-label="本站估算的出口 IP 风险参考分" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}" style="position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#dc2626 0%,#f97316 25%,#eab308 50%,#84cc16 75%,#16a34a 100%);margin-bottom:5px">
           <div aria-hidden="true" style="position:absolute;top:50%;left:${score}%;transform:translate(-50%,-50%);width:14px;height:14px;background:var(--bg);border:2px solid var(--text);border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim)"><span>0 风险信号多</span><span>100 风险信号少</span></div>
-        <div class="score-basis"><strong>估算依据：</strong>${reasons.join('；')}。</div>
-        <p class="score-disclaimer">分数只反映本页当前可见的有限信号，不代表 Anthropic 官方判断，也不能预测登录、封禁或账号资格；服务地区请核对 <a href="https://www.anthropic.com/supported-countries" target="_blank" rel="noopener">官方支持列表</a>。</p>
+        <div class="score-basis"><strong>估算依据：</strong>${escapeHtml(reasons.join('；'))}。</div>
+        <p class="score-disclaimer">分数只反映出口 IP 的代理、VPN、Tor、托管网络与上游风险信号；WebRTC、DNS、时区和语言结果会单独展示，不计入分数。它不代表 Anthropic 官方判断，也不能预测登录、封禁或账号资格；服务地区请核对 <a href="https://www.anthropic.com/supported-countries" target="_blank" rel="noopener">官方支持列表</a>。</p>
       </section>
       ${claudeCard}
     </div>
@@ -337,11 +384,11 @@ function render(ip, dev, dnsResult, webrtcResult) {
     <!-- IP属性 + 安全检测 — 2 columns -->
     <div class="ip-grid2">
       ${card('出口 IP 属性', `
-        ${row('IP 地址', `<code style="font-size:12px">${ip.ip || '—'}</code>`)}
-        ${row('地区', ip.country ? `${ip.country}${ip.countryCode ? ' (' + ip.countryCode + ')' : ''}` : '—')}
-        ${row('城市', ip.city || '—')}
-        ${row('ASN', ip.asn || '—')}
-        ${row('运营商', ip.isp || ip.org || '—')}
+        ${row('IP 地址', `<code style="font-size:12px">${safeText(ip.ip)}</code>`)}
+        ${row('地区', ip.country ? `${safeText(ip.country)}${ip.countryCode ? ' (' + safeText(ip.countryCode) + ')' : ''}` : '—')}
+        ${row('城市', safeText(ip.city))}
+        ${row('ASN', safeText(ip.asn))}
+        ${row('运营商', safeText(ip.isp || ip.org))}
         ${row('IP 类型', `<span style="background:${itBg};color:${itColor};padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600">${ipType}</span>`)}
       `)}
       ${card('安全检测', `
@@ -364,18 +411,19 @@ function render(ip, dev, dnsResult, webrtcResult) {
     ${card('设备指纹信息', `
       ${row('时区',               tzLine)}
       ${row('语言',               langLine)}
-      ${row('操作系统 / 浏览器',  dev.osStr)}
+      ${row('操作系统 / 浏览器',  safeText(dev.osStr))}
       ${row('Cookie',             badge(dev.cookie ? '已启用' : '已禁用', dev.cookie))}
-      ${row('WebGL 渲染器',       `<span style="color:var(--dim);font-size:12px;word-break:break-all">${dev.webglRenderer}</span>`)}
-      ${row('Canvas 指纹',        `<code style="font-size:12px">${dev.canvasFp}</code>`)}
-      ${row('WebGL 指纹',         `<code style="font-size:12px">${dev.webglFp}</code>`)}
+      ${row('WebGL 渲染器',       `<span style="color:var(--dim);font-size:12px;word-break:break-all">${safeText(dev.webglRenderer)}</span>`)}
+      ${row('Canvas 指纹',        `<code style="font-size:12px">${safeText(dev.canvasFp)}</code>`)}
+      ${row('WebGL 指纹',         `<code style="font-size:12px">${safeText(dev.webglFp)}</code>`)}
     `, 'margin-bottom:10px')}
   `;
 }
 
 async function fetchIpData() {
-  // Single source: our /api/ip-check endpoint, which itself runs a 3-tier
-  // upstream fallback chain (ip-api.com → ipinfo.io → freeipapi.com).
+  // Single browser source: our /api/ip-check endpoint. Its server-side
+  // geolocation chain is HTTPS-only and serial
+  // (ipwho.is → ipinfo.io → FreeIPAPI).
   // We dropped the previous browser-side fallbacks (ipapi.co, ip.sb) because:
   //   - ipapi.co's per-IP daily quota gives little real-world benefit beyond
   //     what the server-side chain already provides
@@ -471,18 +519,41 @@ function detectWebrtcLeak() {
       const isPrivateV4 = (ip) => {
         if (!/^\d+\.\d+\.\d+\.\d+$/.test(ip)) return false;
         if (ip === '0.0.0.0') return true;
-        const [a, b] = ip.split('.').map(Number);
+        const [a, b, c] = ip.split('.').map(Number);
         if (a === 0 || a === 127 || a === 10) return true;
         if (a === 172 && b >= 16 && b <= 31) return true;
         if (a === 192 && b === 168) return true;
         if (a === 100 && b >= 64 && b <= 127) return true;
         if (a === 198 && (b === 18 || b === 19)) return true;
         if (a === 169 && b === 254) return true;
+        if (a >= 224) return true;
+        if (a === 192 && b === 0 && (c === 0 || c === 2)) return true;
+        if (a === 198 && b === 51 && c === 100) return true;
+        if (a === 203 && b === 0 && c === 113) return true;
         return false;
       };
       const isV6 = (s) => s.includes(':');
-      // IPv6 private/local: fc00::/7 (unique-local) + fe80::/10 (link-local)
-      const isPrivateV6 = (ip) => /^(fc|fd|fe[89ab])/i.test(ip);
+      const isPrivateV6 = (ip) => {
+        const normalized = canonicalIp(ip);
+        if (!normalized) return true;
+        if (normalized === '::' || normalized === '::1') return true;
+        if (/^(?:fc|fd|fe[89ab]|ff)/i.test(normalized)) return true;
+        if (/^(?:2001:db8|3fff:)/i.test(normalized)) return true;
+
+        const mapped = normalized.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i);
+        if (mapped) {
+          const value = (Number.parseInt(mapped[1], 16) * 0x10000) +
+            Number.parseInt(mapped[2], 16);
+          const mappedV4 = [
+            Math.floor(value / 0x1000000) % 256,
+            Math.floor(value / 0x10000) % 256,
+            Math.floor(value / 0x100) % 256,
+            value % 256,
+          ].join('.');
+          return isPrivateV4(mappedV4);
+        }
+        return false;
+      };
 
       const pubV4 = all.find(ip => !isV6(ip) && !isPrivateV4(ip));
       const pubV6 = all.find(ip =>  isV6(ip) && !isPrivateV6(ip));
@@ -499,13 +570,13 @@ function detectWebrtcLeak() {
     pc.onicecandidate = (e) => {
       if (!e.candidate) { finish(); return; }
       const cand = e.candidate.candidate || '';
-      // IPv4: classic 4-octet pattern.
-      const m4 = cand.match(/(?:\d{1,3}\.){3}\d{1,3}/g);
-      if (m4) m4.forEach(ip => candidates.add(ip));
-      // IPv6: at least one '::' or two ':' groups. Restrict to plausible
-      // hextets — overly-greedy regexes here can pick up STUN ufrag tokens.
-      const m6 = cand.match(/(?:[a-f0-9]{1,4}:){2,7}[a-f0-9]{0,4}/i);
-      if (m6) candidates.add(m6[0]);
+      // Modern browsers expose the parsed address directly. For older
+      // implementations, the ICE candidate grammar puts it in field 5.
+      // Canonicalization validates the whole token and preserves compressed
+      // IPv6 instead of truncating it with a partial regex match.
+      const rawAddress = e.candidate.address || cand.trim().split(/\s+/)[4] || '';
+      const address = canonicalIp(rawAddress);
+      if (address) candidates.add(address);
     };
 
     try {
@@ -521,11 +592,11 @@ function detectWebrtcLeak() {
   });
 }
 
-// Lookup geo for a given IP. Use HTTPS-only sources because the page is
-// served over HTTPS (mixed content would block http://ip-api.com).
+// Lookup geo for a WebRTC-discovered IP using HTTPS-only, serial fallback.
 async function lookupGeo(ip) {
+  const encodedIp = encodeURIComponent(ip);
   const ipwho = async () => {
-    const r = await fetchWithTimeout(`https://ipwho.is/${ip}`, { cache: 'no-store' }, 4500);
+    const r = await fetchWithTimeout(`https://ipwho.is/${encodedIp}`, { cache: 'no-store' }, 4500);
     if (r.ok) {
       const d = await r.json();
       if (d && d.success !== false) {
@@ -538,7 +609,7 @@ async function lookupGeo(ip) {
     return null;
   };
   const freeip = async () => {
-    const r = await fetchWithTimeout(`https://free.freeipapi.com/api/json/${ip}`, { cache: 'no-store' }, 4500);
+    const r = await fetchWithTimeout(`https://free.freeipapi.com/api/json/${encodedIp}`, { cache: 'no-store' }, 4500);
     if (r.ok) {
       const d = await r.json();
       return {
@@ -620,28 +691,29 @@ async function probeClaudeStatus() {
 // hit shows "良好" and a warm-pool 0-RTT QUIC hit (sub-100ms) still reads
 // the same — we don't over-segment small numbers.
 function latencyStatus(probe) {
-  if (!probe.ok)            return { text: '不可达', color: '#dc2626', bg: '#fef2f2' };
-  if (probe.ms < 200)       return { text: '良好',   color: '#16a34a', bg: '#f0fdf4' };
-  if (probe.ms < 600)       return { text: '正常',   color: '#2563eb', bg: '#eff6ff' };
-  if (probe.ms < 1500)      return { text: '较慢',   color: '#ca8a04', bg: '#fefce8' };
-  return                           { text: '超时',   color: '#dc2626', bg: '#fef2f2' };
+  if (!probe.ok)            return { text: '不可达', color: 'var(--red-text)', bg: '#fef2f2' };
+  if (probe.ms < 200)       return { text: '良好',   color: 'var(--green-text)', bg: '#f0fdf4' };
+  if (probe.ms < 600)       return { text: '正常',   color: 'var(--blue-text)', bg: '#eff6ff' };
+  if (probe.ms < 1500)      return { text: '较慢',   color: 'var(--orange-text)', bg: '#fefce8' };
+  return                           { text: '超时',   color: 'var(--red-text)', bg: '#fef2f2' };
 }
 
 // Statuspage indicator → user-facing label + color. Aligns with Statuspage's
 // own conventions (none/minor/major/critical/maintenance).
 function statusIndicatorLabel(s) {
-  if (!s) return { text: '查询失败', color: '#dc2626', bg: '#fef2f2' };
+  if (!s) return { text: '查询失败', color: 'var(--red-text)', bg: '#fef2f2' };
   switch (s.indicator) {
-    case 'none':        return { text: '全部服务正常', color: '#16a34a', bg: '#f0fdf4' };
-    case 'minor':       return { text: '部分服务异常', color: '#ca8a04', bg: '#fefce8' };
-    case 'major':       return { text: '重大故障',     color: '#f7931a', bg: '#fff7ed' };
-    case 'critical':    return { text: '全面故障',     color: '#dc2626', bg: '#fef2f2' };
-    case 'maintenance': return { text: '维护中',       color: '#2563eb', bg: '#eff6ff' };
-    default:            return { text: s.description || '未知状态', color: '#909090', bg: '#f6f6f6' };
+    case 'none':        return { text: '全部服务正常', color: 'var(--green-text)', bg: '#f0fdf4' };
+    case 'minor':       return { text: '部分服务异常', color: 'var(--orange-text)', bg: '#fefce8' };
+    case 'major':       return { text: '重大故障',     color: 'var(--orange-text)', bg: '#fff7ed' };
+    case 'critical':    return { text: '全面故障',     color: 'var(--red-text)', bg: '#fef2f2' };
+    case 'maintenance': return { text: '维护中',       color: 'var(--blue-text)', bg: '#eff6ff' };
+    default:            return { text: s.description || '未知状态', color: 'var(--dim)', bg: '#f6f6f6' };
   }
 }
 
 let _ipData = null, _devData = null;
+let _checkRunId = 0;
 
 function setLiveStatus(message) {
   const status = document.getElementById('check-status');
@@ -649,6 +721,7 @@ function setLiveStatus(message) {
 }
 
 async function runCheck() {
+  const runId = ++_checkRunId;
   const btn = document.getElementById('retry-btn');
   const resultEl = document.getElementById('result');
   btn.disabled = true;
@@ -683,17 +756,21 @@ async function runCheck() {
   const dnsResult = {};
   const webrtcResult = {};
   resultEl.innerHTML = render(ip, dev, dnsResult, webrtcResult);
-  setLiveStatus('已获取出口 IP，正在检测网络泄露与服务状态。');
+  resultEl.setAttribute('aria-busy', 'false');
+  setLiveStatus('主要 IP 结果已完成；DNS、WebRTC 与服务状态正在各自检测。');
+  btn.disabled = false;
+  btn.textContent = '重新检测';
 
   // Auto-trigger DNS + WebRTC checks (in parallel) right after main render.
   // Bind the in-card refresh button — recreated on every full render, so we
   // (re-)wire it after innerHTML lands. CSP blocks inline onclick.
   document.getElementById('claude-refresh-btn')?.addEventListener('click', runClaudeCheck);
-  await Promise.allSettled([runDnsCheck(), runWebrtcCheck(), runClaudeCheck()]);
-
-  resultEl.setAttribute('aria-busy', 'false');
-  setLiveStatus('检测完成。结果包含本站估算的网络环境参考分、泄露检测与服务状态。');
-  btn.disabled = false; btn.textContent = '重新检测';
+  void Promise.allSettled([runDnsCheck(), runWebrtcCheck(ip), runClaudeCheck()])
+    .then(() => {
+      if (runId === _checkRunId) {
+        setLiveStatus('附加检测完成。结果包含本站估算的网络环境参考分、泄露检测与服务状态。');
+      }
+    });
 }
 
 async function runDnsCheck() {
@@ -713,8 +790,8 @@ async function runDnsCheck() {
     } else {
       inner.innerHTML = `
         ${row('状态', badge('已识别解析器', true))}
-        ${row('解析器 IP', `<code style="font-size:12px">${result.ip || '—'}</code>`)}
-        ${row('归属', result.org || '—')}
+        ${row('解析器 IP', `<code style="font-size:12px">${safeText(result.ip)}</code>`)}
+        ${row('归属', safeText(result.org))}
       `;
     }
   } finally {
@@ -722,7 +799,7 @@ async function runDnsCheck() {
   }
 }
 
-async function runWebrtcCheck() {
+async function runWebrtcCheck(ipData = _ipData) {
   const inner = document.getElementById('webrtc-card-inner');
   inner?.setAttribute('aria-busy', 'true');
   if (inner) inner.innerHTML = `
@@ -736,9 +813,9 @@ async function runWebrtcCheck() {
     let geo = result.geo || '';
     let loc = '';
     if (result.ip) {
-      if (_ipData?.ip === result.ip) {
-        geo = `${_ipData.country || ''}${_ipData.city ? ' ' + _ipData.city : ''}`.trim();
-        loc = (_ipData.countryCode || '').toLowerCase();
+      if (sameIp(ipData?.ip, result.ip)) {
+        geo = `${ipData.country || ''}${ipData.city ? ' ' + ipData.city : ''}`.trim();
+        loc = (ipData.countryCode || '').toLowerCase();
       } else {
         const g = await lookupGeo(result.ip);
         geo = g.geo || '查询失败';
@@ -746,11 +823,11 @@ async function runWebrtcCheck() {
       }
     }
     if (!inner) return;
-    const leaked = result.ip && _ipData.ip && result.ip !== _ipData.ip;
+    const leaked = result.ip && ipData?.ip && !sameIp(result.ip, ipData.ip);
     inner.innerHTML = `
       ${row('状态', badge(result.ip ? (leaked ? '检测到泄露' : '未检测到泄露') : '未获取到公网 IP', result.ip ? !leaked : true))}
-      ${row('UDP 出口', `<code style="font-size:12px">${loc ? loc + ' ' : ''}${result.ip || '—'}</code>`)}
-      ${row('归属地', geo || '—')}
+      ${row('UDP 出口', `<code style="font-size:12px">${loc ? safeText(loc) + ' ' : ''}${safeText(result.ip)}</code>`)}
+      ${row('归属地', safeText(geo))}
     `;
   } finally {
     inner?.setAttribute('aria-busy', 'false');
@@ -761,7 +838,7 @@ async function runWebrtcCheck() {
 // where states span more than just green/red and we want richer semantics
 // than the generic two-color badge() helper.
 function pill(label) {
-  return `<span class="ip-badge" style="background:${label.bg};color:${label.color}">${label.text}</span>`;
+  return `<span class="ip-badge" style="background:${label.bg};color:${label.color}">${escapeHtml(label.text)}</span>`;
 }
 
 async function runClaudeCheck() {
@@ -797,7 +874,7 @@ async function runClaudeCheck() {
   // Surface Anthropic's official status string (e.g. "All Systems Operational")
   // beside our localized label so the source of truth stays visible.
     const statusDetail = (status && status.description)
-      ? `<span style="color:var(--dim);font-size:11px;margin-left:8px">${status.description}</span>`
+      ? `<span style="color:var(--dim);font-size:11px;margin-left:8px">${escapeHtml(status.description)}</span>`
       : '';
 
     inner.innerHTML = `

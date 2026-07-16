@@ -9,7 +9,11 @@ import {
 export const config = { runtime: 'edge' };
 
 async function readJson(request) {
-  try { return await request.json(); } catch { return {}; }
+  const declaredSize = Number(request.headers.get('content-length') || 0);
+  if (declaredSize > 4096) throw new Error('payload_too_large');
+  const text = await request.text();
+  if (text.length > 4096) throw new Error('payload_too_large');
+  try { return text ? JSON.parse(text) : {}; } catch { return {}; }
 }
 
 export default async function handler(request) {
@@ -43,8 +47,31 @@ export default async function handler(request) {
     });
   }
 
-  const body = await readJson(request);
-  if (!(await passwordIsValid(body.password || ''))) {
+  const contentType = request.headers.get('content-type') || '';
+  if (!contentType.toLowerCase().startsWith('application/json')) {
+    return new Response(JSON.stringify({ ok: false, error: 'content_type_required' }), {
+      status: 415,
+      headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
+    });
+  }
+
+  let body;
+  try {
+    body = await readJson(request);
+  } catch (error) {
+    if (error?.message === 'payload_too_large') {
+      return new Response(JSON.stringify({ ok: false, error: 'payload_too_large' }), {
+        status: 413,
+        headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
+      });
+    }
+    body = {};
+  }
+
+  const password = typeof body.password === 'string' && body.password.length <= 512
+    ? body.password
+    : '';
+  if (!(await passwordIsValid(password))) {
     return new Response(JSON.stringify({ ok: false, error: 'bad_password' }), {
       status: 401,
       headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },

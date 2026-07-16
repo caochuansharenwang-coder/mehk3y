@@ -3,6 +3,7 @@
 
 import {
   createVisitEntry,
+  isAnalyticsPage,
   normalizePage,
   recordDuration,
   recordVisit,
@@ -41,34 +42,54 @@ function hasPrivacyOptOut(request) {
 async function toWebRequest(req) {
   const host = req.headers.host || 'mehk3y.com';
   const url = `https://${host}${req.url || '/api/visit-log'}`;
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of req) {
-    size += chunk.length;
-    if (size > 4096) throw new Error('payload_too_large');
-    chunks.push(chunk);
+  let body;
+
+  // Vercel production exposes the raw stream, while `vercel dev` may parse
+  // JSON into req.body first. Support both without reading the request twice.
+  if (req.body !== undefined && req.body !== null) {
+    if (Buffer.isBuffer(req.body)) body = req.body;
+    else if (typeof req.body === 'string') body = Buffer.from(req.body);
+    else body = Buffer.from(JSON.stringify(req.body));
+    if (body.length > 4096) throw new Error('payload_too_large');
+  } else {
+    const chunks = [];
+    let size = 0;
+    for await (const chunk of req) {
+      size += chunk.length;
+      if (size > 4096) throw new Error('payload_too_large');
+      chunks.push(chunk);
+    }
+    body = chunks.length ? Buffer.concat(chunks) : undefined;
   }
-  const body = chunks.length ? Buffer.concat(chunks) : undefined;
+
   return new Request(url, { method: req.method, headers: req.headers, body });
 }
 
-function isCrossSite(req) {
-  const fetchSite = String(req.headers['sec-fetch-site'] || '').toLowerCase();
-  if (fetchSite === 'cross-site') return true;
+function hasSameOrigin(req) {
   const origin = req.headers.origin;
   if (!origin) return false;
+  const forwardedHost = String(req.headers['x-forwarded-host'] || '').split(',')[0].trim();
+  const expectedHost = forwardedHost || String(req.headers.host || 'mehk3y.com');
   try {
-    return new URL(origin).host !== String(req.headers.host || 'mehk3y.com');
+    const parsed = new URL(origin);
+    return ['http:', 'https:'].includes(parsed.protocol) && parsed.host === expectedHost;
   } catch {
-    return true;
+    return false;
   }
+}
+
+function hasTrustedFetchSite(req) {
+  const fetchSite = String(req.headers['sec-fetch-site'] || '').toLowerCase();
+  return fetchSite === 'same-origin';
 }
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return json(res, 405, { ok: false, error: 'method_not_allowed' }, { allow: 'POST' });
   }
-  if (isCrossSite(req)) return json(res, 403, { ok: false, error: 'cross_site_forbidden' });
+  if (!hasSameOrigin(req) && !hasTrustedFetchSite(req)) {
+    return json(res, 403, { ok: false, error: 'same_site_required' });
+  }
 
   const contentType = String(req.headers['content-type'] || '').toLowerCase();
   if (!contentType.startsWith('application/json')) {
@@ -99,8 +120,13 @@ export default async function handler(req, res) {
     return json(res, 200, { ok: true });
   }
 
+  const page = normalizePage(payload.page || '/');
+  if (!isAnalyticsPage(page)) {
+    return json(res, 400, { ok: false, error: 'page_not_allowed' });
+  }
+
   const entry = createVisitEntry(request);
-  entry.page = normalizePage(payload.page || '/');
+  entry.page = page;
   entry.referrer = sanitizeReferrer(payload.referrer, request.url);
 
   entry.source = 'client';

@@ -239,8 +239,16 @@ function applyGas(gas) {
   if (gas == null || !Number.isFinite(Number(gas))) return false;
   const g = Number(gas);
   const disp = g >= 10 ? Math.round(g) : g >= 1 ? g.toFixed(1) : g.toFixed(2);
-  document.getElementById('gas-price').textContent = disp + ' Gwei';
-  document.getElementById('gas-price').style.color = g < 20 ? 'var(--crypto-positive)' : g < 50 ? 'var(--crypto-neutral)' : 'var(--crypto-negative)';
+  const priceEl = document.getElementById('gas-price');
+  const statusEl = document.getElementById('gas-status');
+  const tone = g < 20 ? 'positive' : g < 50 ? 'neutral' : 'negative';
+  const status = g < 20 ? '低费' : g < 50 ? '正常' : '拥堵';
+  priceEl.textContent = disp + ' Gwei';
+  priceEl.style.color = `var(--crypto-${tone})`;
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = `metric-status tone-${tone}`;
+  }
   return true;
 }
 
@@ -282,8 +290,15 @@ async function fetchWma200() {
 function applyMnav(id, val) {
   const el = document.getElementById(id);
   if (!el || val == null || isNaN(val)) return;
+  const statusEl = document.getElementById(`${id}-status`);
+  const tone = val < 1 ? 'positive' : val < 2 ? 'neutral' : 'negative';
+  const status = val < 1 ? '折价' : val < 2 ? '常态' : '高溢价';
   el.textContent = val.toFixed(2) + 'x';
-  el.style.color = val < 1 ? 'var(--crypto-positive)' : val < 2 ? 'var(--crypto-neutral)' : 'var(--crypto-negative)';
+  el.style.color = `var(--crypto-${tone})`;
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = `metric-status tone-${tone}`;
+  }
 }
 
 function applyMnavPayload(d, bmnrOverride) {

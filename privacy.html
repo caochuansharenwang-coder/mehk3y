@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="light">
   <title>隐私说明 — Mehk3y</title>
-  <meta name="description" content="Mehk3y.com 的隐私说明：自 2026-07-15 起，新统计记录采用不含长期标识符、原始 IP 和逐次事件日志的第一方汇总方案。">
+  <meta name="description" content="Mehk3y.com 的隐私说明：第一方汇总统计、IP 检测的数据流、本机设备信号和第三方检测服务说明。">
   <meta name="robots" content="index,follow">
   <meta property="og:title" content="隐私说明 — Mehk3y">
   <meta property="og:description" content="了解 Mehk3y.com 如何以最少数据运行站内工具和第一方汇总统计。">
@@ -15,15 +15,19 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="Mehk3y 隐私说明">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="隐私说明 — Mehk3y">
+  <meta name="twitter:description" content="了解 Mehk3y.com 的第一方汇总统计、IP 检测数据流和第三方服务说明。">
   <meta name="twitter:image" content="https://mehk3y.com/og-image-20260715.jpg">
+  <meta name="twitter:image:alt" content="Mehk3y 隐私说明">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://mehk3y.com/privacy">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/common.css?v=20260716-light-only">
+  <link rel="stylesheet" href="/common.css?v=20260716-a11y-palette">
   <style>
     .wrap { max-width: 720px; }
     .privacy-hero { margin: 8px 0 26px; }
@@ -69,7 +73,7 @@
         <li>手机、平板或桌面等设备大类，以及浏览器和操作系统家族；</li>
         <li>Vercel 提供的国家代码，以及搜索、社交、消息、开发者社区或其他等固定来源类别。</li>
       </ul>
-      <p>这些统计以计数形式保存，不记录逐次访问事件。</p>
+      <p>这些统计以计数形式保存，不记录逐次访问事件。按日期拆分的页面和趋势数据设置为 120 天后自动过期；不含个人标识的总量与固定分类汇总计数可长期保留。</p>
     </section>
 
     <section class="card privacy-card" aria-labelledby="not-collected-title">
@@ -77,7 +81,7 @@
       <ul>
         <li>不设置统计 Cookie，不在 Local Storage 或 Session Storage 写入访客 ID；</li>
         <li>不保存原始 IP、完整 User-Agent、精确位置、页面查询参数或单个 IP 的访问轨迹；</li>
-        <li>不收集屏幕尺寸、CPU、内存、网络类型、网速、延迟等指纹或网络遥测；</li>
+        <li>站内统计与后台不接收或保存屏幕尺寸、CPU、内存、网络类型、Canvas、WebGL、网速或延迟等指纹和网络遥测；</li>
         <li>不使用 Google Analytics 等第三方统计或广告服务。</li>
       </ul>
     </section>
@@ -85,7 +89,7 @@
     <section class="card privacy-card" aria-labelledby="legacy-title">
       <h2 id="legacy-title">旧版统计数据</h2>
       <p>在 2026 年 7 月 15 日之前，旧版站内统计曾保存长期访客或会话标识、原始 IP、完整 User-Agent、页面参数、设备与网络细节及逐次访问记录。现行线上统计代码和统计后台不再读取或展示这些旧版统计键，新记录也写入独立的 <code>analytics:privacy-v2</code> 命名空间。</p>
-      <p>软件升级不会自动删除 Redis 中已存在的旧版键；它们需要由站点维护者单独清理。在完成清理前，历史数据仍可能保留在原存储中。旧脚本写入浏览器的访客或会话标识会在用户再次访问并运行新脚本时移除。</p>
+      <p>2026 年 7 月 16 日部署的一次性迁移会扫描并删除 Redis 中旧版 <code>analytics:*</code> 键，同时保留现行 <code>analytics:privacy-v2:*</code> 汇总。旧脚本写入浏览器的访客或会话标识会在用户再次访问并运行现行脚本时移除。</p>
     </section>
 
     <section class="card privacy-card" aria-labelledby="signals-title">
@@ -93,16 +97,37 @@
       <p>本站尊重 <strong>Do Not Track（DNT）</strong> 和 <strong>Global Privacy Control（GPC）</strong>。浏览器启用任一信号时，前端不会发送统计请求；统计接口也会再次检查相应请求头。</p>
     </section>
 
-    <section class="card privacy-card" aria-labelledby="tools-title">
-      <h2 id="tools-title">托管、安全与检测工具</h2>
-      <p>网站由 Vercel 托管。与其他网站一样，托管平台会为传输、安全和运行日志处理请求 IP 与基础请求信息。本站中间件还会在内存中短暂使用 IP 做限流，但不会把它写入站内统计。</p>
-      <p>当你主动使用 IP 与网络环境检测时，浏览器可能直接请求 Google / Cloudflare STUN、edns.ip-api.com、ipwho.is、FreeIPAPI、Anthropic 或 Claude 的公开端点；这些服务会收到完成检测所必需的请求信息，并适用各自的隐私规则。</p>
+    <section class="card privacy-card" aria-labelledby="hosting-title">
+      <h2 id="hosting-title">托管与安全</h2>
+      <p>网站由 Vercel 托管。与其他网站一样，托管平台会为传输、安全和运行日志处理请求 IP 与基础请求信息。本站为防止接口滥用会短时处理请求 IP：共享限流只把 IP 的 SHA-256 截断值短期存入 Redis，并设置自动过期时间；原始 IP 和该限流值都不会进入站内统计或用于建立访客档案。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="ip-server-title">
+      <h2 id="ip-server-title">IP 检测：服务端数据流</h2>
+      <p>只有当你主动打开或重新运行 <a href="/ip">IP 与网络环境检测</a> 时，浏览器才会请求本站的 <code>/api/ip-check</code>。Vercel 和该接口会在本次请求中取得你的出口 IP，用它完成即时查询，并以 <code>no-store</code> 响应；本站不会把检测结果写入统计数据库。</p>
+      <p>接口会把出口 IP 同时发送给 <a href="https://ipwho.is/" target="_blank" rel="noopener">ipwho.is</a>（地理与网络信息）和 <a href="https://proxycheck.io/" target="_blank" rel="noopener">proxycheck.io</a>（VPN、代理、Tor 与风险信号）。地理服务采用串行兜底：只有 ipwho.is 不可用时才会联系 <a href="https://ipinfo.io/" target="_blank" rel="noopener">ipinfo.io</a>，前两者都失败时才会联系 <a href="https://freeipapi.com/" target="_blank" rel="noopener">FreeIPAPI</a>，不会为一次正常查询同时请求全部地理提供商。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="ip-browser-title">
+      <h2 id="ip-browser-title">IP 检测：浏览器直接请求</h2>
+      <ul>
+        <li>DNS 解析器检测会请求 <a href="https://edns.ip-api.com/" target="_blank" rel="noopener">edns.ip-api.com</a>；</li>
+        <li>WebRTC 检测会连接 Google 与 Cloudflare 的公开 STUN 服务。若检测到与主出口不同的公网地址，浏览器会先向 ipwho.is 查询其粗略地区，失败时再使用 FreeIPAPI；</li>
+        <li>网络可达性会连接 claude.ai 与 anthropic.com 计算本机往返时间，并从 status.claude.com 读取官方服务状态。</li>
+      </ul>
+      <p>这些直接请求会让相应服务看到建立连接所必需的出口 IP、时间和基础请求信息。它们对数据的处理、日志与保留遵循各自公布的条款和隐私政策，不由本站控制。</p>
+    </section>
+
+    <section class="card privacy-card" aria-labelledby="local-signals-title">
+      <h2 id="local-signals-title">仅在本机展示的检测信号</h2>
+      <p>浏览器时区、语言、操作系统与浏览器类别、Cookie 状态、Canvas 摘要、WebGL 渲染器与摘要都只在当前浏览器中计算并显示，不会上传给本站接口或统计后台。DNS、WebRTC 与第三方服务状态的展示结果也不会回传保存。</p>
+      <p>Claude 与 Anthropic 的延迟数值同样只在本机计算和展示；不过为了测量延迟，浏览器仍需要按上方说明连接对应服务。</p>
     </section>
 
     <section class="card privacy-card" aria-labelledby="contact-title">
       <h2 id="contact-title">联系与更新</h2>
       <p>如对隐私说明有疑问，可通过 <a href="https://x.com/mehk3y" target="_blank" rel="noopener">@Mehk3y</a> 联系。说明若有实质变化，会更新本页日期。</p>
-      <p>最后更新：2026 年 7 月 15 日</p>
+      <p>最后更新：2026 年 7 月 16 日</p>
     </section>
   </div>
 

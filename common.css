@@ -49,6 +49,14 @@
   --blue:    #2563eb;
   --purple:  #627eea;
 
+  /* Accessible foreground variants for semantic text on --surface.
+   * Keep the brighter base colors above for icons, dots and progress bars.
+   */
+  --orange-text: #a85400;
+  --green-text:  #0b7a36;
+  --red-text:    #b42318;
+  --blue-text:   #1d4ed8;
+
   --accent:    #0d0d0d;
   --accent-fg: #ffffff;
 
@@ -56,7 +64,7 @@
   --shadow-md: 0 4px 14px -4px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.04);
   --shadow-lg: 0 18px 40px -16px rgba(0,0,0,.12), 0 4px 10px -3px rgba(0,0,0,.05);
 
-  --ring: 0 0 0 3px rgba(13,13,13,.12);
+  --focus-ring: #0969da;
 
   --r-sm: 8px;
   --r-md: 12px;
@@ -108,8 +116,9 @@ a { color: inherit; }
 /* Focus ring (only for keyboard) */
 :focus { outline: none; }
 :focus-visible {
-  outline: none;
-  box-shadow: var(--ring);
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  box-shadow: none;
   border-radius: 6px;
 }
 

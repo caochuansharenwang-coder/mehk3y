@@ -8,7 +8,7 @@
   <title>访问统计后台 · Mehk3y</title>
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" sizes="512x512" href="/icon.png?v=2">
-  <link rel="stylesheet" href="/common.css?v=20260716-light-only">
+  <link rel="stylesheet" href="/common.css?v=20260716-a11y-palette">
   <style>
     body { min-height: 100vh; padding: 28px 18px 48px; }
     .wrap { width: 100%; max-width: 1120px; margin: 0 auto; }
@@ -53,20 +53,21 @@
 </head>
 <body>
   <main class="wrap">
-    <section id="login" class="panel login hidden">
-      <h1>访问统计后台</h1>
+    <section id="login" class="panel login hidden" aria-labelledby="login-title">
+      <h1 id="login-title">访问统计登录</h1>
       <p>输入后台密码查看不含个人标识的站内汇总数据。</p>
       <form id="login-form">
+        <label class="sr-only" for="password">后台密码</label>
         <input id="password" type="password" autocomplete="current-password" placeholder="后台密码" required>
         <button class="btn primary" type="submit">登录</button>
       </form>
-      <div id="login-error" class="error"></div>
+      <div id="login-error" class="error" role="alert" aria-atomic="true"></div>
     </section>
 
-    <section id="dashboard" class="hidden">
+    <section id="dashboard" class="hidden" aria-labelledby="dashboard-title">
       <div class="top">
         <div class="title">
-          <h1>访问统计后台</h1>
+          <h1 id="dashboard-title" tabindex="-1">访问统计后台</h1>
           <p>2026-07-15 起使用 privacy-v2 汇总统计，仅展示页面浏览、设备大类和来源等非个人数据。</p>
         </div>
         <div>
@@ -95,14 +96,15 @@
       <section class="panel" style="margin-bottom:10px">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
           <h2 style="font-size:16px">访问趋势</h2>
-          <div class="seg" id="trend-toggle">
-            <button type="button" data-mode="day" class="active">按天 (30天)</button>
-            <button type="button" data-mode="week">按周 (12周)</button>
+          <div class="seg" id="trend-toggle" role="group" aria-label="趋势时间范围">
+            <button type="button" data-mode="day" class="active" aria-pressed="true">按天 (30天)</button>
+            <button type="button" data-mode="week" aria-pressed="false">按周 (12周)</button>
           </div>
         </div>
-        <div id="chart" class="chart"></div>
-        <div id="chart-x" class="chart-x"></div>
-        <p class="hint" style="margin-top:8px">柱子高度代表页面浏览量（PV），悬停查看当天或当周数据。</p>
+        <div id="chart" class="chart" aria-hidden="true"></div>
+        <div id="chart-x" class="chart-x" aria-hidden="true"></div>
+        <p id="chart-summary" class="sr-only"></p>
+        <p class="hint" style="margin-top:8px">柱子高度代表页面浏览量（PV）；完整数值也会提供给辅助技术。</p>
       </section>
 
       <div class="cols">
@@ -142,29 +144,9 @@
         </section>
       </div>
 
-      <section class="panel" style="margin-top:10px">
-        <h2 style="font-size:16px;margin-bottom:4px">API Key 管理</h2>
-        <p class="hint" style="margin-bottom:12px">付费 IP 情报 API（<code>/api/v1/check</code>）的 key。建好后发给客户，按每日上限计费。</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
-          <label style="font-size:12px;color:var(--dim)">套餐<br><input id="k-plan" type="text" value="pro" style="margin-top:4px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;width:90px"></label>
-          <label style="font-size:12px;color:var(--dim)">每日上限 (0=无限)<br><input id="k-limit" type="number" value="10000" min="0" style="margin-top:4px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;width:120px"></label>
-          <label style="font-size:12px;color:var(--dim);flex:1;min-width:140px">备注 (客户名)<br><input id="k-label" type="text" placeholder="如 张三-月付" style="margin-top:4px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;width:100%"></label>
-          <button id="k-create" class="btn" type="button">建 Key</button>
-        </div>
-        <div id="k-new" class="hidden" style="margin-bottom:14px;padding:12px 14px;background:var(--tint-green-bg);border:1px solid var(--tint-green-fg);border-radius:10px">
-          <div style="font-size:12px;color:var(--text-2);margin-bottom:6px">✅ 新 key 已创建（请复制保存）：</div>
-          <code id="k-new-val" style="font-size:13px;word-break:break-all;color:var(--text)"></code>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th scope="col">状态</th><th scope="col">Key</th><th scope="col">套餐</th><th scope="col">每日上限</th><th scope="col">今日已用</th><th scope="col">累计</th><th scope="col">备注</th><th scope="col">操作</th></tr></thead>
-            <tbody id="k-list"><tr><td colspan="8"><p class="hint">加载中…</p></td></tr></tbody>
-          </table>
-        </div>
-      </section>
     </section>
   </main>
 
-  <script src="/admin.js?v=20260715-privacy" defer></script>
+  <script src="/admin.js?v=20260716-a11y-cleanup" defer></script>
 </body>
 </html>

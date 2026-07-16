@@ -13,7 +13,10 @@
         $(id).innerHTML = '<p class="hint">暂无数据</p>';
         return;
       }
-      $(id).innerHTML = `<table><tbody>${rows.map((row) => `<tr><td><code>${escapeHtml(row.key)}</code></td><td style="text-align:right;font-weight:800">${row.count}</td></tr>`).join('')}</tbody></table>`;
+      $(id).innerHTML = `<table>
+        <thead class="sr-only"><tr><th scope="col">项目</th><th scope="col">数量</th></tr></thead>
+        <tbody>${rows.map((row) => `<tr><td><code>${escapeHtml(row.key)}</code></td><td style="text-align:right;font-weight:800">${row.count}</td></tr>`).join('')}</tbody>
+      </table>`;
     }
 
     function formatDuration(ms) {
@@ -68,11 +71,18 @@
       $('chart-x').innerHTML = rows.length
         ? `<span>${escapeHtml(rows[0].label)}</span><span>${escapeHtml(rows[rows.length - 1].label)}</span>`
         : '';
+      $('chart-summary').textContent = rows.length
+        ? `${trendMode === 'week' ? '最近 12 周' : '最近 30 天'}页面浏览量：${rows.map((row) => `${row.label} ${row.visits} 次`).join('；')}`
+        : '暂无访问趋势数据。';
     }
 
     $('trend-toggle').querySelectorAll('button').forEach((btn) => btn.addEventListener('click', () => {
       trendMode = btn.dataset.mode;
-      $('trend-toggle').querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+      $('trend-toggle').querySelectorAll('button').forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
       renderTrend();
     }));
 
@@ -87,14 +97,17 @@
             $('login-error').textContent = '后台鉴权尚未安全配置，请先设置 ADMIN_PASSWORD_HASH 和 ADMIN_SESSION_SECRET。';
           }
         }
+        requestAnimationFrame(() => $('password').focus());
         return;
       }
       const data = await response.json();
+      const dashboardWasHidden = $('dashboard').classList.contains('hidden');
       $('login').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
       renderStats(data.stats || {});
       trendData = data.trend || [];
       renderTrend();
+      if (dashboardWasHidden) requestAnimationFrame(() => $('dashboard-title').focus());
     }
 
     $('login-form').addEventListener('submit', async (event) => {
@@ -110,87 +123,21 @@
         $('login-error').textContent = result.error === 'admin_unconfigured'
           ? '后台鉴权尚未安全配置，请先设置 ADMIN_PASSWORD_HASH 和 ADMIN_SESSION_SECRET。'
           : '密码不对。';
+        $('password').focus();
+        $('password').select();
         return;
       }
       $('password').value = '';
       await loadStats();
-      loadKeys();
     });
 
     $('logout').addEventListener('click', async () => {
       await fetch('/api/admin-login', { method: 'DELETE' });
       $('dashboard').classList.add('hidden');
       $('login').classList.remove('hidden');
+      $('login-error').textContent = '';
+      requestAnimationFrame(() => $('password').focus());
     });
 
     $('refresh').addEventListener('click', loadStats);
     loadStats();
-
-    // ── API Key 管理 ──
-    async function loadKeys() {
-      const tbody = $('k-list');
-      try {
-        const res = await fetch('/api/admin-keys', { headers: { 'accept': 'application/json' } });
-        if (!res.ok) { tbody.innerHTML = '<tr><td colspan="8"><p class="hint">未授权或存储未配置。</p></td></tr>'; return; }
-        const data = await res.json();
-        const keys = data.keys || [];
-        if (!keys.length) { tbody.innerHTML = '<tr><td colspan="8"><p class="hint">还没有 key，用上方表单创建。</p></td></tr>'; return; }
-        tbody.innerHTML = keys.map((k) => {
-          const masked = escapeHtml(k.key.slice(0, 10)) + '…' + escapeHtml(k.key.slice(-4));
-          const status = k.active
-            ? '<span style="color:var(--tint-green-fg)">●启用</span>'
-            : '<span style="color:var(--dim)">○停用</span>';
-          const limit = k.dailyLimit > 0 ? k.dailyLimit.toLocaleString() : '无限';
-          const btn = k.active
-            ? `<button class="btn k-toggle" data-key="${escapeHtml(k.key)}" data-active="0" type="button">停用</button>`
-            : `<button class="btn k-toggle" data-key="${escapeHtml(k.key)}" data-active="1" type="button">启用</button>`;
-          return `<tr><td>${status}</td><td><code title="${escapeHtml(k.key)}" style="font-size:11px">${masked}</code></td><td>${escapeHtml(k.plan)}</td><td>${limit}</td><td>${k.usedToday}</td><td>${k.total}</td><td>${escapeHtml(k.label)}</td><td>${btn}</td></tr>`;
-        }).join('');
-        tbody.querySelectorAll('.k-toggle').forEach((b) => {
-          b.addEventListener('click', async () => {
-            b.disabled = true;
-            await fetch('/api/admin-keys', {
-              method: 'PATCH',
-              headers: { 'content-type': 'application/json' },
-              body: JSON.stringify({ key: b.dataset.key, active: b.dataset.active === '1' }),
-            });
-            loadKeys();
-          });
-        });
-      } catch (_) {
-        tbody.innerHTML = '<tr><td colspan="8"><p class="hint">加载失败。</p></td></tr>';
-      }
-    }
-
-    $('k-create').addEventListener('click', async () => {
-      const btn = $('k-create');
-      btn.disabled = true;
-      try {
-        const res = await fetch('/api/admin-keys', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({
-            plan: $('k-plan').value.trim() || 'free',
-            dailyLimit: Number($('k-limit').value) || 0,
-            label: $('k-label').value.trim(),
-          }),
-        });
-        const data = await res.json();
-        if (data.ok && data.key) {
-          $('k-new-val').textContent = data.key;
-          $('k-new').classList.remove('hidden');
-          $('k-label').value = '';
-          loadKeys();
-        }
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    // dashboard 可见时(已登录)加载 key 列表; 刷新按钮也一并刷新。
-    function maybeLoadKeys() {
-      if (!$('dashboard').classList.contains('hidden')) loadKeys();
-    }
-    $('refresh').addEventListener('click', maybeLoadKeys);
-    // 初次进入若已是登录态, 稍后再查一次 (等 loadStats 决定显隐)。
-    setTimeout(maybeLoadKeys, 800);
