@@ -74,7 +74,11 @@ export default function middleware(request, context) {
       url.pathname === '/parking/index.html' ||
       url.pathname === '/gg-keeper' || url.pathname === '/gg-keeper/' ||
       url.pathname === '/gg-keeper/index.html' ||
-      url.pathname === '/giffgaff' || url.pathname === '/giffgaff/') {
+      url.pathname === '/giffgaff' || url.pathname === '/giffgaff/' ||
+      url.pathname === '/fish' || url.pathname === '/fish/' ||
+      url.pathname === '/fish.html' ||
+      url.pathname === '/kingyo' || url.pathname === '/kingyo/' ||
+      url.pathname === '/kingyo.html') {
     return new Response('Gone', {
       status: 410,
       headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },

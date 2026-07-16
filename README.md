@@ -8,7 +8,6 @@
 |---|---|
 | `/crypto` | BTC + ETH 实时链上指标合一：MVRV · ahr999 · Gas · MSTR / BMNR 储备 |
 | `/ip` | 出口 IP、代理、DNS 解析器、WebRTC 与网络环境检测 |
-| `/fish` | WebGL 鱼池小玩具 |
 | `/privacy` | 隐私说明 |
 | `/admin` | 非首页入口：访问统计管理页 |
 
