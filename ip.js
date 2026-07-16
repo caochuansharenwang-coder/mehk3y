@@ -183,21 +183,21 @@ function trustScore(ip) {
 }
 
 function trustLabel(s) {
-  if (s >= 95) return { text: '低风险信号', color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
-  if (s >= 80) return { text: '较低风险',   color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
-  if (s >= 50) return { text: '需留意',     color: 'var(--tint-blue-fg)',   bg: 'var(--tint-blue-bg)' };
-  if (s >= 25) return { text: '较高风险',   color: 'var(--tint-yellow-fg)', bg: 'var(--tint-yellow-bg)' };
-  return               { text: '高风险信号', color: 'var(--tint-red-fg)',   bg: 'var(--tint-red-bg)' };
+  if (s >= 95) return { text: '低风险信号', color: '#0a6e1e', bg: '#f0fdf4' };
+  if (s >= 80) return { text: '较低风险',   color: '#16a34a', bg: '#f0fdf4' };
+  if (s >= 50) return { text: '需留意',     color: '#2563eb', bg: '#eff6ff' };
+  if (s >= 25) return { text: '较高风险',   color: '#ca8a04', bg: '#fefce8' };
+  return               { text: '高风险信号', color: '#dc2626', bg: '#fef2f2' };
 }
 
 function badge(text, ok) {
-  const color = ok ? 'var(--tint-green-fg)' : 'var(--tint-red-fg)';
-  const bg    = ok ? 'var(--tint-green-bg)' : 'var(--tint-red-bg)';
+  const color = ok ? '#16a34a' : '#dc2626';
+  const bg    = ok ? '#f0fdf4' : '#fef2f2';
   return `<span class="ip-badge" style="background:${bg};color:${color}">${text}</span>`;
 }
 
 function warnBadge(text) {
-  return `<span class="ip-badge" style="background:var(--tint-orange-bg);color:var(--tint-orange-fg)">${text}</span>`;
+  return `<span class="ip-badge" style="background:#fff7ed;color:#f7931a">${text}</span>`;
 }
 
 function row(label, valueHtml) {
@@ -231,8 +231,8 @@ function render(ip, dev, dnsResult, webrtcResult) {
   const reasons = scoreReasons(ip);
 
   const ipType = ip.isVPN ? 'VPN' : ip.isTOR ? 'Tor' : ip.proxy ? '代理 IP' : ip.isHosting ? '数据中心 IP' : '家庭 IP';
-  const itColor = (ip.proxy || ip.isVPN || ip.isTOR) ? 'var(--tint-red-fg)' : ip.isHosting ? 'var(--tint-orange-fg)' : 'var(--tint-green-fg)';
-  const itBg    = (ip.proxy || ip.isVPN || ip.isTOR) ? 'var(--tint-red-bg)' : ip.isHosting ? 'var(--tint-orange-bg)' : 'var(--tint-green-bg)';
+  const itColor = (ip.proxy || ip.isVPN || ip.isTOR) ? '#dc2626' : ip.isHosting ? '#f7931a' : '#16a34a';
+  const itBg    = (ip.proxy || ip.isVPN || ip.isTOR) ? '#fef2f2' : ip.isHosting ? '#fff7ed' : '#f0fdf4';
 
   const tzLine = dev.tzMismatch
     ? `${warnBadge('时区不一致')}<br><small style="color:var(--dim);font-size:11px">本地: ${dev.localTz} / 出口: ${dev.expectedTz || ip.timezone || '—'}</small>`
@@ -324,7 +324,7 @@ function render(ip, dev, dnsResult, webrtcResult) {
           score >= 25 ? '本次发现较多网络风险信号' :
                         '本次发现多个高风险网络信号'
         }</div>
-        <div role="meter" aria-label="本站估算的网络环境参考分" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}" style="position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#b91c1c 0%,#c2410c 25%,#a16207 50%,#4d7c0f 75%,#0b7a3b 100%);margin-bottom:5px">
+        <div role="meter" aria-label="本站估算的网络环境参考分" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}" style="position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,#dc2626 0%,#f97316 25%,#eab308 50%,#84cc16 75%,#16a34a 100%);margin-bottom:5px">
           <div aria-hidden="true" style="position:absolute;top:50%;left:${score}%;transform:translate(-50%,-50%);width:14px;height:14px;background:var(--bg);border:2px solid var(--text);border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim)"><span>0 风险信号多</span><span>100 风险信号少</span></div>
@@ -620,24 +620,24 @@ async function probeClaudeStatus() {
 // hit shows "良好" and a warm-pool 0-RTT QUIC hit (sub-100ms) still reads
 // the same — we don't over-segment small numbers.
 function latencyStatus(probe) {
-  if (!probe.ok)            return { text: '不可达', color: 'var(--tint-red-fg)',    bg: 'var(--tint-red-bg)' };
-  if (probe.ms < 200)       return { text: '良好',   color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
-  if (probe.ms < 600)       return { text: '正常',   color: 'var(--tint-blue-fg)',   bg: 'var(--tint-blue-bg)' };
-  if (probe.ms < 1500)      return { text: '较慢',   color: 'var(--tint-yellow-fg)', bg: 'var(--tint-yellow-bg)' };
-  return                           { text: '超时',   color: 'var(--tint-red-fg)',    bg: 'var(--tint-red-bg)' };
+  if (!probe.ok)            return { text: '不可达', color: '#dc2626', bg: '#fef2f2' };
+  if (probe.ms < 200)       return { text: '良好',   color: '#16a34a', bg: '#f0fdf4' };
+  if (probe.ms < 600)       return { text: '正常',   color: '#2563eb', bg: '#eff6ff' };
+  if (probe.ms < 1500)      return { text: '较慢',   color: '#ca8a04', bg: '#fefce8' };
+  return                           { text: '超时',   color: '#dc2626', bg: '#fef2f2' };
 }
 
 // Statuspage indicator → user-facing label + color. Aligns with Statuspage's
 // own conventions (none/minor/major/critical/maintenance).
 function statusIndicatorLabel(s) {
-  if (!s) return { text: '查询失败', color: 'var(--tint-red-fg)', bg: 'var(--tint-red-bg)' };
+  if (!s) return { text: '查询失败', color: '#dc2626', bg: '#fef2f2' };
   switch (s.indicator) {
-    case 'none':        return { text: '全部服务正常', color: 'var(--tint-green-fg)',  bg: 'var(--tint-green-bg)' };
-    case 'minor':       return { text: '部分服务异常', color: 'var(--tint-yellow-fg)', bg: 'var(--tint-yellow-bg)' };
-    case 'major':       return { text: '重大故障',     color: 'var(--tint-orange-fg)', bg: 'var(--tint-orange-bg)' };
-    case 'critical':    return { text: '全面故障',     color: 'var(--tint-red-fg)',    bg: 'var(--tint-red-bg)' };
-    case 'maintenance': return { text: '维护中',       color: 'var(--tint-blue-fg)',   bg: 'var(--tint-blue-bg)' };
-    default:            return { text: s.description || '未知状态', color: 'var(--text-2)', bg: 'var(--surface)' };
+    case 'none':        return { text: '全部服务正常', color: '#16a34a', bg: '#f0fdf4' };
+    case 'minor':       return { text: '部分服务异常', color: '#ca8a04', bg: '#fefce8' };
+    case 'major':       return { text: '重大故障',     color: '#f7931a', bg: '#fff7ed' };
+    case 'critical':    return { text: '全面故障',     color: '#dc2626', bg: '#fef2f2' };
+    case 'maintenance': return { text: '维护中',       color: '#2563eb', bg: '#eff6ff' };
+    default:            return { text: s.description || '未知状态', color: '#909090', bg: '#f6f6f6' };
   }
 }
 
