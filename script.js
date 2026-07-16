@@ -243,8 +243,8 @@ function applyPrice(pd) {
   priceEl.textContent = '$' + pd.price.toLocaleString('en-US', { maximumFractionDigits: 0 });
   const chg = pd.chg ?? 0;
   const el = document.getElementById('btc-chg');
-  el.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
-  el.style.color = chg >= 0 ? 'var(--green)' : 'var(--red)';
+  el.textContent = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
+  el.style.color = chg > 0 ? 'var(--green)' : chg < 0 ? 'var(--red)' : 'var(--text-2)';
   // MSTR may arrive before BTC price during a degraded fallback. Replaying
   // the last payload closes that race so mNAV and USD values do not stay blank.
   if (latestMstrPayload) applyMstrPayload(latestMstrPayload);
@@ -308,10 +308,10 @@ function applyFng(val) {
   let label, color, desc;
   if (val <= 20)      { label='极度恐惧'; color='var(--red)';    desc='市场极度恐慌，历史上往往是买入机会'; }
   else if (val <= 40) { label='恐惧';     color='var(--orange)'; desc='市场情绪偏空，投资者较为谨慎'; }
-  else if (val <= 60) { label='中性';     color='var(--tint-yellow-fg)'; desc='市场情绪中性，多空力量均衡'; }
-  else if (val <= 80) { label='贪婪';     color='var(--green)';  desc='市场情绪偏多，注意控制仓位'; }
-  else                { label='极度贪婪'; color='var(--green)';  desc='市场过度乐观，可考虑分批止盈'; }
-  valEl.style.color = color;
+  else if (val <= 60) { label='中性';     color='var(--text-2)'; desc='市场情绪中性，多空力量均衡'; }
+  else if (val <= 80) { label='贪婪';     color='var(--orange)'; desc='市场情绪偏多，注意控制仓位'; }
+  else                { label='极度贪婪'; color='var(--red)';    desc='市场过度乐观，可考虑分批止盈'; }
+  valEl.style.removeProperty('color');
   document.getElementById('fng-status').textContent = label;
   document.getElementById('fng-status').style.color = color;
   document.getElementById('fng-desc').textContent = desc;
@@ -378,8 +378,8 @@ function applyMvrv(mvrv) {
   const el = document.getElementById('mvrv-value');
   const noteEl = document.getElementById('mvrv-note');
   el.textContent = mvrv.toFixed(2);
-  if (mvrv < 1)        { el.style.color='var(--green)';  noteEl.textContent='MVRV 小于 1 — 低估区间，历史大底'; }
-  else if (mvrv < 2)   { el.style.color='var(--green)';  noteEl.textContent='正常偏低 — 持币 / 定投区间'; }
+  if (mvrv < 1)        { el.style.color='var(--text)';   noteEl.textContent='MVRV 小于 1 — 低估区间，历史大底'; }
+  else if (mvrv < 2)   { el.style.color='var(--text)';   noteEl.textContent='正常偏低 — 持币 / 定投区间'; }
   else if (mvrv < 3.5) { el.style.color='var(--orange)'; noteEl.textContent='正常偏高 — 注意风险'; }
   else                 { el.style.color='var(--red)';    noteEl.textContent='MVRV 大于 3.5 — 过热，历史顶部'; }
 }
@@ -412,8 +412,8 @@ function applyHalving(d) {
 function applyAhr999(ahr) {
   const el = document.getElementById('ahr999');
   el.textContent = ahr.toFixed(2);
-  if (ahr < 0.45)      { el.style.color='var(--green)';  el.title='抄底区间'; }
-  else if (ahr < 1.2)  { el.style.color='var(--green)';  el.title='定投区间'; }
+  if (ahr < 0.45)      { el.style.color='var(--text-2)'; el.title='抄底区间'; }
+  else if (ahr < 1.2)  { el.style.color='var(--text-2)'; el.title='定投区间'; }
   else if (ahr < 5)    { el.style.color='var(--orange)'; el.title='观望区间'; }
   else                 { el.style.color='var(--red)';    el.title='泡沫区间'; }
 }
@@ -444,7 +444,7 @@ function applyMnav(id, val) {
   const el = document.getElementById(id);
   if (!el || val == null || isNaN(val)) return;
   el.textContent = val.toFixed(2) + 'x';
-  el.style.color = val < 1 ? 'var(--green)' : val < 2 ? 'var(--orange)' : 'var(--red)';
+  el.style.color = val < 1.2 ? 'var(--text)' : val < 2 ? 'var(--orange)' : 'var(--red)';
 }
 function setEl(id, text, color) {
   const el = document.getElementById(id);
@@ -489,7 +489,7 @@ function applyMstrHoldingTrend(currentHoldings) {
   const days = best ? 7 : oldest ? Math.max(1, Math.floor((now - oldest.t) / 86400000)) : 7;
   const delta = baseline ? currentHoldings - baseline.h : 0;
   const daily = delta / days;
-  const color = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--dim)';
+  const color = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--text-2)';
   const weekEl = document.getElementById('mstr-week-delta');
   const dayEl = document.getElementById('mstr-daily-delta');
   if (!weekEl || !dayEl) return;
@@ -510,7 +510,7 @@ function applyMstrPayload(d) {
 
   setEl('mstr-holdings', (m.btc_holdings || 0).toLocaleString() + ' BTC');
   setEl('mstr-pct',      m.btc_holdings ? (m.btc_holdings / 19_800_000 * 100).toFixed(2) + '%' : '—');
-  setEl('mstr-stock',    '$' + m.stock_price, 'var(--blue)');
+  setEl('mstr-stock',    '$' + m.stock_price);
   setEl('mstr-mcap',     '市值 ' + fmtUsd(mcap));
   if (m.btc_holdings) applyMstrHoldingTrend(m.btc_holdings);
 
@@ -522,7 +522,7 @@ function applyMstrPayload(d) {
     applyMnav('mstr-mnav', ev);
     applyMnav('mstr-basic', basic);
     setEl('mstr-holdings-usd', fmtUsd(btcVal));
-    setEl('mstr-btcval', fmtUsd(btcVal), 'var(--orange)');
+    setEl('mstr-btcval', fmtUsd(btcVal));
     cache.set('mstr-mnav', {
       basic, ev, holdings: m.btc_holdings, price: m.stock_price, btcval: btcVal, mcap,
     });
@@ -658,14 +658,14 @@ function applyBtcSnapshot(d) {
     const m = d.mstr;
     setEl('mstr-holdings', (m.btc_holdings || 0).toLocaleString() + ' BTC');
     setEl('mstr-pct', d.mstrComputed?.pctSupply != null ? d.mstrComputed.pctSupply.toFixed(2) + '%' : '—');
-    setEl('mstr-stock', '$' + m.stock_price, 'var(--blue)');
+    setEl('mstr-stock', '$' + m.stock_price);
     setEl('mstr-mcap', d.mstrComputed?.mcap ? '市值 ' + fmtUsd(d.mstrComputed.mcap) : '市值 $—');
     if (m.btc_holdings) applyMstrHoldingTrend(m.btc_holdings);
     if (d.mstrComputed?.ev) applyMnav('mstr-mnav', d.mstrComputed.ev);
     if (d.mstrComputed?.basic) applyMnav('mstr-basic', d.mstrComputed.basic);
     if (d.mstrComputed?.btcVal) {
       setEl('mstr-holdings-usd', fmtUsd(d.mstrComputed.btcVal));
-      setEl('mstr-btcval', fmtUsd(d.mstrComputed.btcVal), 'var(--orange)');
+      setEl('mstr-btcval', fmtUsd(d.mstrComputed.btcVal));
     }
     cache.set('mstr-mnav', {
       basic: d.mstrComputed?.basic,
@@ -716,9 +716,9 @@ function loadCache() {
       setEl('mstr-holdings-usd', mc.btcval ? fmtUsd(mc.btcval) : '$—');
       setEl('mstr-pct',          mc.holdings ? (mc.holdings / 19_800_000 * 100).toFixed(2) + '%' : '—');
       if (mc.holdings) applyMstrHoldingTrend(mc.holdings);
-      setEl('mstr-stock',        '$' + mc.price, 'var(--blue)');
+      setEl('mstr-stock',        '$' + mc.price);
       setEl('mstr-mcap',         mc.mcap ? '市值 ' + fmtUsd(mc.mcap) : '市值 $—');
-      setEl('mstr-btcval',       mc.btcval ? fmtUsd(mc.btcval) : '$—', 'var(--orange)');
+      setEl('mstr-btcval',       mc.btcval ? fmtUsd(mc.btcval) : '$—');
     }
   } catch(_) {}
 }

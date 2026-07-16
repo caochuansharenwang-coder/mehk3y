@@ -28,8 +28,8 @@
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <script src="/theme.js"></script>
   <link rel="preload" as="script" href="/common.js">
-  <link rel="preload" as="script" href="/script.js?v=20260715-crypto">
-  <link rel="preload" as="script" href="/eth.js?v=20260715-crypto">
+  <link rel="preload" as="script" href="/script.js?v=20260716-hierarchy">
+  <link rel="preload" as="script" href="/eth.js?v=20260716-hierarchy">
   <!-- 所有数据走 /api/* (Vercel Edge Runtime, 全球边缘部署) -->
 
   <style>
@@ -48,7 +48,7 @@
     /* —— 紧凑但保持手机端可读性 —— */
     .card        { padding: 13px 15px; }
     .card-label  { margin-bottom: 5px; font-size: 11.5px; color: var(--text-2); }
-    .card-main   { font-size: 20px; margin-bottom: 4px; line-height: 1.2; }
+    .card-main   { font-size: 20px; margin-bottom: 4px; line-height: 1.2; color: var(--text); }
     .card-sub    { font-size: 12px; line-height: 1.5; color: var(--text-2); }
     .grid4, .grid2, .grid3 { gap: 8px; margin-bottom: 8px; }
     .section-title { margin: 16px 0 6px; font-size: 11.5px; color: var(--text-2); }
@@ -69,7 +69,7 @@
     .update-summary.is-error::before { background: var(--red); }
     .data-meta {
       margin: -2px 2px 10px; color: var(--text-2);
-      font-size: 12px; line-height: 1.5;
+      font-size: 11.5px; line-height: 1.5;
     }
     .data-error {
       margin: -3px 0 9px; padding: 8px 10px;
@@ -99,8 +99,8 @@
     .coin-name     { font-size: 15px; font-weight: 650; color: var(--text); letter-spacing: -0.01em; }
     .coin-sub      { font-size: 12px; color: var(--text-2); margin-left: 1px; }
     .coin-banner-r { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
-    .coin-price    { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
-    .coin-chg      { font-size: 12px; font-weight: 500; color: var(--dim); font-variant-numeric: tabular-nums; }
+    .coin-price    { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .coin-chg      { font-size: 12px; font-weight: 650; color: var(--dim); font-variant-numeric: tabular-nums; }
 
     /* —— 中段内嵌迷你指标（吃掉 banner 中间留白）—— */
     .coin-banner-m {
@@ -113,12 +113,12 @@
       font-variant-numeric: tabular-nums; white-space: nowrap; line-height: 1.1;
     }
     .bm-label { font-size: 11px; color: var(--text-2); font-weight: 600; letter-spacing: 0.02em; }
-    .bm-value { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .bm-value { font-size: 13.5px; font-weight: 650; color: var(--text-2); letter-spacing: -0.02em; }
     .bm-sub   { font-size: 11.5px; color: var(--text-2); }
 
     /* —— Halving progress bar (BTC) —— */
     .halving-track { height: 3px; background: var(--border); border-radius: 2px; margin-top: 7px; overflow: hidden; }
-    .halving-fill  { height: 100%; background: linear-gradient(90deg, var(--orange), var(--green)); border-radius: 2px; transition: width 0.5s; }
+    .halving-fill  { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.5s; }
 
     /* —— Treasury 行 (MSTR / BMNR) 单行紧凑布局 —— */
     .treasury-row {
@@ -129,9 +129,7 @@
     }
     .treasury-row .t-name    { font-size: 13px; font-weight: 700; color: var(--text); }
     .treasury-row .t-ticker  { font-size: 11.5px; color: var(--text-2); }
-    .treasury-row .t-amount  { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-    .treasury-row.btc .t-amount { color: var(--orange); }
-    .treasury-row.eth .t-amount { color: var(--purple); }
+    .treasury-row .t-amount  { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
     .treasury-row .t-usd     { font-size: 12px; color: var(--text-2); }
     .treasury-row .t-meta    { font-size: 12px; color: var(--text-2); }
     .treasury-row .t-meta b  { color: var(--text); font-weight: 600; }
@@ -189,10 +187,10 @@
       <span class="coin-sub">BTC</span>
     </h2>
     <div class="coin-banner-m">
-      <div class="bm-item"><span class="bm-label">算力</span><span class="bm-value" id="hashrate" style="color:var(--blue)">—</span></div>
+      <div class="bm-item"><span class="bm-label">算力</span><span class="bm-value" id="hashrate">—</span></div>
       <div class="bm-item"><span class="bm-label">AHR999</span><span class="bm-value" id="ahr999">—</span></div>
-      <div class="bm-item"><span class="bm-label">减半</span><span class="bm-value" id="halving-pct" style="color:var(--orange)">—</span></div>
-      <div class="bm-item"><span class="bm-label">F&amp;G</span><span class="bm-value" id="fng-value" style="color:var(--dim)">—</span><span class="bm-sub" id="fng-status">中性</span></div>
+      <div class="bm-item"><span class="bm-label">减半</span><span class="bm-value" id="halving-pct">—</span></div>
+      <div class="bm-item"><span class="bm-label">F&amp;G</span><span class="bm-value" id="fng-value">—</span><span class="bm-sub" id="fng-status">中性</span></div>
     </div>
     <div class="coin-banner-r">
       <div class="coin-price" id="btc-price">$—</div>
@@ -207,22 +205,22 @@
   <div class="grid4">
     <div class="card">
       <div class="card-label">200 周均线</div>
-      <div class="card-main" id="btc-wma200-price" style="color:var(--blue)">$—</div>
+      <div class="card-main" id="btc-wma200-price">$—</div>
       <div class="card-sub">当前 / 200WMA = <b id="btc-wma200-ratio">—</b>x<br><span id="btc-wma200-note">BTC 历史从未长期跌破</span></div>
     </div>
     <div class="card">
       <div class="card-label">均衡价格</div>
-      <div class="card-main" id="bp-price" style="color:var(--green)">$—</div>
+      <div class="card-main" id="bp-price">$—</div>
       <div class="card-sub">当前 / BP = <b id="bp-ratio">—</b>x<br><span id="bp-note">已实现价格 − 转移价格</span></div>
     </div>
     <div class="card">
       <div class="card-label">MVRV Ratio</div>
-      <div class="card-main" id="mvrv-value" style="color:var(--green)">—</div>
+      <div class="card-main" id="mvrv-value">—</div>
       <div class="card-sub"><span id="mvrv-note">小于 1 低估 · 1–3.5 正常 · 大于 3.5 过热</span></div>
     </div>
     <div class="card">
       <div class="card-label">⏳ 减半倒计时</div>
-      <div class="card-main" id="halving-days" style="color:var(--orange)">— 天</div>
+      <div class="card-main" id="halving-days">— 天</div>
       <div class="card-sub">区块 <b id="halving-block">—</b> / 1,050,000<br>预计 <b id="halving-date">—</b></div>
       <div class="halving-track"><div class="halving-fill" id="halving-fill" style="width:0%"></div></div>
     </div>
@@ -278,7 +276,7 @@
       <span class="coin-sub">ETH</span>
     </h2>
     <div class="coin-banner-m">
-      <div class="bm-item"><span class="bm-label">ETH/BTC</span><span class="bm-value" id="eth-btc" style="color:var(--blue)">—</span></div>
+      <div class="bm-item"><span class="bm-label">ETH/BTC</span><span class="bm-value" id="eth-btc">—</span></div>
       <div class="bm-item"><span class="bm-label">市值</span><span class="bm-value" id="market-cap">—</span></div>
       <div class="bm-item"><span class="bm-label">24H量</span><span class="bm-value" id="volume-24h">—</span></div>
       <div class="bm-item"><span class="bm-label">Gas</span><span class="bm-value" id="gas-price">—</span></div>
@@ -359,8 +357,8 @@
 
 <div class="error-toast" id="error-toast" hidden aria-hidden="true">数据加载失败，请稍后刷新</div>
 <script src="/common.js" defer></script>
-<script src="/script.js?v=20260715-crypto" defer></script>
-<script src="/eth.js?v=20260715-crypto" defer></script>
+<script src="/script.js?v=20260716-hierarchy" defer></script>
+<script src="/eth.js?v=20260716-hierarchy" defer></script>
 <!-- csp-refresh: 2026-05-25 -->
 <script src="/analytics.js?v=20260715-privacy" defer></script>
 </body>

@@ -36,8 +36,8 @@ function applyPrice(pd) {
   document.getElementById('eth-price').textContent = '$' + pd.price.toLocaleString('en-US', { maximumFractionDigits: 2 });
   const chgEl = document.getElementById('eth-chg');
   const chg = pd.chg ?? 0;
-  chgEl.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
-  chgEl.style.color = chg >= 0 ? 'var(--green)' : 'var(--red)';
+  chgEl.textContent = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
+  chgEl.style.color = chg > 0 ? 'var(--green)' : chg < 0 ? 'var(--red)' : 'var(--text-2)';
   if (pd.ethbtc != null && pd.ethbtc > 0) {
     document.getElementById('eth-btc').textContent = pd.ethbtc.toFixed(5);
     cache.set('ethbtc', pd.ethbtc);
@@ -50,39 +50,30 @@ function applyWmaRatio() {
   const ratio = price.value / wma200Value;
   document.getElementById('eth-wma200-ratio').textContent = ratio.toFixed(2);
   const noteEl = document.getElementById('eth-wma200-note');
-  const priceEl = document.getElementById('eth-wma200-price');
   if (ratio < 1) {
     noteEl.textContent = '低于 200WMA — 极端低估区间';
-    priceEl.style.color = 'var(--red)';
   } else if (ratio < 1.5) {
     noteEl.textContent = '接近 200WMA — 底部区间';
-    priceEl.style.color = 'var(--orange)';
   } else if (ratio < 3) {
     noteEl.textContent = '高于 200WMA — 正常区间';
-    priceEl.style.color = 'var(--green)';
   } else {
     noteEl.textContent = '远超 200WMA — 过热信号';
-    priceEl.style.color = 'var(--red)';
   }
 }
 
 function applyMarket(md) {
   const mcapEl = document.getElementById('market-cap');
   mcapEl.textContent = '$' + (md.mcap / 1e9).toFixed(1) + 'B';
-  mcapEl.style.color = 'var(--green)';
 
   const volEl = document.getElementById('volume-24h');
   volEl.textContent = '$' + (md.vol / 1e9).toFixed(1) + 'B';
-  volEl.style.color = 'var(--blue)';
 
   const supplyEl = document.getElementById('supply-total');
   supplyEl.textContent = (md.totalSupply / 1e6).toFixed(2) + ' M';
-  supplyEl.style.color = 'var(--blue)';
 
   const stakePct = (md.stakedEth / md.totalSupply * 100).toFixed(1);
   document.getElementById('supply-staked').textContent = (md.stakedEth / 1e6).toFixed(1) + ' M ETH';
   document.getElementById('supply-staked-pct').textContent = stakePct + '%';
-  document.getElementById('supply-staked-pct').style.color = 'var(--green)';
   document.getElementById('supply-note').textContent = '质押年化约 3.5%';
 }
 
@@ -123,13 +114,11 @@ function applyBmnr(d) {
   const stakedEst = d.holdings * 0.85;
   const yieldEl = document.getElementById('bmnr-yield');
   yieldEl.textContent = fmtUsd(stakedEst * (price.value || (d.valueUsd / d.holdings)) * 0.035) + ' /年';
-  yieldEl.style.color = 'var(--green)';
 
   if (d.totalCorporateHoldings) {
     const share = d.holdings / d.totalCorporateHoldings * 100;
     const shareEl = document.getElementById('bmnr-share');
     shareEl.textContent = share.toFixed(1) + '%';
-    shareEl.style.color = 'var(--blue)';
   }
 
   if (d.asOf) {
@@ -173,12 +162,12 @@ function applyBmnrWeekly(currentHoldings) {
       const days = Math.floor((now - oldest.t) / 86400000);
       const delta = currentHoldings - oldest.h;
       const pct = oldest.h > 0 ? delta / oldest.h * 100 : 0;
-      el.textContent = (delta >= 0 ? '+' : '−') + fmtEth(Math.abs(delta));
-      el.style.color = delta >= 0 ? 'var(--green)' : 'var(--red)';
-      sub.textContent = `${days} 天样本 · ${(delta >= 0 ? '+' : '') + pct.toFixed(2)}%`;
+      el.textContent = (delta > 0 ? '+' : delta < 0 ? '−' : '') + fmtEth(Math.abs(delta));
+      el.style.color = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--text-2)';
+      sub.textContent = `${days} 天样本 · ${(pct > 0 ? '+' : '') + pct.toFixed(2)}%`;
     } else {
       el.textContent = fmtEth(currentHoldings);
-      el.style.color = 'var(--dim)';
+      el.style.color = 'var(--text-2)';
       sub.textContent = '当前持仓 · 等待 7 日样本';
     }
     return;
@@ -186,7 +175,7 @@ function applyBmnrWeekly(currentHoldings) {
   const delta = currentHoldings - best.h;
   if (delta === 0) {
     el.textContent = fmtEth(currentHoldings);
-    el.style.color = 'var(--dim)';
+    el.style.color = 'var(--text-2)';
     sub.textContent = '持仓无变动 · 较 ' + best.d;
     return;
   }
@@ -251,7 +240,7 @@ function applyGas(gas) {
   const g = Number(gas);
   const disp = g >= 10 ? Math.round(g) : g >= 1 ? g.toFixed(1) : g.toFixed(2);
   document.getElementById('gas-price').textContent = disp + ' Gwei';
-  document.getElementById('gas-price').style.color = g < 20 ? 'var(--green)' : g < 50 ? 'var(--orange)' : 'var(--red)';
+  document.getElementById('gas-price').style.color = g < 20 ? 'var(--text-2)' : g < 50 ? 'var(--orange)' : 'var(--red)';
   return true;
 }
 
@@ -294,7 +283,7 @@ function applyMnav(id, val) {
   const el = document.getElementById(id);
   if (!el || val == null || isNaN(val)) return;
   el.textContent = val.toFixed(2) + 'x';
-  el.style.color = val < 1 ? 'var(--green)' : val < 2 ? 'var(--orange)' : 'var(--red)';
+  el.style.color = val < 1.2 ? 'var(--text)' : val < 2 ? 'var(--orange)' : 'var(--red)';
 }
 
 function applyMnavPayload(d, bmnrOverride) {
