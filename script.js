@@ -740,6 +740,8 @@ function loadCache() {
 }
 
 loadCache();
+// Render the static btc.json snapshot while the aggregate API warms up.
+void fetchBtcSnapshot();
 document.addEventListener('mehk3y:crypto-summary', event => {
   applyBtcSummary(event.detail);
   recoverBtcSummaryFailures(event.detail).catch(error => console.error('BTC partial recovery', error));

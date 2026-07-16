@@ -1,0 +1,34 @@
+name: Warm API Cache
+
+on:
+  schedule:
+    # Keep /api/crypto-summary warm on the Vercel CDN between user visits.
+    - cron: "*/2 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: warm-api-cache
+  cancel-in-progress: true
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Warm crypto-summary
+        run: |
+          curl -fsS \
+            -A "mehk3y-warm/1.0 (+https://mehk3y.com)" \
+            "https://mehk3y.com/api/crypto-summary" \
+            -o /tmp/crypto-summary.json \
+            -w "crypto-summary status:%{http_code} ttfb:%{time_starttransfer}s total:%{time_total}s bytes:%{size_download}\n"
+          python3 - <<'PY'
+          import json, sys
+          data = json.load(open("/tmp/crypto-summary.json"))
+          summary = data.get("summary", {})
+          print(
+              f"groups ok: {summary.get('successful')}/{summary.get('total')} "
+              f"generatedAt: {data.get('generatedAt')}"
+          )
+          if not summary.get("successful"):
+              sys.exit(1)
+          PY

@@ -163,8 +163,9 @@ export async function handleSummary() {
     status: successful ? 200 : 503,
     headers: {
       'content-type': 'application/json; charset=utf-8',
-      // One short-lived edge object replaces 12 initial browser API requests.
-      'cache-control': 'public, max-age=5, s-maxage=15, stale-while-revalidate=60',
+      // One CDN object replaces 12 initial browser API requests.
+      // s-maxage + SWR keeps cold upstream fan-out off the critical path.
+      'cache-control': 'public, max-age=10, s-maxage=45, stale-while-revalidate=120',
     },
   });
 }

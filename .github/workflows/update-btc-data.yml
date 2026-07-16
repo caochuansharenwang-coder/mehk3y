@@ -21,6 +21,13 @@ jobs:
         with:
           node-version: "24"
       - run: node scripts/update-btc-data.mjs
+      - name: Warm crypto-summary CDN
+        run: |
+          curl -fsS \
+            -A "mehk3y-warm/1.0 (+https://mehk3y.com)" \
+            "https://mehk3y.com/api/crypto-summary" \
+            -o /dev/null \
+            -w "warm status:%{http_code} total:%{time_total}s\n"
       - name: Commit data
         run: |
           if git diff --quiet -- data/btc.json; then
