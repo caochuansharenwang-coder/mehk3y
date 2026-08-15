@@ -1,15 +1,15 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-08-15T02:37:28.006Z",
+  "updatedAt": "2026-08-15T03:21:22.700Z",
   "price": {
     "price": 63110.5,
-    "chg": -0.6818918604175433
+    "chg": -0.7257923705284904
   },
-  "hashrate": 892.5,
+  "hashrate": 891.5,
   "halving": {
     "days": 608,
-    "height": 962509,
+    "height": 962514,
     "date": "2028-04-14",
     "progress": 58.3
   },
