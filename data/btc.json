@@ -1,34 +1,34 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-08-31T19:46:04.644Z",
+  "updatedAt": "2026-08-31T23:31:30.737Z",
   "price": {
-    "price": 78983.3,
-    "chg": 0.26747879338754477
+    "price": 78579.9,
+    "chg": 0.9187755652447446
   },
-  "hashrate": 921.1,
+  "hashrate": 929.5,
   "halving": {
     "days": 591,
-    "height": 964927,
+    "height": 964950,
     "date": "2028-04-13",
     "progress": 59.5
   },
   "fng": 62,
-  "wma200": 64835.94199999997,
+  "wma200": 64833.94199999997,
   "ahrBase": {
-    "dma200": 69492.14300000001,
+    "dma200": 69490.126,
     "expPrice": 172756.93141528458,
     "coinDays": 6449,
     "lastTs": 1788192000000
   },
   "onchain": {
-    "balancedPrice": 38860.04853892643,
+    "balancedPrice": 38868.894747557686,
     "mvrv": 1.46015209
   },
   "mstr": {
-    "stock_price": 132.55
+    "stock_price": 132.94
   },
-  "ahr999": 0.5196361591758676,
-  "wma200Ratio": 1.218202397676277,
-  "balancedPriceRatio": 2.0325064679443665
+  "ahr999": 0.514356654776563,
+  "wma200Ratio": 1.212017927276426,
+  "balancedPriceRatio": 2.0216654090720585
 }
