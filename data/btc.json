@@ -1,22 +1,22 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-09-07T00:07:35.421Z",
+  "updatedAt": "2026-09-07T04:34:50.086Z",
   "price": {
-    "price": 80394.6,
-    "chg": 0.6522806033532982
+    "price": 79613.7,
+    "chg": -0.37154019616923
   },
-  "hashrate": 945.8,
+  "hashrate": 947.5,
   "halving": {
     "days": 584,
-    "height": 965852,
+    "height": 965883,
     "date": "2028-04-13",
     "progress": 59.9
   },
   "fng": 71,
-  "wma200": 65158.84849999998,
+  "wma200": 65154.81449999997,
   "ahrBase": {
-    "dma200": 69837.09850000002,
+    "dma200": 69833.19450000003,
     "expPrice": 173697.70493471308,
     "coinDays": 6455,
     "lastTs": 1788710400000
@@ -32,30 +32,30 @@
     "cash": 6714000000,
     "shares": 420483000,
     "basic_shares": 420483000,
-    "assumed_diluted_shares": 450090000,
-    "fully_diluted_shares": 424479000,
+    "assumed_diluted_shares": null,
+    "fully_diluted_shares": null,
     "usd_assets": 6714000000,
-    "usd_reserve": 5100000000,
-    "usd_cash": 1614000000,
-    "official_mnav": 1.15,
-    "official_mnav_as_of": "2026-09-04",
-    "yield_qtd": -11.8,
-    "yield_ytd": -3.7,
+    "usd_reserve": null,
+    "usd_cash": null,
+    "official_mnav": 1.1028050677841474,
+    "official_mnav_as_of": null,
+    "yield_qtd": 74.3,
+    "yield_ytd": 47.3,
     "stock_price": 142.8,
     "previous_close": 144.82000732421875,
     "change_pct": -1.394839954465964,
     "quote_at": "2026-09-04T20:00:01.000Z",
-    "data_as_of": "2026-09-04",
+    "data_as_of": null,
     "mstr_price": 142.8
   },
-  "ahr999": 0.5328113771060354,
-  "wma200Ratio": 1.2338247506016013,
-  "balancedPriceRatio": 2.0634299133844576,
+  "ahr999": 0.5225401030778365,
+  "wma200Ratio": 1.2219158416911775,
+  "balancedPriceRatio": 2.0433871192246267,
   "mstrComputed": {
     "mcap": 60044972400.00001,
-    "btcVal": 67937456730.00001,
-    "basic": 0.8838272035798065,
-    "ev": 1.092570406160914,
+    "btcVal": 67277557185,
+    "basic": 0.8924963228805735,
+    "ev": 1.1023145815957327,
     "pctSupply": 4.267929292929293
   }
 }
