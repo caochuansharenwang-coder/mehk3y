@@ -1,22 +1,22 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-09-08T09:20:18.092Z",
+  "updatedAt": "2026-09-08T13:45:02.990Z",
   "price": {
-    "price": 78427.7,
-    "chg": -1.3703918890708162
+    "price": 77851.7,
+    "chg": -1.9248018382556835
   },
-  "hashrate": 929.5,
+  "hashrate": 939.7,
   "halving": {
     "days": 583,
-    "height": 966047,
+    "height": 966083,
     "date": "2028-04-13",
     "progress": 60
   },
   "fng": 69,
-  "wma200": 65148.89799999998,
+  "wma200": 65146.00399999998,
   "ahrBase": {
-    "dma200": 69883.53850000001,
+    "dma200": 69880.62700000001,
     "expPrice": 173854.91252139027,
     "coinDays": 6456,
     "lastTs": 1788796800000
@@ -27,35 +27,28 @@
   },
   "mstr": {
     "btc_holdings": 845050,
-    "debt": 6714000000,
-    "pref": 14803000000,
-    "cash": 6714000000,
-    "shares": 420483000,
-    "basic_shares": 420483000,
+    "debt": null,
+    "pref": null,
+    "cash": null,
+    "shares": null,
+    "basic_shares": null,
     "assumed_diluted_shares": null,
     "fully_diluted_shares": null,
-    "usd_assets": 6714000000,
+    "usd_assets": null,
     "usd_reserve": null,
     "usd_cash": null,
-    "official_mnav": 1.1028050677841474,
+    "official_mnav": 1.1517,
     "official_mnav_as_of": null,
     "yield_qtd": 74.3,
     "yield_ytd": 47.3,
-    "stock_price": 142.8,
-    "previous_close": 144.82000732421875,
-    "change_pct": -1.394839954465964,
-    "quote_at": "2026-09-04T20:00:01.000Z",
+    "stock_price": 137.4,
+    "previous_close": 142.8000030517578,
+    "change_pct": -3.781514661313121,
+    "quote_at": "2026-09-08T13:44:59.000Z",
     "data_as_of": null,
     "mstr_price": 142.8
   },
-  "ahr999": 0.5062640673836586,
-  "wma200Ratio": 1.2038223578240728,
-  "balancedPriceRatio": 2.012872518297221,
-  "mstrComputed": {
-    "mcap": 60044972400.00001,
-    "btcVal": 66275327885,
-    "basic": 0.9059928380013326,
-    "ev": 1.1174506570125817,
-    "pctSupply": 4.267929292929293
-  }
+  "ahr999": 0.4988758043777838,
+  "wma200Ratio": 1.1950341574289043,
+  "balancedPriceRatio": 1.998089290298195
 }
