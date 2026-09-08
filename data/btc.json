@@ -1,28 +1,28 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-09-07T22:09:49.744Z",
+  "updatedAt": "2026-09-08T00:22:46.198Z",
   "price": {
-    "price": 79199.2,
-    "chg": -0.6111472249900234
+    "price": 79007.5,
+    "chg": -1.4690935393556193
   },
-  "hashrate": 926,
+  "hashrate": 929.4,
   "halving": {
     "days": 583,
-    "height": 965978,
-    "date": "2028-04-12",
+    "height": 965993,
+    "date": "2028-04-13",
     "progress": 60
   },
-  "fng": 71,
-  "wma200": 65152.749499999976,
+  "fng": 69,
+  "wma200": 65151.82249999998,
   "ahrBase": {
-    "dma200": 69887.39600000001,
+    "dma200": 69886.4685,
     "expPrice": 173854.91252139027,
     "coinDays": 6456,
     "lastTs": 1788796800000
   },
   "onchain": {
-    "balancedPrice": 38961.633481476485,
+    "balancedPrice": 38963.07356133289,
     "mvrv": 1.50623933
   },
   "mstr": {
@@ -35,27 +35,27 @@
     "assumed_diluted_shares": null,
     "fully_diluted_shares": null,
     "usd_assets": 6714000000,
-    "usd_reserve": 5100000000,
-    "usd_cash": 1614000000,
-    "official_mnav": 1.15,
-    "official_mnav_as_of": "2026-09-04",
+    "usd_reserve": null,
+    "usd_cash": null,
+    "official_mnav": 1.1028050677841474,
+    "official_mnav_as_of": null,
     "yield_qtd": 74.3,
     "yield_ytd": 47.3,
     "stock_price": 142.8,
     "previous_close": 144.82000732421875,
     "change_pct": -1.394839954465964,
     "quote_at": "2026-09-04T20:00:01.000Z",
-    "data_as_of": "2026-09-04",
+    "data_as_of": null,
     "mstr_price": 142.8
   },
-  "ahr999": 0.5162448874383087,
-  "wma200Ratio": 1.2155925975157813,
-  "balancedPriceRatio": 2.0327484482305818,
+  "ahr999": 0.5137556103892813,
+  "wma200Ratio": 1.2126675351253609,
+  "balancedPriceRatio": 2.027753274536518,
   "mstrComputed": {
     "mcap": 60044972400.00001,
-    "btcVal": 66927283960,
-    "basic": 0.8971673261966928,
-    "ev": 1.10755771781902,
+    "btcVal": 66765287875,
+    "basic": 0.8993441698689,
+    "ev": 1.1099994945344318,
     "pctSupply": 4.267929292929293
   }
 }
