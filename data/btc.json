@@ -1,25 +1,25 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-09-10T13:58:54.965Z",
+  "updatedAt": "2026-09-10T17:32:00.749Z",
   "price": {
-    "price": 77196.9,
-    "chg": -2.5374116078564097
+    "price": 77377.2,
+    "chg": -1.7886335712762573
   },
-  "hashrate": 942.2,
+  "hashrate": 933.9,
   "halving": {
     "days": 581,
-    "height": 966369,
+    "height": 966386,
     "date": "2028-04-13",
     "progress": 60.2
   },
   "fng": 69,
-  "wma200": 65142.851499999975,
+  "wma200": 65143.639499999976,
   "ahrBase": {
-    "dma200": 69983.35650000001,
-    "expPrice": 174169.6814684169,
-    "coinDays": 6458,
-    "lastTs": 1788969600000
+    "dma200": 70042.2105,
+    "expPrice": 174327.24296908328,
+    "coinDays": 6459,
+    "lastTs": 1789056000000
   },
   "onchain": {
     "balancedPrice": 38978.03515644758,
@@ -30,10 +30,10 @@
     "debt": null,
     "pref": null,
     "cash": null,
-    "shares": 420497000,
-    "basic_shares": 420497000,
-    "assumed_diluted_shares": 450121000,
-    "fully_diluted_shares": 424510000,
+    "shares": null,
+    "basic_shares": null,
+    "assumed_diluted_shares": null,
+    "fully_diluted_shares": null,
     "usd_assets": null,
     "usd_reserve": null,
     "usd_cash": null,
@@ -41,21 +41,14 @@
     "official_mnav_as_of": null,
     "yield_qtd": 74.3,
     "yield_ytd": 47.3,
-    "stock_price": 130.47,
+    "stock_price": 130.455,
     "previous_close": 132.6999969482422,
-    "change_pct": -1.6804800297862619,
-    "quote_at": "2026-09-10T13:58:44.000Z",
-    "data_as_of": "2026-09-07",
+    "change_pct": -1.6917837225857701,
+    "quote_at": "2026-09-10T17:31:55.000Z",
+    "data_as_of": null,
     "mstr_price": 142.8
   },
-  "ahr999": 0.4889139126222996,
-  "wma200Ratio": 1.1850402342304593,
-  "balancedPriceRatio": 1.98052312514348,
-  "mstrComputed": {
-    "mcap": 54862243590,
-    "btcVal": 65235240344.99999,
-    "basic": 0.8409909015412245,
-    "ev": 0.8409909015412245,
-    "pctSupply": 4.267929292929293
-  }
+  "ahr999": 0.4903440556124336,
+  "wma200Ratio": 1.187793629491641,
+  "balancedPriceRatio": 1.9851488072558885
 }
