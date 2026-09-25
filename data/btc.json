@@ -1,22 +1,22 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-09-25T10:33:06.840Z",
+  "updatedAt": "2026-09-25T15:33:03.538Z",
   "price": {
-    "price": 84665.2,
-    "chg": 1.7560432719060615
+    "price": 83829.3,
+    "chg": -0.41187511879870403
   },
-  "hashrate": 934.4,
+  "hashrate": 928,
   "halving": {
     "days": 566,
-    "height": 968539,
+    "height": 968561,
     "date": "2028-04-13",
     "progress": 61.2
   },
   "fng": 71,
-  "wma200": 65804.54499999998,
+  "wma200": 65800.37099999998,
   "ahrBase": {
-    "dma200": 70944.12749999999,
+    "dma200": 70939.954,
     "expPrice": 176545.53770580183,
     "coinDays": 6473,
     "lastTs": 1790265600000
@@ -30,32 +30,25 @@
     "debt": null,
     "pref": null,
     "cash": null,
-    "shares": 420507000,
-    "basic_shares": 420507000,
-    "assumed_diluted_shares": 450108000,
-    "fully_diluted_shares": 429839000,
+    "shares": null,
+    "basic_shares": null,
+    "assumed_diluted_shares": null,
+    "fully_diluted_shares": null,
     "usd_assets": null,
     "usd_reserve": null,
     "usd_cash": null,
-    "official_mnav": 1.2157,
+    "official_mnav": 1.2128,
     "official_mnav_as_of": null,
     "yield_qtd": 74.3,
     "yield_ytd": 47.3,
-    "stock_price": 161.61,
-    "previous_close": 162.1999969482422,
-    "change_pct": -0.3637465840584702,
-    "quote_at": "2026-09-24T20:00:01.000Z",
-    "data_as_of": "2026-09-20",
-    "mstr_price": 162.2
+    "stock_price": 158.69,
+    "previous_close": 161.61000061035156,
+    "change_pct": -1.806819255815615,
+    "quote_at": "2026-09-25T15:32:59.000Z",
+    "data_as_of": null,
+    "mstr_price": 161.61
   },
-  "ahr999": 0.5723170448238947,
-  "wma200Ratio": 1.2866162967922659,
-  "balancedPriceRatio": 2.1586276424966706,
-  "mstrComputed": {
-    "mcap": 67958136270.00001,
-    "btcVal": 71626759200,
-    "basic": 0.9487813916059462,
-    "ev": 0.9487813916059462,
-    "pctSupply": 4.2727272727272725
-  }
+  "ahr999": 0.5611048619440917,
+  "wma200Ratio": 1.273994336597282,
+  "balancedPriceRatio": 2.137315499534002
 }
