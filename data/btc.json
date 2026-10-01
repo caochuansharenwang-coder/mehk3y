@@ -1,22 +1,22 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-10-01T00:17:06.757Z",
+  "updatedAt": "2026-10-01T06:15:37.151Z",
   "price": {
-    "price": 83462.4,
-    "chg": -0.052929948052024195
+    "price": 84378,
+    "chg": 1.4891766769024328
   },
-  "hashrate": 982,
+  "hashrate": 990.3,
   "halving": {
     "days": 560,
-    "height": 969369,
+    "height": 969403,
     "date": "2028-04-13",
     "progress": 61.6
   },
   "fng": 74,
-  "wma200": 66135.70399999997,
+  "wma200": 66140.27999999997,
   "ahrBase": {
-    "dma200": 71324.1625,
+    "dma200": 71328.73849999999,
     "expPrice": 177503.37003659472,
     "coinDays": 6479,
     "lastTs": 1790784000000
@@ -30,10 +30,10 @@
     "debt": 6713700000,
     "pref": 14135324000,
     "cash": 6020000000,
-    "shares": 421901122,
-    "basic_shares": 421901122,
-    "assumed_diluted_shares": null,
-    "fully_diluted_shares": null,
+    "shares": 421978000,
+    "basic_shares": 421978000,
+    "assumed_diluted_shares": 451577000,
+    "fully_diluted_shares": 431308000,
     "usd_assets": 6020000000,
     "usd_reserve": null,
     "usd_cash": null,
@@ -42,20 +42,20 @@
     "yield_qtd": -11.9,
     "yield_ytd": -3.7,
     "stock_price": 153.09,
-    "previous_close": 157.13999938964844,
-    "change_pct": -2.5773192092268946,
+    "previous_close": 154.6699981689453,
+    "change_pct": -1.0215285366587283,
     "quote_at": "2026-09-30T20:00:01.000Z",
-    "data_as_of": null,
+    "data_as_of": "2026-09-27",
     "mstr_price": 156.09
   },
-  "ahr999": 0.5502226371851895,
-  "wma200Ratio": 1.261987019900779,
-  "balancedPriceRatio": 2.1242581086794767,
+  "ahr999": 0.5623248915092488,
+  "wma200Ratio": 1.275743011671557,
+  "balancedPriceRatio": 2.1475616648234044,
   "mstrComputed": {
-    "mcap": 64588842766.98,
-    "btcVal": 70748238758.4,
-    "basic": 0.912939232134755,
-    "ev": 1.1129324854757252,
+    "mcap": 64600612020,
+    "btcVal": 71524361748,
+    "basic": 0.9031973224396707,
+    "ev": 1.101945184585956,
     "pctSupply": 4.281141414141414
   }
 }
