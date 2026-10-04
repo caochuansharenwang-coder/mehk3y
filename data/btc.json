@@ -1,25 +1,25 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-10-04T14:31:53.899Z",
+  "updatedAt": "2026-10-04T18:21:04.845Z",
   "price": {
-    "price": 85194,
-    "chg": 0.45159236419804033
+    "price": 85321.9,
+    "chg": 0.42277375836690345
   },
-  "hashrate": 952.9,
+  "hashrate": 956.3,
   "halving": {
-    "days": 557,
-    "height": 969860,
-    "date": "2028-04-13",
-    "progress": 61.8
+    "days": 556,
+    "height": 969885,
+    "date": "2028-04-12",
+    "progress": 61.9
   },
   "fng": 65,
-  "wma200": 66144.36799999997,
+  "wma200": 66485.52449999997,
   "ahrBase": {
-    "dma200": 71511.36600000001,
-    "expPrice": 177983.89879732148,
-    "coinDays": 6482,
-    "lastTs": 1791043200000
+    "dma200": 71591.24900000001,
+    "expPrice": 178144.31442622296,
+    "coinDays": 6483,
+    "lastTs": 1791129600000
   },
   "onchain": {
     "balancedPrice": 39349.09923280146,
@@ -30,10 +30,10 @@
     "debt": 6713700000,
     "pref": 14135324000,
     "cash": 6020000000,
-    "shares": 421978000,
-    "basic_shares": 421978000,
-    "assumed_diluted_shares": 451577000,
-    "fully_diluted_shares": 431308000,
+    "shares": 421901122,
+    "basic_shares": 421901122,
+    "assumed_diluted_shares": null,
+    "fully_diluted_shares": null,
     "usd_assets": 6020000000,
     "usd_reserve": null,
     "usd_cash": null,
@@ -45,17 +45,17 @@
     "previous_close": 160.5,
     "change_pct": -0.30529595015576894,
     "quote_at": "2026-10-02T20:00:01.000Z",
-    "data_as_of": "2026-09-27",
+    "data_as_of": null,
     "mstr_price": 156.09
   },
-  "ahr999": 0.570245975960113,
-  "wma200Ratio": 1.288000816637934,
-  "balancedPriceRatio": 2.165081327426732,
+  "ahr999": 0.570806789969621,
+  "wma200Ratio": 1.2833154380845717,
+  "balancedPriceRatio": 2.168331719493989,
   "mstrComputed": {
-    "mcap": 67520699779.99999,
-    "btcVal": 72216057204,
-    "basic": 0.9349818086753713,
-    "ev": 1.1295268056463599,
+    "mcap": 67508398531.21999,
+    "btcVal": 72324473685.4,
+    "basic": 0.9334101596766654,
+    "ev": 1.127806702563706,
     "pctSupply": 4.281141414141414
   }
 }
