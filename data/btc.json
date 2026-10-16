@@ -1,22 +1,22 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-10-16T16:58:26.605Z",
+  "updatedAt": "2026-10-16T19:49:04.930Z",
   "price": {
-    "price": 81400.2,
-    "chg": -0.9113938226805193
+    "price": 81424.5,
+    "chg": -1.2361177823384784
   },
-  "hashrate": 1029.4,
+  "hashrate": 1046.6,
   "halving": {
     "days": 543,
-    "height": 971737,
+    "height": 971760,
     "date": "2028-04-11",
     "progress": 62.7
   },
   "fng": 63,
-  "wma200": 66801.71349999997,
+  "wma200": 66801.69749999997,
   "ahrBase": {
-    "dma200": 72439.67300000001,
+    "dma200": 72439.79450000002,
     "expPrice": 180078.6671539984,
     "coinDays": 6495,
     "lastTs": 1792166400000
@@ -30,10 +30,10 @@
     "debt": 6713700000,
     "pref": 13764729000,
     "cash": 5520500000,
-    "shares": 422119199,
-    "basic_shares": 422119199,
-    "assumed_diluted_shares": null,
-    "fully_diluted_shares": null,
+    "shares": 422199000,
+    "basic_shares": 422199000,
+    "assumed_diluted_shares": 451797000,
+    "fully_diluted_shares": 426186000,
     "usd_assets": 5520500000,
     "usd_reserve": null,
     "usd_cash": null,
@@ -41,21 +41,21 @@
     "official_mnav_as_of": null,
     "yield_qtd": 0,
     "yield_ytd": -3.7,
-    "stock_price": 137.39,
+    "stock_price": 136.16,
     "previous_close": 151.2899932861328,
-    "change_pct": -9.187648822116046,
-    "quote_at": "2026-10-16T16:58:19.000Z",
-    "data_as_of": null,
+    "change_pct": -10.000656988276583,
+    "quote_at": "2026-10-16T19:48:56.000Z",
+    "data_as_of": "2026-10-11",
     "mstr_price": 152.18
   },
-  "ahr999": 0.5079397432599156,
-  "wma200Ratio": 1.2185346113913684,
-  "balancedPriceRatio": 2.064507803664859,
+  "ahr999": 0.5082422015627353,
+  "wma200Ratio": 1.2188986664597863,
+  "balancedPriceRatio": 2.0651241109912424,
   "mstrComputed": {
-    "mcap": 57994956750.60999,
-    "btcVal": 69047719650,
-    "basic": 0.8399257360646232,
-    "ev": 1.0523703813627256,
+    "mcap": 57486615840,
+    "btcVal": 69068332125,
+    "basic": 0.8323151011661989,
+    "ev": 1.0452643193198408,
     "pctSupply": 4.284090909090909
   }
 }
