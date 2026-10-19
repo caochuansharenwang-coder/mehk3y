@@ -1,61 +1,61 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-10-19T06:49:02.700Z",
+  "updatedAt": "2026-10-19T14:12:37.716Z",
   "price": {
-    "price": 82792.4,
-    "chg": 1.3369628678544925
+    "price": 81949.4,
+    "chg": 0.8544694425334389
   },
-  "hashrate": 1021.1,
+  "hashrate": 1028.6,
   "halving": {
     "days": 541,
-    "height": 972113,
+    "height": 972159,
     "date": "2028-04-12",
     "progress": 62.9
   },
   "fng": 59,
-  "wma200": 67130.57349999998,
+  "wma200": 67126.24749999997,
   "ahrBase": {
-    "dma200": 72580.40850000002,
+    "dma200": 72576.17950000001,
     "expPrice": 180402.74518625264,
     "coinDays": 6497,
     "lastTs": 1792339200000
   },
   "onchain": {
     "balancedPrice": 39440.70177660471,
-    "mvrv": 1.50389046
+    "mvrv": 1.51609176
   },
   "mstr": {
-    "btc_holdings": 848250,
+    "btc_holdings": 848517,
     "debt": 6713700000,
-    "pref": 13764729000,
-    "cash": 5520500000,
-    "shares": 422119199,
-    "basic_shares": 422119199,
+    "pref": 13570851000,
+    "cash": 5277300000,
+    "shares": 422260071,
+    "basic_shares": 422260071,
     "assumed_diluted_shares": null,
     "fully_diluted_shares": null,
-    "usd_assets": 5520500000,
+    "usd_assets": 5277300000,
     "usd_reserve": null,
     "usd_cash": null,
-    "official_mnav": 1.051933552266688,
+    "official_mnav": 1.0396157573689306,
     "official_mnav_as_of": null,
     "yield_qtd": 0,
     "yield_ytd": -3.7,
-    "stock_price": 136.83,
-    "previous_close": 151.2899932861328,
-    "change_pct": -9.557798881506194,
-    "quote_at": "2026-10-16T20:00:01.000Z",
+    "stock_price": 138.71,
+    "previous_close": 136.8300018310547,
+    "change_pct": 1.3739663405592673,
+    "quote_at": "2026-10-19T14:12:33.000Z",
     "data_as_of": null,
     "mstr_price": 136.83
   },
-  "ahr999": 0.5235020591266587,
-  "wma200Ratio": 1.2333039282019542,
-  "balancedPriceRatio": 2.0991614314811837,
+  "ahr999": 0.5129255251933483,
+  "wma200Ratio": 1.2208249835505856,
+  "balancedPriceRatio": 2.0777875724465544,
   "mstrComputed": {
-    "mcap": 57758569999.170006,
-    "btcVal": 70228653300,
-    "basic": 0.8224359614648912,
-    "ev": 1.0328432146207238,
-    "pctSupply": 4.284090909090909
+    "mcap": 58571694448.41,
+    "btcVal": 69535459039.79999,
+    "basic": 0.8423284358399841,
+    "ev": 1.0540480856541985,
+    "pctSupply": 4.285439393939394
   }
 }
