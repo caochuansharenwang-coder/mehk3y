@@ -1,22 +1,22 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-10-23T00:38:16.201Z",
+  "updatedAt": "2026-10-23T05:21:27.036Z",
   "price": {
-    "price": 81336.1,
-    "chg": -3.522304568142567
+    "price": 81779.5,
+    "chg": -1.3384180511503883
   },
-  "hashrate": 1030.5,
+  "hashrate": 1048.8,
   "halving": {
     "days": 537,
-    "height": 972675,
+    "height": 972715,
     "date": "2028-04-12",
     "progress": 63.2
   },
   "fng": 50,
-  "wma200": 67123.28899999998,
+  "wma200": 67125.50899999998,
   "ahrBase": {
-    "dma200": 72869.569,
+    "dma200": 72871.81300000001,
     "expPrice": 181052.3514513163,
     "coinDays": 6501,
     "lastTs": 1792684800000
@@ -30,10 +30,10 @@
     "debt": 6713700000,
     "pref": 13570851000,
     "cash": 5277300000,
-    "shares": 422353000,
-    "basic_shares": 422353000,
-    "assumed_diluted_shares": 451933000,
-    "fully_diluted_shares": 426322000,
+    "shares": 422260071,
+    "basic_shares": 422260071,
+    "assumed_diluted_shares": null,
+    "fully_diluted_shares": null,
     "usd_assets": 5277300000,
     "usd_reserve": null,
     "usd_cash": null,
@@ -42,20 +42,20 @@
     "yield_qtd": 0,
     "yield_ytd": -3.7,
     "stock_price": 145.8,
-    "previous_close": 142.72000122070312,
-    "change_pct": 2.1580708751073767,
+    "previous_close": 153.47999572753906,
+    "change_pct": -5.003906659713975,
     "quote_at": "2026-10-22T20:00:01.000Z",
-    "data_as_of": "2026-10-18",
+    "data_as_of": null,
     "mstr_price": 136.83
   },
-  "ahr999": 0.50143693304641,
-  "wma200Ratio": 1.211741873971641,
-  "balancedPriceRatio": 2.060049357869749,
+  "ahr999": 0.5069033456178375,
+  "wma200Ratio": 1.2183073352933536,
+  "balancedPriceRatio": 2.071279621987151,
   "mstrComputed": {
-    "mcap": 61579067400.00001,
-    "btcVal": 69015063563.70001,
-    "basic": 0.8922554616379267,
-    "ev": 1.1019116161220017,
+    "mcap": 61565518351.8,
+    "btcVal": 69391296001.5,
+    "basic": 0.8872224889771358,
+    "ev": 1.0961779614840452,
     "pctSupply": 4.285439393939394
   }
 }
