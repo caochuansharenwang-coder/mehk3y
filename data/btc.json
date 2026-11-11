@@ -1,25 +1,25 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-11-11T15:07:27.902Z",
+  "updatedAt": "2026-11-11T21:54:20.932Z",
   "price": {
-    "price": 73611,
-    "chg": -1.420088547958113
+    "price": 74434.5,
+    "chg": 0.8053922139550718
   },
-  "hashrate": 963.1,
+  "hashrate": 950.8,
   "halving": {
     "days": 518,
-    "height": 975447,
+    "height": 975477,
     "date": "2028-04-12",
     "progress": 64.5
   },
   "fng": 29,
-  "wma200": 67985.79949999998,
+  "wma200": 67989.89249999997,
   "ahrBase": {
-    "dma200": 73174.0005,
-    "expPrice": 184164.5173072847,
-    "coinDays": 6520,
-    "lastTs": 1794326400000
+    "dma200": 73157.9205,
+    "expPrice": 184329.53572075436,
+    "coinDays": 6521,
+    "lastTs": 1794412800000
   },
   "onchain": {
     "balancedPrice": 39355.96268454848,
@@ -30,10 +30,10 @@
     "debt": 6713700000,
     "pref": 13006856000,
     "cash": 4916200000,
-    "shares": 425567099,
-    "basic_shares": 425567099,
-    "assumed_diluted_shares": null,
-    "fully_diluted_shares": null,
+    "shares": 425591000,
+    "basic_shares": 425591000,
+    "assumed_diluted_shares": 455163000,
+    "fully_diluted_shares": 429551000,
     "usd_assets": 4916200000,
     "usd_reserve": null,
     "usd_cash": null,
@@ -41,21 +41,21 @@
     "official_mnav_as_of": null,
     "yield_qtd": -0.5,
     "yield_ytd": -4.2,
-    "stock_price": 121.335,
+    "stock_price": 122.35,
     "previous_close": 121.06999969482422,
-    "change_pct": 0.21888189133868796,
-    "quote_at": "2026-11-11T15:07:24.000Z",
-    "data_as_of": null,
+    "change_pct": 1.0572398681772657,
+    "quote_at": "2026-11-11T21:00:01.000Z",
+    "data_as_of": "2026-11-08",
     "mstr_price": 128.93
   },
-  "ahr999": 0.4020894489873426,
-  "wma200Ratio": 1.0827408156022351,
-  "balancedPriceRatio": 1.8703900242516585,
+  "ahr999": 0.41085849350590664,
+  "wma200Ratio": 1.0947877289260317,
+  "balancedPriceRatio": 1.8913144266503656,
   "mstrComputed": {
-    "mcap": 51636183957.165,
-    "btcVal": 62596144404,
-    "basic": 0.8249099756672131,
-    "ev": 1.0569435943471286,
+    "mcap": 52071058850,
+    "btcVal": 63296419158,
+    "basic": 0.8226541018066228,
+    "ev": 1.0524682344143688,
     "pctSupply": 4.294767676767677
   }
 }
