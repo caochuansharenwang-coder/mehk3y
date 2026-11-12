@@ -1,28 +1,28 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-11-11T21:54:20.932Z",
+  "updatedAt": "2026-11-12T02:37:22.227Z",
   "price": {
-    "price": 74434.5,
-    "chg": 0.8053922139550718
+    "price": 73916.6,
+    "chg": 0.6118384964154022
   },
-  "hashrate": 950.8,
+  "hashrate": 956.4,
   "halving": {
-    "days": 518,
-    "height": 975477,
+    "days": 517,
+    "height": 975510,
     "date": "2028-04-12",
     "progress": 64.5
   },
-  "fng": 29,
-  "wma200": 67989.89249999997,
+  "fng": 28,
+  "wma200": 67987.30299999997,
   "ahrBase": {
-    "dma200": 73157.9205,
+    "dma200": 73155.33099999999,
     "expPrice": 184329.53572075436,
     "coinDays": 6521,
     "lastTs": 1794412800000
   },
   "onchain": {
-    "balancedPrice": 39355.96268454848,
+    "balancedPrice": 39335.46368591404,
     "mvrv": 1.36196703
   },
   "mstr": {
@@ -30,10 +30,10 @@
     "debt": 6713700000,
     "pref": 13006856000,
     "cash": 4916200000,
-    "shares": 425591000,
-    "basic_shares": 425591000,
-    "assumed_diluted_shares": 455163000,
-    "fully_diluted_shares": 429551000,
+    "shares": 425567099,
+    "basic_shares": 425567099,
+    "assumed_diluted_shares": null,
+    "fully_diluted_shares": null,
     "usd_assets": 4916200000,
     "usd_reserve": null,
     "usd_cash": null,
@@ -45,17 +45,17 @@
     "previous_close": 121.06999969482422,
     "change_pct": 1.0572398681772657,
     "quote_at": "2026-11-11T21:00:01.000Z",
-    "data_as_of": "2026-11-08",
+    "data_as_of": null,
     "mstr_price": 128.93
   },
-  "ahr999": 0.41085849350590664,
-  "wma200Ratio": 1.0947877289260317,
-  "balancedPriceRatio": 1.8913144266503656,
+  "ahr999": 0.40517538670826225,
+  "wma200Ratio": 1.0872118283615404,
+  "balancedPriceRatio": 1.8791338165023186,
   "mstrComputed": {
-    "mcap": 52071058850,
-    "btcVal": 63296419158,
-    "basic": 0.8226541018066228,
-    "ev": 1.0524682344143688,
+    "mcap": 52068134562.649994,
+    "btcVal": 62856015642.4,
+    "basic": 0.8283715413792,
+    "ev": 1.0592643295217457,
     "pctSupply": 4.294767676767677
   }
 }
