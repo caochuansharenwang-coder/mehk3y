@@ -1,61 +1,61 @@
 {
   "version": 1,
   "asset": "btc",
-  "updatedAt": "2026-11-24T05:58:18.647Z",
+  "updatedAt": "2026-11-24T17:05:06.735Z",
   "price": {
-    "price": 60588.1,
-    "chg": -1.8016295054919207
+    "price": 59354.2,
+    "chg": -4.243789193139597
   },
-  "hashrate": 1062.3,
+  "hashrate": 1040.4,
   "halving": {
-    "days": 505,
-    "height": 977329,
-    "date": "2028-04-12",
+    "days": 504,
+    "height": 977391,
+    "date": "2028-04-11",
     "progress": 65.4
   },
   "fng": 11,
-  "wma200": 68317.27299999997,
+  "wma200": 68311.09699999998,
   "ahrBase": {
-    "dma200": 72213.35749999998,
-    "expPrice": 186319.33429530053,
-    "coinDays": 6533,
-    "lastTs": 1795449600000
+    "dma200": 72103.16799999998,
+    "expPrice": 186485.95117189205,
+    "coinDays": 6534,
+    "lastTs": 1795536000000
   },
   "onchain": {
     "balancedPrice": 38559.314238863735,
-    "mvrv": 1.14455663
+    "mvrv": 1.14813774
   },
   "mstr": {
-    "btc_holdings": 850849,
+    "btc_holdings": 851305,
     "debt": 6713700000,
-    "pref": 12778605000,
-    "cash": 4901200000,
-    "shares": 427654139,
-    "basic_shares": 427654139,
+    "pref": 12560230000,
+    "cash": 4820000000,
+    "shares": 429579815,
+    "basic_shares": 429579815,
     "assumed_diluted_shares": null,
     "fully_diluted_shares": null,
-    "usd_assets": 4901200000,
+    "usd_assets": 4820000000,
     "usd_reserve": null,
     "usd_cash": null,
-    "official_mnav": 0.9789038557418851,
+    "official_mnav": 0.9896392092378813,
     "official_mnav_as_of": null,
-    "yield_qtd": -0.8,
-    "yield_ytd": -4.6,
-    "stock_price": 84.4,
-    "previous_close": 77.80000305175781,
-    "change_pct": 8.48328623310134,
-    "quote_at": "2026-11-23T21:00:01.000Z",
+    "yield_qtd": -1.2,
+    "yield_ytd": -4.9,
+    "stock_price": 78.14,
+    "previous_close": 84.4000015258789,
+    "change_pct": -7.417063285193722,
+    "quote_at": "2026-11-24T17:05:03.000Z",
     "data_as_of": null,
-    "mstr_price": 86.13
+    "mstr_price": 84.4
   },
-  "ahr999": 0.27283444943625346,
-  "wma200Ratio": 0.8868635608450007,
-  "balancedPriceRatio": 1.571296097868192,
+  "ahr999": 0.2620006958449292,
+  "wma200Ratio": 0.868880791066787,
+  "balancedPriceRatio": 1.5392960474431157,
   "mstrComputed": {
-    "mcap": 36094009331.600006,
-    "btcVal": 51551324296.9,
-    "basic": 0.7001567820784478,
-    "ev": 0.9846559569109018,
-    "pctSupply": 4.297217171717172
+    "mcap": 33567366744.1,
+    "btcVal": 50528527231,
+    "basic": 0.6643250572224461,
+    "ev": 0.9547010442312955,
+    "pctSupply": 4.299520202020202
   }
 }
